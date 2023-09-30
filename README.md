@@ -1,0 +1,1 @@
+This is Scramble, a word game. Any situations and similarities are coincidental.
