@@ -1,0 +1,9 @@
+/* Thick and dark brown border for the entire board */
+#board {
+    border: 10px solid #8B4513;
+  }
+  
+/* Thin and dark yellow border for the small cells */
+.cell {
+border: 1px solid #FFD700;
+}
