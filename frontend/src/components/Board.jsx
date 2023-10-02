@@ -13,7 +13,7 @@ const Board = () => {
                     key={`${i}-${j}`}
                     type="text"
                     maxLength={1}
-                    style={{ width: "30px", height: "30px", textAlign: "center" }}
+                    className="cell"
                 />
             );
         }
@@ -22,7 +22,7 @@ const Board = () => {
     }
 
     return (
-        <div>
+        <div id="board">
             {rows}
         </div>
     );

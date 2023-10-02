@@ -1,9 +1,13 @@
 /* Thick and dark brown border for the entire board */
 #board {
-    border: 10px solid #8B4513;
-  }
-  
+  display: inline-block;
+  border: 10px solid #000000;
+}
+
 /* Thin and dark yellow border for the small cells */
 .cell {
-border: 1px solid #FFD700;
+  border: 1px solid #FFD700;
+  width: 30px;
+  height: 30px;
+  text-align: center;
 }
