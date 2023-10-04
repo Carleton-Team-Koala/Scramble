@@ -7,7 +7,7 @@
 /* Thin and dark yellow border for the small cells */
 .cell {
   border: 1px solid #FFD700;
-  width: 25px;
-  height: 25px;
+  width: 45px;
+  height: 45px;
   text-align: center;
 }
