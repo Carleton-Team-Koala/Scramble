@@ -1,0 +1,12 @@
+.tile {
+    display: flex;
+    width: 70px;
+    height: 70px;
+    font-size: 45px;
+    border: aqua solid 2px;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    color: black;
+    background-color: blueviolet;
+}

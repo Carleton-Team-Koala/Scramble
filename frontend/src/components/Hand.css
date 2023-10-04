@@ -1,0 +1,20 @@
+.hand {
+    display: flex;
+    width: 600px;
+    height: 100px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    margin-top: 20px;
+    border: 2px solid black ;
+    background-color: wheat;
+    padding: 5px;
+    row-gap: 5px;
+    bottom: 200px;
+}
+
+.tile-container {
+    width: 500px;
+    height: 50px;
+    background-color: brown;
+}
