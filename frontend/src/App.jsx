@@ -1,12 +1,11 @@
-import Board from "./components/Board";
+import Game from "./components/Game";
 import "./App.css";
 
 function App() {
 
   return (
     <div className="App">
-      <h1>Welcome to Scramble</h1>
-      <Board /> 
+      <Game /> 
     </div>
   );
 };
