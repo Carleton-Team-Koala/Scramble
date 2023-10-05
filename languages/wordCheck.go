@@ -13,9 +13,20 @@ type alphabet struct {
     ListOfWords map[string]int `json:"listOfWords"`
 }
 
-var activeAlphabet = new(alphabet)
+var scores = new(alphabet)
+var distribution = new(alphabet)
+var alphabetScoresFilePath = "englishAlphabetScores.json"
+var alphabetDistributionFilePath = "englishAlphabetDistribution.json"
 
-func letterReturner(w http.ResponseWriter, r *http.Request) {
+func letterScores(w http.ResponseWriter, r *http.Request){
+  alphabetReturner(w, r, scores)
+}
+
+func letterDistribution(w http.ResponseWriter, r *http.Request){
+  alphabetReturner(w, r, distribution)
+}
+
+func alphabetReturner(w http.ResponseWriter, r *http.Request, activeAlphabet *alphabet) {
   // recreate json dataset of active alphabet
   jsonData, err := json.Marshal(activeAlphabet)
     if err != nil {
@@ -29,10 +40,10 @@ func letterReturner(w http.ResponseWriter, r *http.Request) {
   w.Write(jsonData)
 }
 
-func importJSONdata(){
+func importJSONdata(path string, activeAlphabet *alphabet){
    // Open the JSON file
    fmt.Println("Opening file...")
-   file, err := os.Open("englishAlphabet.json")
+   file, err := os.Open(path)
    if err != nil {
        fmt.Println("Error opening file:", err)
        return
@@ -51,7 +62,10 @@ func importJSONdata(){
 }
 
 func main() {
-  importJSONdata()
-  http.HandleFunc("/letterScores", letterReturner)
+  importJSONdata(alphabetScoresFilePath, scores)
+  importJSONdata(alphabetDistributionFilePath, distribution)  
+
+  http.HandleFunc("/letterScores", letterScores)
+  http.HandleFunc("/letterDistribution", letterDistribution)
   http.ListenAndServe(":8080", nil)
 }
