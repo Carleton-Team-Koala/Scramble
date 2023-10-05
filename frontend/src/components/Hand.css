@@ -1,20 +1,11 @@
 .hand {
     display: flex;
-    width: 300px;
-    height: 50px;
+    width: 250px;
+    height: 25px;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    margin-top: 20px;
-    border: 2px solid black ;
-    background-color: wheat;
+    background-color: lightgray;
+    border-radius: 8px;
     padding: 5px;
-    row-gap: 5px;
-    bottom: 200px;
-}
-
-.tile-container {
-    width: 50px;
-    height: 20px;
-    background-color: brown;
 }
