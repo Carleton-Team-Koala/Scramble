@@ -1,0 +1,7 @@
+.board-score {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    margin: 25px auto;
+}

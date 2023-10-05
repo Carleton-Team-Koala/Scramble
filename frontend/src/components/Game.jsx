@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import Board from "./Board";
 import ActionPanel from "./ActionPanel";
-import Scoreboard from "./Scoreboard";
-import Hand from './Hand';
+import Infoboard from "./Infoboard";
+import './Game.css';
 
 function Game() {
 
   return (
     <div>
-      <Board /> 
-      <Hand/>
+      <div className="board-score">
+        <Board /> 
+        <Infoboard />
+      </div>
       <ActionPanel />
-      <Scoreboard />
     </div>
   );
 };
