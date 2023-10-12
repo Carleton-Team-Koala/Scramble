@@ -1,7 +1,7 @@
 package models
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/dchest/uniuri"
 )
@@ -54,7 +54,7 @@ func CreateGame(playerName string) *Game {
 // add player to already existing game
 func JoinGame(gameID string, playerName string) *Game {
 	// get game from GameList
-	loadGame, _ := GetGameById(gameID)
+	loadGame := GetGameById(gameID)
 
 	// create new player
 	newPlayer := Player{
@@ -68,13 +68,32 @@ func JoinGame(gameID string, playerName string) *Game {
 	return loadGame
 }
 
-func GetGameById(gameID string) (*Game, error) {
-	_, exists := GameList[gameID]
-	if !exists {
-		return nil, errors.New("Game ID not found")
+// Load Game by GameID
+func GetGameById(gameID string) *Game {
+	if checkGameExists(gameID) != nil {
+		return nil
 	}
-
 	loadedGame := GameList[gameID]
 
-	return &loadedGame, nil
+	return &loadedGame
+}
+
+// Update the Board with player's move
+func UpdateBoard(gameID string, playerMove Move) {
+	loadedGame := GetGameById(gameID)
+
+	loadedGame.Board[playerMove.XLoc][playerMove.YLoc] = playerMove.Letter
+	// TODO: remove print statement after implementing database
+	fmt.Println(loadedGame)
+}
+
+// check if gameID exists. If not, return error
+func checkGameExists(gameID string) error {
+	_, exists := GameList[gameID]
+	if !exists {
+		gameNotFound := fmt.Errorf("Game ID not found")
+		fmt.Println(gameNotFound.Error())
+		return gameNotFound
+	}
+	return nil
 }

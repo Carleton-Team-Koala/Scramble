@@ -1,0 +1,10 @@
+services:
+    game:
+        build: ./app/backend
+        ports:
+          - "5000"
+    languages:
+        build: ./app/languages
+        expose:
+          - "7555:5000"
+
