@@ -3,12 +3,12 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 100vh;
 }
 
 button {
-    width: 200px;
-    height: 80px;
-    color: black;
-    background-color: bisque;
-    border: black solid 3px;
+    width: 350px;
+    height: 130px;
+    margin: 20px;
+    font-size: 24px;
 }

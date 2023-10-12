@@ -1,15 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import Welcome from './Welcome.jsx'
 import App from './App.jsx'
-import welcome from './Welcome.jsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Navigate to="/home" />} />
+      <Route index={true} path="/home" element={<Welcome />} />
+      <Route index={false} path="/play/:gameId" element={<App />} />
+    </Routes>
+  </BrowserRouter>
 )
-
-// ReactDOM.createRoot(document.getElementById('welcome')).render(
-//     <Welcome />
-// )
