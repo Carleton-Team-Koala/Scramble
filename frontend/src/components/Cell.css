@@ -1,0 +1,47 @@
+/* Thin and dark yellow border for the small cells */
+.cell {
+    background-color: #F5F5DC;
+    border: 0.5px solid #4e4300;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    justify-content: center;
+}
+
+/* TW style with red and words "triple word score" */
+.cell.tw {
+    background-color: #FF0000;
+    color: #FFFFFF;
+}
+
+/* DW style with light red and words "double word score" */
+.cell.dw {
+    background-color: #FFC0CB;
+    color: #000000;
+}
+
+/* TL style with blue and words "triple letter score" */
+.cell.tl {
+    background-color: #0000FF;
+    color: hsl(0, 0%, 100%);
+}
+
+/* DL style with light blue and words "double letter score" */
+.cell.dl {
+    background-color: #ADD8E6;
+    color: #000000;
+}
+
+/* Star style with light red and a single star UTF-8 character in the middle */
+.cell.star {
+    background-color: #FFC0CB;
+    color: #FFFFFF;
+}
+
+.cell-content {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }

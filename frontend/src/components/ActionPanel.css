@@ -11,6 +11,18 @@ button {
   display: inline;
 }
 
+.tile-hand {
+  display: flex;
+  width: 250px;
+  height: 25px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  background-color: lightgray;
+  border-radius: 8px;
+  padding: 5px;
+}
+
 .button-hand {
   background-size: 40px auto;
   background-repeat: no-repeat;

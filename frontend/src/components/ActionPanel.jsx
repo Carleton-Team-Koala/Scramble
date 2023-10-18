@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import Hand from './Hand';
 import './ActionPanel.css';
 import shuffleImage from '../assets/shuffle.jpg';
 import refreshImage from '../assets/refresh.jpg';
 
-const ActionPanel = (props) => {
+const ActionPanel = ({ tiles }) => {
 
     return (
         <div className="action-panel">
@@ -14,7 +13,9 @@ const ActionPanel = (props) => {
                         backgroundImage: `url(${shuffleImage})`,
                     }}>
                 </button>
-                <Hand />
+                <div className='tile-hand'>
+                    {tiles}
+                </div>
                 <button className="button-hand"
                     style={{
                         backgroundImage: `url(${refreshImage})`,
