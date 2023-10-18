@@ -1,33 +1,16 @@
-# Build Stage
-# First pull Golang image
-FROM golang:1.17-alpine as build-env
- 
-# Set environment variable
-ENV GOPATH /Scramble
-ENV APP_NAME Scramble
-ENV CMD_PATH cmd/main/main.go
- 
-# Copy application data into image
-COPY . $GOPATH/src/$APP_NAME
-WORKDIR $GOPATH/src/$APP_NAME
- 
-RUN go mod init Scramble
-RUN go mod tidy
+FROM golang:1.19
 
-# Budild application
-RUN CGO_ENABLED=0 go build -v -o /$APP_NAME $GOPATH/src/$APP_NAME/$CMD_PATH
- 
-# Run Stage
-FROM alpine:3.14
- 
-# Set environment variable
-ENV APP_NAME Scramble
- 
-# Copy only required data into this image
-COPY --from=build-env /$APP_NAME .
- 
-# Expose application port
+WORKDIR /app
+
+COPY go.* ./
+RUN go mod download
+
+COPY . .
+RUN cd app/backend/cmd/main/ && CGO_ENABLED=0 go build -o ./app/backend/cmd/main
+
 EXPOSE 8080
- 
-# Start app
-CMD ./$APP_NAME
+
+RUN chmod a+x ./app/backend/cmd/main
+RUN chmod a+x ./app/backend/cmd/main/main.go
+
+CMD ["go", "run", "./app/backend/cmd/main/main.go"]

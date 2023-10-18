@@ -1,10 +1,16 @@
 services:
     game:
-        build: ./app/backend
+        build: 
+          context: ./
+          dockerfile: ./app/backend/Dockerfile
         ports:
-          - "5000"
+          - "8080"
     languages:
-        build: ./app/languages
-        expose:
-          - "7555:5000"
+        build:
+          context: ./
+          dockerfile: ./app/languages/Dockerfile
+        ports:
+          - "8000"
+        # expose:
+        #   - "8000"
 

@@ -17,9 +17,9 @@ import (
 
 var wordList = new(models.Dictionary)
 
-var alphabetScoresFilePath = "../../pkg/controllers/englishAlphabetScores.json"
-var alphabetDistributionFilePath = "../../pkg/controllers/englishAlphabetDistribution.json"
-var dictionaryText = "../../pkg/controllers/englishWordList.txt"
+var alphabetScoresFilePath = "app/languages/pkg/controllers/englishAlphabetScores.json"
+var alphabetDistributionFilePath = "app/languages/pkg/controllers/englishAlphabetDistribution.json"
+var dictionaryText = "app/languages/pkg/controllers/englishWordList.txt"
 
 // getter
 func LetterScores(w http.ResponseWriter, r *http.Request) {

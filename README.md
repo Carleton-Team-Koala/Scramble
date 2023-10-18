@@ -23,6 +23,16 @@ This is Scramble, a word game based off of Scrabble.
 
 ## Instructions
 
+### App
+To run the whole program, go to the `Scramble` directory and use the following commands on the terminal:
+
+```terminal
+> docker compose build
+> docker compose up
+```
+
+Open Docker and click on each port number to view each service.
+
 ### Frontend
 To run the skeleton of our frontend app, go to the `Scramble` directory and use the following commands on the terminal:
 ```terminal
@@ -32,20 +42,33 @@ To run the skeleton of our frontend app, go to the `Scramble` directory and use 
 ```
 
 ### Backend
-To run the skeleton of our backend app on the terminal, go to the `Scramble/backend/cmd/main` directory and use the following commands on the terminal:
+To run the skeleton of our backend app on the terminal, go to the `Scramble` directory and use the following commands on the terminal:
 
 ```terminal
+> cd app/backend/cmd/main
 > go run main.go
 ```
 
 The app will be available on http://localhost:8080/
 
-If you want to run it with Docker, go to the `Scramble` directory and use the following commands on the terminal:
 
-```terminal
-> docker build --rm -t scramble .
-> docker run -p 8080:8080 scramble
-```
+### Languages
+The languages section runs separately from the backend part of the game. 
+
+For now, the language section only works through Docker. 
+
+~~To run the skeleton of the language package on the terminal, go to the `Scramble` directory and use the following commands on the terminal:~~
+
+ 
+<!-- ```terminal
+> cd app/languages/cmd/main
+> go run main.go
+``` -->
+
+
+~~The app will be available on http://localhost:8000/~~
+
+
 
 ## Tests
 
