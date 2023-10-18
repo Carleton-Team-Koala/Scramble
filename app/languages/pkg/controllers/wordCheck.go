@@ -17,28 +17,25 @@ import (
 
 var wordList = new(models.Dictionary)
 
-var alphabetScoresFilePath = "app/languages/pkg/controllers/englishAlphabetScores.json"
-var alphabetDistributionFilePath = "app/languages/pkg/controllers/englishAlphabetDistribution.json"
 var dictionaryText = "app/languages/pkg/controllers/englishWordList.txt"
 
 // getter
 func LetterScores(w http.ResponseWriter, r *http.Request) {
-	var scores = new(models.Alphabet)
-	importJSONdata(alphabetScoresFilePath, scores)
-	alphabetReturner(w, r, scores)
+	vars := mux.Vars(r)
+	inputLetter := vars["letter"]
+
+	letterScore := models.GetLetterScore(inputLetter)
+
+	json.NewEncoder(w).Encode(letterScore)
 }
 
 // getter
 func LetterDistribution(w http.ResponseWriter, r *http.Request) {
-	var distribution = new(models.Alphabet)
-	importJSONdata(alphabetDistributionFilePath, distribution)
-	alphabetReturner(w, r, distribution)
-}
+	distribution := models.AlphabetDistribution
 
-// returns a JSON file of a given alphabet struct
-func alphabetReturner(w http.ResponseWriter, r *http.Request, activeAlphabet *models.Alphabet) {
-	// recreate json dataset of active alphabet
-	jsonData, err := json.Marshal(activeAlphabet)
+	// importJSONdata(alphabetDistributionFilePath, distribution)
+	// alphabetReturner(w, r, distribution)
+	jsonData, err := json.Marshal(distribution)
 	if err != nil {
 		// Handle the error if marshaling fails
 		http.Error(w, "Unable to marshal JSON", http.StatusInternalServerError)
@@ -48,26 +45,6 @@ func alphabetReturner(w http.ResponseWriter, r *http.Request, activeAlphabet *mo
 	w.Header().Set("Content-Type", "application/json") //approves response
 	w.WriteHeader(http.StatusOK)                       //good HTTP response
 	w.Write(jsonData)
-}
-
-func importJSONdata(path string, activeAlphabet *models.Alphabet) {
-	// Open the JSON file
-	file, err := os.Open(path)
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-	defer file.Close()
-
-	// Create a decoder to read the JSON data
-	decoder := json.NewDecoder(file)
-
-	// Decode the JSON data into the struct
-	err = decoder.Decode(&activeAlphabet)
-	if err != nil {
-		fmt.Println("Error decoding JSON:", err)
-		return
-	}
 }
 
 func importDict(textPath string, words *models.Dictionary) {

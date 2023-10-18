@@ -9,6 +9,6 @@ import (
 // list of routes for application
 var RegisterRoutes = func(router *mux.Router) {
 	router.HandleFunc("/checkWord/{word}", controllers.WordCheck).Methods("GET")
-	router.HandleFunc("/letterScores", controllers.LetterScores)
+	router.HandleFunc("/letterScores/{letter}", controllers.LetterScores).Methods("GET")
 	router.HandleFunc("/letterDistribution", controllers.LetterDistribution)
 }

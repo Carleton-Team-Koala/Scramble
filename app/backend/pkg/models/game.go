@@ -33,10 +33,13 @@ func CreateGame(playerName string) *Game {
 	// add player to player list
 	playerList := []Player{newPlayer}
 
+	newLetterDistribution := getNewLetterDistribution()
+
 	// create new game struct with all the new information
 	newGame := Game{
 		GameID:  gameID,
 		Board:   [15][15]string{},
+		AvailableLetters: newLetterDistribution,
 		Players: playerList,
 	}
 
