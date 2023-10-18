@@ -19,3 +19,8 @@ type Move struct {
 	XLoc   int    `json:"xLoc"`
 	YLoc   int    `json:"yLoc"`
 }
+
+type WordScore struct {
+	Valid bool
+	Score int
+}
