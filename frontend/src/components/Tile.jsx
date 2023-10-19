@@ -1,8 +1,13 @@
 import React from "react";
+import Draggable from "react-draggable";
 import "./Tile.css";
 
-export default function Tile() {
+export default function Tile({ letter }) {
     return (
-        <div className="tile">A</div>
+        <Draggable>
+            <div className="tile">
+                {letter}
+            </div>
+        </Draggable>
     )
 }

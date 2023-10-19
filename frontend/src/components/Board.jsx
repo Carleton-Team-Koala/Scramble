@@ -1,8 +1,9 @@
 import React from "react";
 import Cell from "./Cell.jsx";
+import Tile from "./Tile.jsx";
 import "./Board.css";
 
-const Board = ({ tiles, tilePositions }) => {
+const Board = ({ tilePositions }) => {
 
     // double letters and so on
     const tw = [[0, 0], [0, 7], [0,14], [7, 0], [7, 14], [14, 0], [14, 7], [14, 14]];
@@ -46,8 +47,7 @@ const Board = ({ tiles, tilePositions }) => {
                     i={i}
                     j={j}
                     cellStyle={cellStyle}
-                    children={i === 4 && j === 10 && tiles.length >= 4 ? 
-                        tiles[3] : cellValue}
+                    children={tilePositions[`${i},${j}`] ? <Tile letter={tilePositions[`${i},${j}`]} /> : cellValue}
                 />
             );
         }
