@@ -7,6 +7,12 @@ import './Game.css';
 
 function Game() {
 
+  const [placeTiles, setPlaceTiles] = useState([]); // function for placing the tiles onto the board
+
+  const updatePlaceTiles = (change) => { // wrapper to be passed to the action panel
+    setPlaceTiles(change);
+  };
+
   let tiles = []; // hardcoding this data for now
   for (let i = 0; i < 7; i++) {
     tiles.push(<Tile key={i} letter='A' />); // will be passed by the server in the future
