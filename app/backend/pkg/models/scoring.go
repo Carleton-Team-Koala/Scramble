@@ -3,26 +3,26 @@ package models
 func scoring(activeGame Game, newTiles string) {
 	var word = ""
 	for i := 0; i < len(newTiles); i++ {
-		word.append(newTiles[i])
+		word = word + string(newTiles[i])
 
 	}
 }
 
 func checkLeft(x int, y int, activeGame Game, newTiles string, wordSoFar string, scoreValue int) WordScore {
+	var foo WordScore
 	if x >= 0 {
 		if activeGame.Board[x-1][y] != "" {
 			return checkLeft(x-1, y, activeGame, newTiles, activeGame.Board[x-1][y]+wordSoFar, scoreValue)
 		}
-		var foo WordScore
 		// TODO: connect to langauges api for scoring/ word validation
 		var validWord bool
 		if validWord {
-			foo := WordScore{
+			foo = WordScore{
 				Valid: true,
 				Score: scoreValue + 0,
 			}
 		} else {
-			foo := WordScore{
+			foo = WordScore{
 				Valid: false,
 				Score: scoreValue + 0,
 			}
@@ -30,7 +30,7 @@ func checkLeft(x int, y int, activeGame Game, newTiles string, wordSoFar string,
 		return foo
 
 	}
-	foo := WordScore{
+	foo = WordScore{
 		Valid: true,
 		Score: 0,
 	}
