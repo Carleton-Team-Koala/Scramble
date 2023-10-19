@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"Scramble/app/backend/pkg/models"
@@ -50,18 +51,18 @@ func UpdateMove(w http.ResponseWriter, r *http.Request) {
 	gameID := vars["gameID"]
 
 	// unmarshal json response
-	headerContentTtype := r.Header.Get("Content-Type")
-	if headerContentTtype != "application/json" {
+	headerContentType := r.Header.Get("Content-Type")
+	if headerContentType != "application/json" {
 		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
 		return
 	}
 
-	var m models.Move
+	var listOfMoves models.Resp
 	var unmarshalErr *json.UnmarshalTypeError
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
-	err := decoder.Decode(&m)
+	err := decoder.Decode(&listOfMoves)
 	if err != nil {
 		if errors.As(err, &unmarshalErr) {
 			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
@@ -71,13 +72,30 @@ func UpdateMove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Update Game board
-	models.UpdateBoard(gameID, m)
+	// for each move, update board
+	for _, move := range listOfMoves.Updates {
+		if !models.ValidateMove(move, gameID) {
+			fmt.Println("invalid move")
+			return
+		}
+	}
+
+	// update the board once every move is validated
+	for _, move := range listOfMoves.Updates {
+		models.UpdateBoard(gameID, move)
+	}
 
 	// TODO: Update Game Score
 
-	// TODO: return response(random tile)
-	// json.NewEncoder(w).Encode(response)
+	// create random tiles to replace the used tiles
+	// this should be done after board gets updated so that we use the remaining tiles only
+	var randomTiles []string
+	for i := 0; i < len(listOfMoves.Updates); i++ {
+		randomTile := models.GetRandomTile(gameID)
+		randomTiles = append(randomTiles, randomTile)
+	}
+
+	json.NewEncoder(w).Encode(randomTiles)
 }
 
 func errorResponse(w http.ResponseWriter, message string, httpStatusCode int) {
