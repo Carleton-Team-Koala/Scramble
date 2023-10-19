@@ -38,8 +38,6 @@ func LetterDistribution(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
-
-
 func WordCheck(w http.ResponseWriter, r *http.Request) {
 	jsonObject := make(map[string]interface{})
 

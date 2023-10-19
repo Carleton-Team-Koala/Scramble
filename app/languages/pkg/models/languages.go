@@ -13,7 +13,7 @@ func GetLetterScore(letter string) int {
 	return alphabetScores[letter]
 }
 
-func importDict(textPath string) *Dictionary{
+func importDict(textPath string) *Dictionary {
 	var wordList = new(Dictionary)
 
 	// Open the JSON file
@@ -37,7 +37,6 @@ func importDict(textPath string) *Dictionary{
 
 	return wordList
 }
-
 
 func CheckLetter(searchWord string) bool {
 	wordList := importDict(dictionaryText)
