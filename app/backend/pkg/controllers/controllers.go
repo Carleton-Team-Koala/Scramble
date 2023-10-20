@@ -26,9 +26,7 @@ func CreateGame(w http.ResponseWriter, r *http.Request) {
 	playerName := "player1"
 
 	newGame := models.CreateGame(playerName)
-	// res,_ := json.Marshal(newGame)
-	// w.WriteHeader(http.StatusOK)
-	// w.Write(res)
+
 	json.NewEncoder(w).Encode(newGame)
 }
 
@@ -40,9 +38,7 @@ func JoinGame(w http.ResponseWriter, r *http.Request) {
 	// TODO: Connect with FrontEnd
 	playerName := "anotherPlayer"
 	gameDetails := models.JoinGame(gameID, playerName)
-	// res, _ := json.Marshal(gameDetails)
-	// w.WriteHeader(http.StatusOK)
-	// w.Write(res)
+
 	json.NewEncoder(w).Encode(gameDetails)
 }
 
@@ -72,7 +68,7 @@ func UpdateMove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// for each move, update board
+	// validate each move
 	for _, move := range listOfMoves.Updates {
 		if !models.ValidateMove(move, gameID) {
 			fmt.Println("invalid move")
@@ -98,6 +94,7 @@ func UpdateMove(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(randomTiles)
 }
 
+// Error response
 func errorResponse(w http.ResponseWriter, message string, httpStatusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatusCode)

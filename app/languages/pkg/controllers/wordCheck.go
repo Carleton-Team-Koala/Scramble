@@ -4,7 +4,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"Scramble/app/languages/pkg/models"
@@ -38,24 +37,12 @@ func LetterDistribution(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
+// check if input word is valid
 func WordCheck(w http.ResponseWriter, r *http.Request) {
-	jsonObject := make(map[string]interface{})
+	vars := mux.Vars(r)
+	word := vars["word"]
 
-	w.Header().Set("Content-Type", "application/json") //approves response
-	w.WriteHeader(http.StatusOK)                       //good HTTP response
-	word := mux.Vars(r)["word"]
+	isValidWord := models.CheckLetter(word)
 
-	if models.CheckLetter(word) {
-		jsonObject["result"] = "true"
-	} else {
-		jsonObject["result"] = "false"
-	}
-	jsonData, err := json.Marshal(jsonObject)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	w.Write(jsonData)
+	json.NewEncoder(w).Encode(isValidWord)
 }
