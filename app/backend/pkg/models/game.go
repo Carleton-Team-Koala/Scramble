@@ -11,6 +11,21 @@ func generateNewGameID() string {
 	return gameID
 }
 
+func GetRandomTile(gameID string) string {
+	// get game from GameList
+	loadGame := GetGameById(gameID)
+	var keys []string
+	// get list of tiles that are available
+	for k := range loadGame.AvailableLetters {
+		if loadGame.AvailableLetters[k] > 0 {
+			keys = append(keys, k)
+		}
+	}
+	// in golang, iteration order is not specified and is not guaranteed to be the same from one iteration to the next
+	// this will therefore return a random value
+	return keys[0]
+}
+
 // create new game struct
 func CreateGame(playerName string) *Game {
 	gameID := ""
@@ -33,11 +48,14 @@ func CreateGame(playerName string) *Game {
 	// add player to player list
 	playerList := []Player{newPlayer}
 
+	newLetterDistribution := getNewLetterDistribution()
+
 	// create new game struct with all the new information
 	newGame := Game{
-		GameID:  gameID,
-		Board:   [15][15]string{},
-		Players: playerList,
+		GameID:           gameID,
+		Board:            [15][15]string{},
+		AvailableLetters: newLetterDistribution,
+		Players:          playerList,
 	}
 
 	// if GameList does not exist, make a new map
@@ -82,18 +100,20 @@ func GetGameById(gameID string) *Game {
 func UpdateBoard(gameID string, playerMove Move) {
 	loadedGame := GetGameById(gameID)
 
-	loadedGame.Board[playerMove.XLoc][playerMove.YLoc] = playerMove.Letter
-	// TODO: remove print statement after implementing database
-	fmt.Println(loadedGame)
-}
-
-// check if gameID exists. If not, return error
-func checkGameExists(gameID string) error {
-	_, exists := GameList[gameID]
-	if !exists {
-		gameNotFound := fmt.Errorf("Game ID not found")
-		fmt.Println(gameNotFound.Error())
-		return gameNotFound
+	if !ValidateMove(playerMove, gameID) {
+		// TODO: Change response to something else that makes more sense
+		fmt.Println("Invalid Move")
 	}
-	return nil
+
+	// update board state
+	loadedGame.Board[playerMove.XLoc][playerMove.YLoc] = playerMove.Letter
+
+	// update available tiles status
+	loadedGame.AvailableLetters[playerMove.Letter] -= 1
+
+	// TODO: Only used to replace Game in GameList. Remove this once database is connected
+	GameList[gameID] = *loadedGame
+
+	// TODO: Only used for debugging purposes. Remove this later
+	fmt.Println(loadedGame)
 }
