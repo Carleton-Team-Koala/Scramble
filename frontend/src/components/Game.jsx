@@ -6,6 +6,10 @@ import Tile from './Tile';
 import './Game.css';
 
 function Game() {
+  let tilePositions = [
+    {letter: "I", xLoc: 4, yLoc: 10},
+    {letter: "J", xLoc: 6, yLoc: 7}
+   ]; // hardcoding the cell positions for now as well
 
   // const [tilePositions, setTilePositions] = useState({}); // function for placing the tiles onto the board
 
@@ -19,14 +23,9 @@ function Game() {
       key={i}
       letter='A'
       tilePositions={tilePositions}
-      updateTilePositions={updateTilePositions}
+      // updateTilePositions={updateTilePositions}
     />); // will be passed by the server in the future
   }
-
-  let tilePositions = [
-    {letter: "I", xLoc: 4, yLoc: 10},
-    {letter: "J", xLoc: 6, yLoc: 7}
-   ]; // hardcoding the cell positions for now as well
 
   return (
     <div>

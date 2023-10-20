@@ -13,8 +13,8 @@ export default function Tile({ letter, tilePositions, updateTilePositions }) {
 
         const cellI = Math.round(cellY / 25);
         const cellJ = Math.round(cellX / 25);
-        const newTilePositions = { ...tilePositions, [`${cellI}-${cellJ}`]: letter };
-        updateTilePositions(newTilePositions);
+        // const newTilePositions = { ...tilePositions, [`${cellI}-${cellJ}`]: letter };
+        // updateTilePositions(newTilePositions);
         console.log(tilePositions);
     };
 
