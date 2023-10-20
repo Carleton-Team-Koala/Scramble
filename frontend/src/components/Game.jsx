@@ -7,29 +7,33 @@ import './Game.css';
 
 function Game() {
 
-  const [placeTiles, setPlaceTiles] = useState([]); // function for placing the tiles onto the board
+  const [tilePositions, setTilePositions] = useState({}); // function for placing the tiles onto the board
 
-  const updatePlaceTiles = (change) => { // wrapper to be passed to the action panel
-    setPlaceTiles(change);
+  function updateTilePositions(change) { // wrapper to be passed to the action panel
+    setTilePositions(change);
   };
 
   let tiles = []; // hardcoding this data for now
   for (let i = 0; i < 7; i++) {
-    tiles.push(<Tile key={i} letter='A' />); // will be passed by the server in the future
+    tiles.push(<Tile
+      key={i}
+      letter='A'
+      tilePositions={tilePositions}
+      updateTilePositions={updateTilePositions}
+    />); // will be passed by the server in the future
   }
-
-  let tilePositions = {
-    [`${4},${10}`]: "I",
-    [`${6},${7}`]: "J"
-  }; // hardcoding the cell positions for now as well
 
   return (
     <div>
       <div className="board-score">
-        <Board tilePositions={tilePositions} />
+        <Board
+          tilePositions={tilePositions}
+        />
         <Infoboard />
       </div>
-      <ActionPanel tiles={tiles} />
+      <ActionPanel
+        tiles={tiles}
+      />
     </div>
   );
 };
