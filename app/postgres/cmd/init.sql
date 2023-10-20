@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS games (
     game_id UUID PRIMARY KEY,
-    board JSONB,
-    available_letters JSONB,
+    board character varying[][] NOT NULL,
+    available_letters jsonb NOT NULL
     players JSONB
 );
 
