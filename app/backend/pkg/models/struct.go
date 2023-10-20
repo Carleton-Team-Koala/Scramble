@@ -24,3 +24,8 @@ type Resp struct {
 	PlayerName string `json:"playerName"`
 	Updates    []Move `json:"updates"`
 }
+
+type WordScore struct {
+	Valid bool
+	Score int
+}
