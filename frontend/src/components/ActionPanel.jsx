@@ -2,8 +2,25 @@ import React, { useState } from 'react';
 import './ActionPanel.css';
 import shuffleImage from '../assets/shuffle.jpg';
 import refreshImage from '../assets/refresh.jpg';
+import tilePositions from "./Game"
 
 const ActionPanel = ({ tiles }) => {
+
+    const submit = () => {
+        const baseURL = "http://languages:8000/{gameID}/updategame/"
+        const url = baseURL + "/"
+        const data = JSON.stringify(tilePositions)
+        fetch(url, {
+          method: "POST",
+          Header: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            playerName : playerName,
+            updates: [data]
+          })
+        })
+      }
 
     return (
         <div className="action-panel">
@@ -27,7 +44,7 @@ const ActionPanel = ({ tiles }) => {
                 <button className="button-ap">Resign</button>
                 <button className="button-ap">Skip</button>
                 <button className="button-ap">Swap</button>
-                <button className="button-ap submit-button">Submit</button>
+                <button className="button-ap submit-button" onClick={submit}>Submit</button>
             </div>
         </div>
     );

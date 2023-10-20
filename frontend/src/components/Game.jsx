@@ -18,10 +18,10 @@ function Game() {
     tiles.push(<Tile key={i} letter='A' />); // will be passed by the server in the future
   }
 
-  let tilePositions = {
-    [`${4},${10}`]: "I",
-    [`${6},${7}`]: "J"
-  }; // hardcoding the cell positions for now as well
+  let tilePositions = [
+    {letter: "I", xLoc: 4, yLoc: 10},
+    {letter: "J", xLoc: 6, yLoc: 7}
+   ]; // hardcoding the cell positions for now as well
 
   return (
     <div>
