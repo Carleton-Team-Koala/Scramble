@@ -1,16 +1,27 @@
 services:
-    game:
-        build: 
-          context: ./
-          dockerfile: ./app/backend/Dockerfile
-        ports:
-          - "8080"
-    languages:
-        build:
-          context: ./
-          dockerfile: ./app/languages/Dockerfile
-        ports:
-          - "8000"
-        # expose:
-        #   - "8000"
+  game:
+      build: 
+        context: ./
+        dockerfile: ./app/backend/Dockerfile
+      ports:
+        - "8080"
+  languages:
+      build:
+        context: ./
+        dockerfile: ./app/languages/Dockerfile
+      ports:
+        - "8000"
+      # expose:
+      #   - "8000"
+  postgres:
+      image: postgres:latest
+      environment:
+        POSTGRES_PASSWORD: KoalatyProduct
+        POSTGRES_DB: KoalaAdmin
+      ports:
+        - "5432:5432"
+      volumes:
+      - type: bind
+        source: "./app/postgres/cmd/init.sql" 
+        target: /docker-entrypoint-initdb.d/init.sql
 
