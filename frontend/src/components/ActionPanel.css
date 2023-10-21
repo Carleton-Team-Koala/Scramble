@@ -5,6 +5,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   cursor: pointer;
+  background-color: lightgray;
 }
 
 .action-panel {

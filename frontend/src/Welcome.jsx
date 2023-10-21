@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Welcome.css";
 
-export const gameID = "";
-export const player = "";
-const baseURL = "http://game:8080"
+export let gameID = "";
+export let player = "";
+const baseURL = "http://localhost:8080"
 
 export default function welcome() {
   const url = baseURL + "/newgame/";
@@ -19,8 +19,10 @@ export default function welcome() {
     })
       .then(response => response.json())
       .then(data => {
-        gameID = data.gameID;
-        player = data.playerList[0];
+        gameID = data.GameID;
+        player = data.Players[0].name;
+        console.log(gameID);
+        console.log(player);
       })
       .catch(error => {
         alert(error);
@@ -41,6 +43,14 @@ const enterName = () => {
   return (
     <form>
 
+    </form>
+  )
+}
+
+const enterGameID = () => {
+  return (
+    <form>
+      
     </form>
   )
 }
