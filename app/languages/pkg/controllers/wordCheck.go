@@ -11,6 +11,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func HomePage(w http.ResponseWriter, r *http.Request) {
+	response := map[string]string{
+		"message": "Welcome to Languages API!",
+	}
+	json.NewEncoder(w).Encode(response)
+}
+
 // getter
 func LetterScores(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

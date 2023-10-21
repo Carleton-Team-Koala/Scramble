@@ -1,9 +1,14 @@
+\c scramble_db;
+
 CREATE TABLE IF NOT EXISTS games (
-    game_id UUID PRIMARY KEY,
-    board character varying[][] NOT NULL,
-    available_letters jsonb NOT NULL,
-    players JSONB
+    GameID int,
+    Board text[15][15] NOT NULL,
+    LetterDistribution jsonb NOT NULL,
+    Players JSONB
 );
 
-CREATE ROLE KoalaAdmin WITH LOGIN PASSWORD 'KoalatyProduct';
-ALTER ROLE KoalaAdmin CREATEDB;
+CREATE ROLE KoalaAdmin 
+LOGIN
+PASSWORD 'KoalatyProduct';
+
+GRANT ALL PRIVILEGES ON DATABASE scramble_db to KoalaAdmin;

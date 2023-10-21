@@ -7,9 +7,9 @@ import (
 )
 
 // list of routes for application
-var RegisterRoutes = func(router *mux.Router) {
+var RegisterRoutes = func(router *mux.Router, appInterface controllers.AppControllerInterface) {
 	router.HandleFunc("/", controllers.HomePage)
-	router.HandleFunc("/newgame/", controllers.CreateGame).Methods("GET")
-	router.HandleFunc("/joingame/{gameID}/", controllers.JoinGame).Methods("GET")
-	router.HandleFunc("/{gameID}/updategame/", controllers.UpdateMove).Methods("POST")
+	router.HandleFunc("/newgame/", appInterface.AppCreateGame).Methods("GET")
+	router.HandleFunc("/joingame/{gameID}/", appInterface.AppJoinGame).Methods("GET")
+	router.HandleFunc("/{gameID}/updategame/", appInterface.AppUpdateMove).Methods("POST")
 }
