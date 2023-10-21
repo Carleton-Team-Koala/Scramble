@@ -6,6 +6,17 @@ import (
 	"github.com/dchest/uniuri"
 )
 
+type App struct {
+	LanguageClient LanguageClient
+	DatabaseClient DatabaseClient
+}
+
+type AppInterface interface {
+	CreateGame(playerName string) *Game
+	JoinGame(gameID string, playerName string) *Game
+	UpdateBoard(gameID string, playerMove Move)
+}
+
 func generateNewGameID() string {
 	gameID := uniuri.NewLen(6)
 	return gameID
@@ -27,7 +38,7 @@ func GetRandomTile(gameID string) string {
 }
 
 // create new game struct
-func CreateGame(playerName string) *Game {
+func (app *App) CreateGame(playerName string) *Game {
 	gameID := ""
 
 	// generate new game id until unique ID is made
@@ -49,7 +60,7 @@ func CreateGame(playerName string) *Game {
 	// add player to player list
 	playerList := []Player{newPlayer}
 
-	newLetterDistribution := getNewLetterDistribution()
+	newLetterDistribution := app.LanguageClient.GetNewLetterDistribution()
 
 	// create new game struct with all the new information
 	newGame := Game{
@@ -58,6 +69,13 @@ func CreateGame(playerName string) *Game {
 		AvailableLetters: newLetterDistribution,
 		Players:          playerList,
 	}
+
+	// TODO: Add game to database
+	// err := app.DatabaseClient.AddNewGameToDB(newGame)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return nil
+	// }
 
 	// if GameList does not exist, make a new map
 	if GameList == nil {

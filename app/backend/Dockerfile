@@ -13,4 +13,7 @@ EXPOSE 8080
 RUN chmod a+x ./app/backend/cmd/main
 RUN chmod a+x ./app/backend/cmd/main/main.go
 
+# ENV POSTGRES_USER="KoalaAdmin"
+# ENV POSTGRES_PASSWORD="KoalatyProduct"
+
 CMD ["go", "run", "./app/backend/cmd/main/main.go"]
