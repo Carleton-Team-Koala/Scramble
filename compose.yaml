@@ -13,15 +13,15 @@ services:
         - "8000"
       # expose:
       #   - "8000"
-  postgres:
+  database:
       image: postgres:latest
       environment:
         POSTGRES_USER: KoalaAdmin
         POSTGRES_PASSWORD: KoalatyProduct
       ports:
-        - "5432:5432"
+        - "5432"
       volumes:
       - type: bind
-        source: "./app/postgres/cmd/init.sql" 
+        source: "./app/database/cmd/init.sql" 
         target: /docker-entrypoint-initdb.d/init.sql
 
