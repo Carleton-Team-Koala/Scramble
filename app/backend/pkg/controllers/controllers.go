@@ -11,6 +11,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type AppController struct {
+	AppInterface models.App
+}
+
+type AppControllerInterface interface {
+	AppCreateGame(w http.ResponseWriter, r *http.Request)
+	AppJoinGame(w http.ResponseWriter, r *http.Request)
+	AppUpdateMove(w http.ResponseWriter, r *http.Request)
+}
+
 // Homepage
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	response := map[string]string{
@@ -21,18 +31,18 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 // API endpoint to create new game
 // TODO: Figure out how to return this information for frontend
-func CreateGame(w http.ResponseWriter, r *http.Request) {
+func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 	// TODO: Connect with FrontEnd
 	playerName := "player1"
 
-	newGame := models.CreateGame(playerName)
+	newGame := a.AppInterface.CreateGame(playerName)
 
 	json.NewEncoder(w).Encode(newGame)
 }
 
 // API endpoint to join game using unique ID
 // TODO: Figure out how to return this information for frontend
-func JoinGame(w http.ResponseWriter, r *http.Request) {
+func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
 	// TODO: Connect with FrontEnd
@@ -42,7 +52,7 @@ func JoinGame(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(gameDetails)
 }
 
-func UpdateMove(w http.ResponseWriter, r *http.Request) {
+func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
 

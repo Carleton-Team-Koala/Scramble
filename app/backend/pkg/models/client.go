@@ -1,53 +1,53 @@
 package models
 
 import (
-	"encoding/json"
-	"io"
+	"database/sql"
+	"fmt"
+	_ "github.com/lib/pq"
 	"net/http"
+	"time"
 )
 
-// connect to languages to get the list of available tiles when creating game
-func getNewLetterDistribution() map[string]int {
-	var letterDistribution map[string]int
-
-	req, err := http.NewRequest("GET", "http://languages:8000/letterDistribution", nil)
-
-	if err != nil {
-		panic(err)
-	}
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	bytes, _ := io.ReadAll(resp.Body)
-	json.Unmarshal(bytes, &letterDistribution)
-
-	return letterDistribution
+type LanguageClient struct {
+	BaseURL    string
+	HTTPClient *http.Client
 }
 
-// connect to languages to check whether input word is valid
-func checkValidWord(inputWord string) bool {
-	var isValidWord bool
+type DatabaseClient struct {
+	database *sql.DB
+}
 
-	req, err := http.NewRequest("GET", "http://languages:8000/checkWord/" + string(inputWord), nil)
+func NewLanguageClient(languagesURL string) *LanguageClient {
+	return &LanguageClient{
+		BaseURL: languagesURL,
+		HTTPClient: &http.Client{
+			Timeout: time.Minute,
+		},
+	}
+}
 
+func NewDatabaseClient(host string, port string, user string, password string, dbname string) *DatabaseClient {
+	psqlInfo := fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=disable",
+		user,
+		password,
+		host,
+		port,
+		dbname)
+
+	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
+		fmt.Println("db open error")
+		panic(err)
+	}
+	// defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("db ping error")
 		panic(err)
 	}
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
+	return &DatabaseClient{
+		database: db,
 	}
-	defer resp.Body.Close()
-
-	bytes, _ := io.ReadAll(resp.Body)
-	json.Unmarshal(bytes, &isValidWord)
-
-	return isValidWord
 }
