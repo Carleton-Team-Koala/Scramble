@@ -42,7 +42,8 @@ export default function welcome() {
 const enterName = () => {
   return (
     <form>
-
+      <label for="fname">Player Name:</label>
+      <input type="text" id="fname"></input>
     </form>
   )
 }
