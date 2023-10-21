@@ -4,15 +4,17 @@ import "./Welcome.css";
 
 export const gameID = "";
 export const player = "";
+const baseURL = "http://game:8080"
 
 export default function welcome() {
-
+  const url = baseURL + "/newgame/";
   const alertClick = () => {
     alert("This functionality is not supported yet!");
   };
 
   const createGame = () => {
-    fetch("/newgame/", {
+    console.log(url);
+    fetch(url, {
       method: "GET"
     })
       .then(response => response.json())
@@ -34,3 +36,11 @@ export default function welcome() {
     </div>
   );
 };
+
+const enterName = () => {
+  return (
+    <form>
+
+    </form>
+  )
+}
