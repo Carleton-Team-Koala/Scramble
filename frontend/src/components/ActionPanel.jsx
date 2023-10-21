@@ -3,12 +3,14 @@ import './ActionPanel.css';
 import shuffleImage from '../assets/shuffle.jpg';
 import refreshImage from '../assets/refresh.jpg';
 import tilePositions from "./Game"
+import { gameID, player } from "../Welcome"
 
 const ActionPanel = ({ tiles }) => {
 
     const submit = () => {
-        const baseURL = "http://languages:8000/{gameID}/updategame/"
-        const url = baseURL + "/"
+        // const baseURL = "http://languages:8000/{gameID}/updategame/"
+        // const url = baseURL + "/"
+        const url = "/"+ gameID +"updategame/"
         const data = JSON.stringify(tilePositions)
         fetch(url, {
           method: "POST",
@@ -16,10 +18,18 @@ const ActionPanel = ({ tiles }) => {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            playerName : playerName,
+            playerName: player,
             updates: [data]
           })
         })
+            .then(response => response.json())
+            .then(data => {
+                alert(data);
+            })
+            .catch(error => {
+                alert(error);
+                console.log("Error: ", error);
+            })
       }
 
     return (
