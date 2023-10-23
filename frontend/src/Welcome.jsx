@@ -4,7 +4,7 @@ import "./Welcome.css";
 
 export let gameID = "";
 export let player = "";
-const baseURL = "http://localhost:8080"
+export const baseURL = "http://localhost:8080"
 
 export default function welcome() {
   const url = baseURL + "/newgame/";

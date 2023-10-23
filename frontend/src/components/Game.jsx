@@ -5,11 +5,13 @@ import Infoboard from "./Infoboard";
 import Tile from './Tile';
 import './Game.css';
 
+export let tilePositions = [
+  {letter: "I", xLoc: 4, yLoc: 10},
+  {letter: "J", xLoc: 6, yLoc: 7}
+ ];
+
 function Game() {
-  let tilePositions = [
-    {letter: "I", xLoc: 4, yLoc: 10},
-    {letter: "J", xLoc: 6, yLoc: 7}
-   ]; // hardcoding the cell positions for now as well
+   // hardcoding the cell positions for now as well
 
   // const [tilePositions, setTilePositions] = useState({}); // function for placing the tiles onto the board
 

@@ -2,25 +2,26 @@ import React, { useState } from 'react';
 import './ActionPanel.css';
 import shuffleImage from '../assets/shuffle.jpg';
 import refreshImage from '../assets/refresh.jpg';
-import tilePositions from "./Game"
-import { gameID, player } from "../Welcome"
+import { tilePositions } from "./Game"
+import { baseURL, gameID, player } from "../Welcome"
 
 const ActionPanel = ({ tiles }) => {
 
     const submit = () => {
         // const baseURL = "http://languages:8000/{gameID}/updategame/"
         // const url = baseURL + "/"
-        const url = "/"+ gameID +"updategame/"
-        const data = JSON.stringify(tilePositions)
+        console.log(gameID);
+        const url = baseURL + "/"+ gameID +"/updategame/"
+        console.log(url);
+        console.log(tilePositions);
+        const data = JSON.stringify({ playerName: player, updates: tilePositions })
+        console.log(data);
         fetch(url, {
           method: "POST",
-          Header: {
+          headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({
-            playerName: player,
-            updates: [data]
-          })
+          body: data
         })
             .then(response => response.json())
             .then(data => {
