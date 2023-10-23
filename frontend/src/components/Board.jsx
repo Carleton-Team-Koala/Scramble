@@ -1,7 +1,9 @@
 import React from "react";
+import Cell from "./Cell.jsx";
+import Tile from "./Tile.jsx";
 import "./Board.css";
 
-const Board = () => {
+const Board = ({ tilePositions }) => {
 
     // double letters and so on
     const tw = [[0, 0], [0, 7], [0,14], [7, 0], [7, 14], [14, 0], [14, 7], [14, 14]];
@@ -40,17 +42,17 @@ const Board = () => {
             }
 
             cells.push(
-                <input
+                <Cell
                     key={`${i}-${j}`}
-                    type="text"
-                    className={`cell ${cellStyle}`}
-                    readOnly
-                    value={cellValue}
+                    i={i}
+                    j={j}
+                    cellStyle={cellStyle}
+                    children={tilePositions[`${i},${j}`] ? <Tile letter={tilePositions[`${i},${j}`]} /> : cellValue}
                 />
             );
         }
 
-        rows.push(<div key={i}>{cells}</div>);
+        rows.push(<div key={i} className="row">{cells}</div>);
     }
 
     return (

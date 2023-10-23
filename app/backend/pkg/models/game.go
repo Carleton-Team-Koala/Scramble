@@ -55,6 +55,7 @@ func (app *App) CreateGame(playerName string) *Game {
 		Name:  playerName,
 		Score: 0,
 	}
+	
 
 	// add player to player list
 	playerList := []Player{newPlayer}

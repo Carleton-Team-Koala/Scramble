@@ -5,10 +5,23 @@ button {
   font-size: 1em;
   font-weight: 500;
   cursor: pointer;
+  background-color: lightgray;
 }
 
 .action-panel {
   display: inline;
+}
+
+.tile-hand {
+  display: flex;
+  width: 250px;
+  height: 25px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  background-color: lightgray;
+  border-radius: 8px;
+  padding: 5px;
 }
 
 .button-hand {
