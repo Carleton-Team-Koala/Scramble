@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/dchest/uniuri"
@@ -55,7 +56,6 @@ func (app *App) CreateGame(playerName string) *Game {
 		Name:  playerName,
 		Score: 0,
 	}
-	
 
 	// add player to player list
 	playerList := []Player{newPlayer}
@@ -135,4 +135,20 @@ func UpdateBoard(gameID string, playerMove Move) {
 
 	// TODO: Only used for debugging purposes. Remove this later
 	fmt.Println(loadedGame)
+}
+
+func StringifyBoard(board [][]string) (string, error) {
+	value, err := json.Marshal(board)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal board: %w", err)
+	}
+	return string(value), nil
+}
+
+func UnstringifyBoard(board string) ([][]string, error) {
+	var result [][]string
+	if err := json.Unmarshal([]byte(board), &result); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal board: %w", err)
+	}
+	return result, nil
 }
