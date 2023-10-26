@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
+import Tile from './Tile';
 import './ActionPanel.css';
 import shuffleImage from '../assets/shuffle.jpg';
 import refreshImage from '../assets/refresh.jpg';
-import { tilePositions } from "./Game"
 import { baseURL, gameID, player } from "../Welcome"
 
-const ActionPanel = ({ tiles }) => {
+const ActionPanel = ({ tiles, tilePositions, onTileDrag }) => {
 
     const submit = () => {
         // const baseURL = "http://languages:8000/{gameID}/updategame/"
         // const url = baseURL + "/"
         console.log(gameID);
-        const url = baseURL + "/"+ gameID +"/updategame/"
+        const url = baseURL + "/" + gameID + "/updategame/"
         console.log(url);
         console.log(tilePositions);
         const data = JSON.stringify({ playerName: player, updates: tilePositions })
         console.log(data);
         fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: data
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: data
         })
             .then(response => response.json())
             .then(data => {
@@ -31,7 +31,11 @@ const ActionPanel = ({ tiles }) => {
                 alert(error);
                 console.log("Error: ", error);
             })
-      }
+    }
+
+    const onDragStart = (tile) => {
+        onTileDrag(tile);
+    };
 
     return (
         <div className="action-panel">

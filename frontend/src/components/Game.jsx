@@ -5,43 +5,51 @@ import Infoboard from "./Infoboard";
 import Tile from './Tile';
 import './Game.css';
 
-export let tilePositions = [
-  {letter: "I", xLoc: 4, yLoc: 10},
-  {letter: "J", xLoc: 6, yLoc: 7}
- ];
+let tilePositions = [
+  { letter: "I", xLoc: 4, yLoc: 10 },
+  { letter: "J", xLoc: 6, yLoc: 7 }
+];
 
-function Game() {
-   // hardcoding the cell positions for now as well
+let tiles_coded = []; // hardcoding this data for now
+for (let i = 0; i < 7; i++) {
+  tiles_coded.push(
+  <Tile
+    key={i}
+    letter='A'
+  />); // will be passed by the server in the future
+}
 
-  // const [tilePositions, setTilePositions] = useState({}); // function for placing the tiles onto the board
+export default function Game() {
 
-  // function updateTilePositions(change) { // wrapper to be passed to the action panel
-  //   setTilePositions(change);
-  // };
+  const [boardState, setBoardState] = useState({});
+  const [tiles, setTiles] = useState(tiles_coded);
 
-  let tiles = []; // hardcoding this data for now
-  for (let i = 0; i < 7; i++) {
-    tiles.push(<Tile
-      key={i}
-      letter='A'
-      tilePositions={tilePositions}
-      // updateTilePositions={updateTilePositions}
-    />); // will be passed by the server in the future
-  }
+  function handleTileDrop(cellKey, letter) {
+    setBoardState(prevState => ({
+      ...prevState,
+      [cellKey]: letter
+    }));
+    console.log(boardState);
+  };
+
+  function handleTileDrag(tile) {
+    setTiles(prevTiles => prevTiles.filter(t => t !== tile));
+  };
 
   return (
     <div>
       <div className="board-score">
         <Board
           tilePositions={tilePositions}
+          onTileDrop={handleTileDrop}
         />
         <Infoboard />
       </div>
       <ActionPanel
         tiles={tiles}
+        tilePositions={tilePositions}
+        onTileDrag={handleTileDrag}
       />
     </div>
   );
 };
-
-export default Game;
