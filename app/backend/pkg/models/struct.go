@@ -1,17 +1,16 @@
 package models
 
-var GameList map[string]Game
 
 type Game struct {
 	GameID           string         `json:"GameID"`
 	Board            [15][15]string `json:"Board"`
 	AvailableLetters map[string]int `json:"LetterDistribution"`
-	Players          []Player       `json:"Players"`
+	Players          map[string]PlayerInfo       `json:"Players"`
 }
 
-type Player struct {
-	Name  string `json:"name"`
+type PlayerInfo struct {
 	Score int    `json:"score"`
+	Hand []string `json:"hand"`
 }
 
 type Move struct {
