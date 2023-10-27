@@ -1,7 +1,6 @@
 package models
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/dchest/uniuri"
@@ -16,6 +15,9 @@ type AppInterface interface {
 	CreateGame(playerName string) *Game
 	JoinGame(gameID string, playerName string) *Game
 	UpdateBoard(gameID string, playerMove Move)
+	GetRandomTile(gameID string) string
+	GetGameById(gameID string) *Game
+	ValidateMove(playerMove Move, gameID string) bool
 }
 
 func generateNewGameID() string {
@@ -23,14 +25,18 @@ func generateNewGameID() string {
 	return gameID
 }
 
-func GetRandomTile(gameID string) string {
+func (app *App) GetRandomTile(gameID string) string {
 	// get game from GameList
-	loadGame := GetGameById(gameID)
+	loadGame, err := app.GetGameById(gameID)
+	if err != nil {
+		fmt.Println(fmt.Errorf("%w", err))
+	}
 	var keys []string
 	// get list of tiles that are available
 	for k := range loadGame.AvailableLetters {
 		if loadGame.AvailableLetters[k] > 0 {
 			keys = append(keys, k)
+			loadGame.AvailableLetters[k] -= 1
 		}
 	}
 	// in golang, iteration order is not specified and is not guaranteed to be the same from one iteration to the next
@@ -39,26 +45,27 @@ func GetRandomTile(gameID string) string {
 }
 
 // create new game struct
-func (app *App) CreateGame(playerName string) *Game {
+func (app *App) CreateGame(playerName string) error {
 	gameID := ""
 
 	// generate new game id until unique ID is made
 	for {
 		gameID = generateNewGameID()
-		_, exists := GameList[gameID]
-		if !exists {
+		exists, _ := app.DatabaseClient.CheckGameExists(gameID)
+		if !(*exists) {
 			break
 		}
 	}
 
 	// Create new player with input name
-	newPlayer := Player{
-		Name:  playerName,
+	newPlayer := PlayerInfo{
 		Score: 0,
+		Hand: []string{},
 	}
 
 	// add player to player list
-	playerList := []Player{newPlayer}
+	playerList := make(map[string]PlayerInfo)
+	playerList[playerName] = newPlayer
 
 	newLetterDistribution := app.LanguageClient.GetNewLetterDistribution()
 
@@ -70,58 +77,91 @@ func (app *App) CreateGame(playerName string) *Game {
 		Players:          playerList,
 	}
 
-	// TODO: Add game to database
-	// err := app.DatabaseClient.AddNewGameToDB(newGame)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return nil
-	// }
 
-	// if GameList does not exist, make a new map
-	if GameList == nil {
-		GameList = make(map[string]Game)
+	// Add game to database
+	err := app.DatabaseClient.AddNewGameToDB(newGame)
+	if err != nil {
+		return err
 	}
 
-	// add created game to GameList
-	GameList[gameID] = newGame
-
-	return &newGame
+	return nil
 }
 
 // add player to already existing game
-func JoinGame(gameID string, playerName string) *Game {
+func (app *App) JoinGame(gameID string, playerName string) {
 	// get game from GameList
-	loadGame := GetGameById(gameID)
+	loadGame, err := app.GetGameById(gameID)
+	if err != nil {
+		fmt.Println(fmt.Errorf("%w", err))
+	}
 
 	// create new player
-	newPlayer := Player{
-		Name:  playerName,
+	newPlayer := PlayerInfo{
 		Score: 0,
+		Hand: []string{},
 	}
 
 	// add new player to player list
-	loadGame.Players = append(loadGame.Players, newPlayer)
+	loadGame.Players[playerName] = newPlayer
+
+	app.DatabaseClient.UpdateGameToDB(gameID, *loadGame)
+
+	return
+}
+
+// start game
+func (app *App) StartGame(gameID string) *Game {
+	var randomStartingTiles []string
+
+	// get game from GameList
+	loadGame, err := app.GetGameById(gameID)
+	if err != nil {
+		fmt.Println(fmt.Errorf("%w", err))
+	}
+
+	for player, _ := range loadGame.Players {
+		for i := 0; i < 7; i++ {              
+			randomTile := app.GetRandomTile(gameID) 
+			randomStartingTiles = append(randomStartingTiles, randomTile)  
+		}  
+		if copyPlayer, ok := loadGame.Players[player]; ok {
+			copyPlayer.Hand = randomStartingTiles
+			loadGame.Players[player] = copyPlayer
+		}
+
+    }
+	app.DatabaseClient.UpdateGameToDB(gameID, *loadGame)
 
 	return loadGame
 }
 
 // Load Game by GameID
-func GetGameById(gameID string) *Game {
-	if checkGameExists(gameID) != nil {
-		return nil
+func (app *App) GetGameById(gameID string) (*Game, error) {
+	exists, _ :=  app.DatabaseClient.CheckGameExists(gameID)
+	if !(*exists) {
+		return nil, nil
 	}
-	loadedGame := GameList[gameID]
+	loadedGame, err := app.DatabaseClient.GetGameByGameID(gameID)
+	if err != nil{
+		fmt.Println(fmt.Errorf("%w", err))
+		return nil, err
+	}
 
-	return &loadedGame
+	return loadedGame, nil
 }
 
 // Update the Board with player's move
-func UpdateBoard(gameID string, playerMove Move) {
-	loadedGame := GetGameById(gameID)
+func (app *App) UpdateBoard(gameID string, playerMove Move, playerName string) *string {
+	loadedGame, err := app.GetGameById(gameID)
+	if err != nil{
+		fmt.Println(fmt.Errorf("%w", err))
+		return nil
+	}
 
-	if !ValidateMove(playerMove, gameID) {
+	if !app.ValidateMove(playerMove, playerName, gameID) {
 		// TODO: Change response to something else that makes more sense
 		fmt.Println("Invalid Move")
+		return nil
 	}
 
 	// update board state
@@ -130,25 +170,21 @@ func UpdateBoard(gameID string, playerMove Move) {
 	// update available tiles status
 	loadedGame.AvailableLetters[playerMove.Letter] -= 1
 
-	// TODO: Only used to replace Game in GameList. Remove this once database is connected
-	GameList[gameID] = *loadedGame
+	randomTile := app.GetRandomTile(gameID)
+	index := 0
+	for _, iterateLetter := range loadedGame.Players[playerName].Hand {
+		if iterateLetter == playerMove.Letter {
+			loadedGame.Players[playerName].Hand[index] = iterateLetter
+			break
+		}
+		index++
+	}
+
+	// update game on database
+	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
 
 	// TODO: Only used for debugging purposes. Remove this later
 	fmt.Println(loadedGame)
-}
 
-func StringifyBoard(board [][]string) (string, error) {
-	value, err := json.Marshal(board)
-	if err != nil {
-		return "", fmt.Errorf("failed to marshal board: %w", err)
-	}
-	return string(value), nil
-}
-
-func UnstringifyBoard(board string) ([][]string, error) {
-	var result [][]string
-	if err := json.Unmarshal([]byte(board), &result); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal board: %w", err)
-	}
-	return result, nil
+	return &randomTile
 }

@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"Scramble/app/backend/pkg/models"
@@ -19,6 +18,7 @@ type AppControllerInterface interface {
 	AppCreateGame(w http.ResponseWriter, r *http.Request)
 	AppJoinGame(w http.ResponseWriter, r *http.Request)
 	AppUpdateMove(w http.ResponseWriter, r *http.Request)
+	AppStartGame(w http.ResponseWriter, r *http.Request)
 }
 
 // Homepage
@@ -47,7 +47,14 @@ func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 	gameID := vars["gameID"]
 	// TODO: Connect with FrontEnd
 	playerName := "anotherPlayer"
-	gameDetails := models.JoinGame(gameID, playerName)
+	a.AppInterface.JoinGame(gameID, playerName)
+}
+
+// TODO: Figure out how to return this information for frontend
+func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	gameID := vars["gameID"]
+	gameDetails := a.AppInterface.StartGame(gameID)
 
 	json.NewEncoder(w).Encode(gameDetails)
 }
@@ -78,28 +85,15 @@ func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// validate each move
-	for _, move := range listOfMoves.Updates {
-		if !models.ValidateMove(move, gameID) {
-			fmt.Println("invalid move")
-			return
-		}
-	}
+	var randomTiles []string
 
-	// update the board once every move is validated
+	// update the board once every move is validated and get random tiles to replace tiles used
 	for _, move := range listOfMoves.Updates {
-		models.UpdateBoard(gameID, move)
+		randomTile := a.AppInterface.UpdateBoard(gameID, move, listOfMoves.PlayerName)
+		randomTiles = append(randomTiles, *randomTile)
 	}
 
 	// TODO: Update Game Score
-
-	// create random tiles to replace the used tiles
-	// this should be done after board gets updated so that we use the remaining tiles only
-	var randomTiles []string
-	for i := 0; i < len(listOfMoves.Updates); i++ {
-		randomTile := models.GetRandomTile(gameID)
-		randomTiles = append(randomTiles, randomTile)
-	}
 
 	json.NewEncoder(w).Encode(randomTiles)
 }

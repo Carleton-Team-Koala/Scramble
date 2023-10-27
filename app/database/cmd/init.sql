@@ -1,9 +1,9 @@
 \c scramble_db;
 
 CREATE TABLE IF NOT EXISTS games (
-    GameID int,
-    Board text[15][15] NOT NULL,
-    LetterDistribution jsonb NOT NULL,
+    GameID TEXT,
+    Board JSONB NOT NULL,
+    LetterDistribution JSONB NOT NULL,
     Players JSONB
 );
 
