@@ -13,27 +13,24 @@ let tilePositions = [
 let tiles_coded = []; // hardcoding this data for now
 for (let i = 0; i < 7; i++) {
   tiles_coded.push(
-  <Tile
-    key={i}
-    letter='A'
-  />); // will be passed by the server in the future
+    <Tile
+      key={i}
+      letter='A'
+      id={i}
+    />); // will be passed by the server in the future
 }
 
 export default function Game() {
 
-  const [boardState, setBoardState] = useState({});
+  const [letterUpdates, setLetterUpdates] = useState({});
   const [tiles, setTiles] = useState(tiles_coded);
 
-  function handleTileDrop(cellKey, letter) {
-    setBoardState(prevState => ({
+  function handleTileDrop(id, cellKey, letter) {
+    setLetterUpdates(prevState => ({
       ...prevState,
-      [cellKey]: letter
+      [id]: [cellKey, letter]
     }));
-    console.log(boardState);
-  };
-
-  function handleTileDrag(tile) {
-    setTiles(prevTiles => prevTiles.filter(t => t !== tile));
+    console.log(letterUpdates);
   };
 
   return (
@@ -48,7 +45,6 @@ export default function Game() {
       <ActionPanel
         tiles={tiles}
         tilePositions={tilePositions}
-        onTileDrag={handleTileDrag}
       />
     </div>
   );

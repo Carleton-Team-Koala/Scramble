@@ -1,11 +1,10 @@
 import React from 'react';
-import Tile from './Tile';
 import './ActionPanel.css';
 import shuffleImage from '../assets/shuffle.jpg';
 import refreshImage from '../assets/refresh.jpg';
 import { baseURL, gameID, player } from "../Welcome"
 
-const ActionPanel = ({ tiles, tilePositions, onTileDrag }) => {
+const ActionPanel = ({ tiles, tilePositions }) => {
 
     const submit = () => {
         // const baseURL = "http://languages:8000/{gameID}/updategame/"
@@ -32,10 +31,6 @@ const ActionPanel = ({ tiles, tilePositions, onTileDrag }) => {
                 console.log("Error: ", error);
             })
     }
-
-    const onDragStart = (tile) => {
-        onTileDrag(tile);
-    };
 
     return (
         <div className="action-panel">

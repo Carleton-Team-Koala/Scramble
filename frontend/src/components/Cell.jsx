@@ -10,9 +10,15 @@ export default function Cell({ i, j, cellStyle, children, onTileDrop }) {
     const handleDrop = (e) => {
         e.preventDefault();
         const droppedLetter = e.dataTransfer.getData("letter");
-        console.log("dropped: letter:", droppedLetter, "key:", key);
-        setCurrentChild(<Tile letter={droppedLetter} />);
-        onTileDrop(key, droppedLetter);
+        const droppedId = e.dataTransfer.getData("id");
+        console.log("dropped: letter:", droppedLetter, "key:", key, "id:", droppedId);
+        setCurrentChild(
+            <Tile
+                letter={droppedLetter}
+                id={droppedId}
+            />
+        );
+        onTileDrop(droppedId, key, droppedLetter);
     };
 
     const handleDragOver = (e) => {

@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import "./Tile.css";
 
-// assign x-y coordinates to each tile and update the tilePositions object
-
-export default function Tile({ letter }) {
+export default function Tile({ letter, id }) {
 
     const [visible, setVisible] = useState(true);
 
     const handleDragStart = (e) => {
         e.dataTransfer.setData("letter", letter);
+        e.dataTransfer.setData("id", id);
     };
 
     const handleDragEnd = () => {
