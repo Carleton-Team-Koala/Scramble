@@ -11,7 +11,7 @@ WORKDIR /app/frontend
 RUN npm install
 #RUN npm build
 
-EXPOSE 3000
+EXPOSE 5173
 
 #CMD ["tail", "-f", "/dev/null"]
 
