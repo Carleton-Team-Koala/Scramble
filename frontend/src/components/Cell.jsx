@@ -1,18 +1,15 @@
-import React, { useState } from "react";
-import Tile from "./Tile";
+import React from "react";
 import "./Cell.css";
 
-export default function Cell({ i, j, cellStyle, children, onTileDrop }) {
+export default function Cell({ i, j, cellStyle, children, tile, onTileDrop }) {
 
-    const [currentChild, setCurrentChild] = useState(null);
     const key = `${i}-${j}`; // key for the tilePositions object
 
     const handleDrop = (e) => {
         e.preventDefault();
         const droppedLetter = e.dataTransfer.getData("letter");
-        console.log("dropped: letter:", droppedLetter, "key:", key);
-        setCurrentChild(<Tile letter={droppedLetter} />);
-        onTileDrop(key, droppedLetter);
+        const droppedId = e.dataTransfer.getData("id");
+        onTileDrop(droppedId, key, droppedLetter);
     };
 
     const handleDragOver = (e) => {
@@ -22,11 +19,11 @@ export default function Cell({ i, j, cellStyle, children, onTileDrop }) {
     return (
         <div
             className={`cell ${cellStyle}`}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
+            onDrop={tile ? undefined : handleDrop}
+            onDragOver={tile ? undefined : handleDragOver}
         >
             <div className="cell-content">
-                {currentChild ? currentChild : children}
+                {tile ? tile : children}
             </div>
         </div>
     );
