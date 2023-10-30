@@ -1,50 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Board from "./Board";
 import ActionPanel from "./ActionPanel";
 import Infoboard from "./Infoboard";
 import Tile from './Tile';
 import './Game.css';
 
-let tilePositions = [
-  { letter: "I", xLoc: 4, yLoc: 10 },
-  { letter: "J", xLoc: 6, yLoc: 7 }
-];
-
-let tiles_coded = []; // hardcoding this data for now
-for (let i = 0; i < 7; i++) {
-  tiles_coded.push(
-    <Tile
-      key={i}
-      letter='A'
-      id={i}
-    />); // will be passed by the server in the future
-}
-
 export default function Game() {
 
   const [letterUpdates, setLetterUpdates] = useState({});
-  const [tiles, setTiles] = useState(tiles_coded);
+  const [tiles, setTiles] = useState(
+    Array.from({ length: 7 }, (_, i) => ({ // hardcoding this data for now
+      id: i,
+      letter: 'A',
+      position: 'ActionPanel' // initial position
+    }))
+  );
 
   function handleTileDrop(id, cellKey, letter) {
+    id = Number(id);
+
     setLetterUpdates(prevState => ({
       ...prevState,
       [id]: [cellKey, letter]
     }));
-    console.log(letterUpdates);
+
+    setTiles(prevTiles =>
+      prevTiles.map(tile =>
+        tile.id === id ? { ...tile, position: 'Board' } : tile
+      )
+    );
   };
 
   return (
     <div>
       <div className="board-score">
         <Board
-          tilePositions={tilePositions}
+          letterUpdates={letterUpdates}
           onTileDrop={handleTileDrop}
         />
         <Infoboard />
       </div>
       <ActionPanel
-        tiles={tiles}
-        tilePositions={tilePositions}
+        tilesAp={tiles.map(tile => {
+          if (tile.position === 'ActionPanel') {
+            return <Tile key={tile.id} letter={tile.letter} id={tile.id} />;
+          } else {
+            return <div key={tile.id} className="tile-placeholder"></div>;
+          }
+        })}
       />
     </div>
   );

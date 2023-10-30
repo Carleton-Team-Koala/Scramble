@@ -24,6 +24,13 @@ button {
   padding: 5px;
 }
 
+.tile-placeholder {
+  width: 35px;
+  height: 30px;
+  margin: 5px;
+  visibility: hidden; 
+}
+
 .button-hand {
   background-size: 40px auto;
   background-repeat: no-repeat;
