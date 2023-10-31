@@ -13,6 +13,8 @@ func scoring(activeGame Game, newTiles string) (int, error) {
 	for i := 0; i < len(newTiles); i++ {
 		word = word + string(newTiles[i].letter)
 
+		score += GetLetterScore(newTiles[i].letter)
+
 		var x = int(newTiles.x)
 		var y = int(newTiles.y)
 
@@ -20,14 +22,14 @@ func scoring(activeGame Game, newTiles string) (int, error) {
 		var boolYDir = checkTwoDirectionsX(activeGame, x, y)
 
 		if boolXDir {
-			word = pullLeft(activeGame, x, y) + pullRight(activeGame, x, y)
+			wordTwo = pullLeft(activeGame, x, y) + game.Board[x][y] + pullRight(activeGame, x, y)
 		} else {
 			score += checkUp(x, y, activeGame, newTiles, "", 0)
 			score += checkDown(x, y, activeGame, newTiles, "", 0)
 		}
 
 		if boolYDir {
-			wordTwo = 	pullUp(activeGame, x, y) + pullDown(activeGame, x, y)
+			wordThree = pullUp(activeGame, x, y) + game.Board[x][y] + pullDown(activeGame, x, y)
 		} else {
 			score += checkUp(x, y, activeGame, newTiles, "", 0)
 			score += checkDown(x, y, activeGame, newTiles, "", 0)
@@ -37,11 +39,13 @@ func scoring(activeGame Game, newTiles string) (int, error) {
 
 	if CheckValidWord(word){
 		if CheckValidWord(wordTwo){
-			return score, nil
+			if CheckValidWord(wordThree){
+				return score, nil
+			}
+			return 0, errors.New("Invalid Words:" + wordThree)
 		}
-		return 
+		return 0, errors.New("Invalid Words:" + wordTwo)
 	} 
-
 	return 0, errors.New("Invalid Words:" + word)
 
 
@@ -97,8 +101,7 @@ func checkTwoDirectionsY(activeGame Game, x int y int) tf bool{
 
 func endOfWord(scoreValue int) WordScore {
 	var foo WordScore
-		// TODO: connect to langauges api for scoring/ word validation
-	var validWord bool
+	var validWord = CheckValidWord()
 	if validWord {
 		foo = WordScore{
 			Valid: true,
@@ -117,7 +120,7 @@ func endOfWord(scoreValue int) WordScore {
 func checkLeft(x int, y int, activeGame Game, newTiles string, wordSoFar string, scoreValue int) WordScore int {
 	if x > 0 {
 		if activeGame.Board[x-1][y] != "" {
-			//TODO - score individual tile to add to scoreValue
+			GetLetterScore(activeGame.Board[x-1][y)
 			return checkLeft(x-1, y, activeGame, newTiles, activeGame.Board[x-1][y]+wordSoFar, scoreValue)
 		}
 		return endOfWord(scoreValue)
@@ -133,7 +136,7 @@ func checkLeft(x int, y int, activeGame Game, newTiles string, wordSoFar string,
 func checkRight(x int, y int, activeGame Game, newTiles string, wordSoFar string, scoreValue int) WordScore  int{
 	if x < 16 {
 		if activeGame.Board[x+1][y] != "" {
-			//TODO - score individual tile to add to scoreValue
+			GetLetterScore(activeGame.Board[x+1][y)
 			return checkLeft(x-1, y, activeGame, newTiles, activeGame.Board[x-1][y]+wordSoFar, scoreValue)
 		}
 		return endOfWord(scoreValue)
@@ -149,7 +152,7 @@ func checkRight(x int, y int, activeGame Game, newTiles string, wordSoFar string
 func checkUp(x int, y int, activeGame Game, newTiles string, wordSoFar string, scoreValue int) WordScore int{
 	if y > 0 {
 		if activeGame.Board[x][y-1] != "" {
-			//TODO - score individual tile to add to scoreValue
+			GetLetterScore(activeGame.Board[x][y-1)
 			return checkLeft(x-1, y, activeGame, newTiles, activeGame.Board[x-1][y]+wordSoFar, scoreValue)
 		}
 		return endOfWord(scoreValue)
@@ -165,7 +168,7 @@ func checkUp(x int, y int, activeGame Game, newTiles string, wordSoFar string, s
 func checkDown(x int, y int, activeGame Game, newTiles string, wordSoFar string, scoreValue int) WordScore int {
 	if y < 15 {
 		if activeGame.Board[x][y+1] != "" {
-			//TODO - score individual tile to add to scoreValue
+			scoreValue += GetLetterScore(activeGame.Board[x][y+1)
 			return checkLeft(x-1, y, activeGame, newTiles, activeGame.Board[x-1][y]+wordSoFar, scoreValue)
 		}
 		return endOfWord(scoreValue)
