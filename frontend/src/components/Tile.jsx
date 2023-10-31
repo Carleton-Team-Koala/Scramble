@@ -1,27 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Tile.css";
 
-// assign x-y coordinates to each tile and update the tilePositions object
-
-export default function Tile({ letter }) {
-
-    const [visible, setVisible] = useState(true);
+export default function Tile({ letter, id }) {
 
     const handleDragStart = (e) => {
         e.dataTransfer.setData("letter", letter);
+        e.dataTransfer.setData("id", id);
     };
 
-    const handleDragEnd = () => {
-        setVisible(false);
-    };
-    
     return (
-        <div 
+        <div
             className="tile"
             draggable="true"
             onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            style={{ visibility: visible ? "visible" : "hidden" }}
         >
             {letter}
         </div>
