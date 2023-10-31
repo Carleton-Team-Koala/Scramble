@@ -33,7 +33,28 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 // TODO: Figure out how to return this information for frontend
 func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 	// TODO: Connect with FrontEnd
-	playerName := "player1"
+	// unmarshal json response
+	headerContentType := r.Header.Get("Content-Type")
+	if headerContentType != "application/json" {
+		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
+		return
+	}
+
+	var playerName string
+	var unmarshalErr *json.UnmarshalTypeError
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&playerName)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
+		} else {
+			errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+
 
 	newGame := a.AppInterface.CreateGame(playerName)
 
@@ -45,9 +66,31 @@ func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
-	// TODO: Connect with FrontEnd
-	playerName := "anotherPlayer"
-	a.AppInterface.JoinGame(gameID, playerName)
+	
+	// unmarshal json response
+	headerContentType := r.Header.Get("Content-Type")
+	if headerContentType != "application/json" {
+		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
+		return
+	}
+
+	var newPlayerName string
+	var unmarshalErr *json.UnmarshalTypeError
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&newPlayerName)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
+		} else {
+			errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+
+	
+	a.AppInterface.JoinGame(gameID, newPlayerName)
 }
 
 // TODO: Figure out how to return this information for frontend
