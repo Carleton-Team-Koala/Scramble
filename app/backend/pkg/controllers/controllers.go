@@ -33,11 +33,36 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 // TODO: Figure out how to return this information for frontend
 func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 	// TODO: Connect with FrontEnd
-	playerName := "player1"
+	// unmarshal json response
+	headerContentType := r.Header.Get("Content-Type")
+	if headerContentType != "application/json" {
+		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
+		return
+	}
 
-	newGame := a.AppInterface.CreateGame(playerName)
+	var createGameResp models.PlayerNameResp
+	var unmarshalErr *json.UnmarshalTypeError
 
-	json.NewEncoder(w).Encode(newGame)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&createGameResp)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
+		} else {
+			errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+
+
+	newGameID, err := a.AppInterface.CreateGame(createGameResp.PlayerName)
+	if err != nil {
+		errorResponse(w, "Not able to create new game", http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(newGameID)
 }
 
 // API endpoint to join game using unique ID
@@ -45,9 +70,35 @@ func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
-	// TODO: Connect with FrontEnd
-	playerName := "anotherPlayer"
-	a.AppInterface.JoinGame(gameID, playerName)
+	
+	// unmarshal json response
+	headerContentType := r.Header.Get("Content-Type")
+	if headerContentType != "application/json" {
+		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
+		return
+	}
+
+	var joinGameResp models.PlayerNameResp
+	var unmarshalErr *json.UnmarshalTypeError
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&joinGameResp)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
+		} else {
+			errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+
+	
+	err = a.AppInterface.JoinGame(gameID, joinGameResp.PlayerName)
+	if err != nil {
+		errorResponse(w, "Not able to join game", http.StatusBadRequest)
+		return
+	}
 }
 
 // TODO: Figure out how to return this information for frontend
@@ -70,7 +121,7 @@ func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var listOfMoves models.Resp
+	var listOfMoves models.UpdateGameResp
 	var unmarshalErr *json.UnmarshalTypeError
 
 	decoder := json.NewDecoder(r.Body)

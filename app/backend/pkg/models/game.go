@@ -12,8 +12,8 @@ type App struct {
 }
 
 type AppInterface interface {
-	CreateGame(playerName string) *Game
-	JoinGame(gameID string, playerName string) *Game
+	CreateGame(playerName string) (string, error)
+	JoinGame(gameID string, playerName string) error
 	UpdateBoard(gameID string, playerMove Move)
 	GetRandomTile(gameID string) string
 	GetGameById(gameID string) *Game
@@ -45,7 +45,7 @@ func (app *App) GetRandomTile(gameID string) string {
 }
 
 // create new game struct
-func (app *App) CreateGame(playerName string) error {
+func (app *App) CreateGame(playerName string) (string, error) {
 	gameID := ""
 
 	// generate new game id until unique ID is made
@@ -81,18 +81,18 @@ func (app *App) CreateGame(playerName string) error {
 	// Add game to database
 	err := app.DatabaseClient.AddNewGameToDB(newGame)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return newGame.GameID, nil
 }
 
 // add player to already existing game
-func (app *App) JoinGame(gameID string, playerName string) {
+func (app *App) JoinGame(gameID string, playerName string) error {
 	// get game from GameList
 	loadGame, err := app.GetGameById(gameID)
 	if err != nil {
-		fmt.Println(fmt.Errorf("%w", err))
+		return err
 	}
 
 	// create new player
@@ -106,7 +106,7 @@ func (app *App) JoinGame(gameID string, playerName string) {
 
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadGame)
 
-	return
+	return nil
 }
 
 // start game
