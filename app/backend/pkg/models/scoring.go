@@ -1,10 +1,15 @@
+
 package models
 
-import "container/list"
+import (
+	"container/list"
+	"errors"
+)
 
-func scoring(activeGame Game, newTiles string)  {
+func scoring(activeGame Game, newTiles string) (int, error) {
 	score := 0
 	word = ""
+	word
 	for i := 0; i < len(newTiles); i++ {
 		word = word + string(newTiles[i].letter)
 
@@ -22,7 +27,7 @@ func scoring(activeGame Game, newTiles string)  {
 		}
 
 		if boolYDir {
-			word = 	pullUp(activeGame, x, y) + pullDown(activeGame, x, y)
+			wordTwo = 	pullUp(activeGame, x, y) + pullDown(activeGame, x, y)
 		} else {
 			score += checkUp(x, y, activeGame, newTiles, "", 0)
 			score += checkDown(x, y, activeGame, newTiles, "", 0)
@@ -31,12 +36,15 @@ func scoring(activeGame Game, newTiles string)  {
 	}
 
 	if CheckValidWord(word){
-		
-	}
+		if CheckValidWord(wordTwo){
+			return score, nil
+		}
+		return 
+	} 
+
+	return 0, errors.New("Invalid Words:" + word)
 
 
-
-	return score
 }
 
 func pullUp(game Game, x int, y int) string {
@@ -89,7 +97,7 @@ func checkTwoDirectionsY(activeGame Game, x int y int) tf bool{
 
 func endOfWord(scoreValue int) WordScore {
 	var foo WordScore
-	// TODO: connect to langauges api for scoring/ word validation
+		// TODO: connect to langauges api for scoring/ word validation
 	var validWord bool
 	if validWord {
 		foo = WordScore{
