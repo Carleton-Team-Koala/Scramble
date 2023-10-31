@@ -2,8 +2,9 @@ package models
 
 import "container/list"
 
-func scoring(activeGame Game, newTiles string) {
+func scoring(activeGame Game, newTiles string)  {
 	score := 0
+	word = ""
 	for i := 0; i < len(newTiles); i++ {
 		word = word + string(newTiles[i].letter)
 
@@ -14,26 +15,56 @@ func scoring(activeGame Game, newTiles string) {
 		var boolYDir = checkTwoDirectionsX(activeGame, x, y)
 
 		if boolXDir {
-			//TODO: FILL
+			word = pullLeft(activeGame, x, y) + pullRight(activeGame, x, y)
 		} else {
 			score += checkUp(x, y, activeGame, newTiles, "", 0)
 			score += checkDown(x, y, activeGame, newTiles, "", 0)
 		}
 
 		if boolYDir {
-			//TODO: FILL
+			word = 	pullUp(activeGame, x, y) + pullDown(activeGame, x, y)
 		} else {
 			score += checkUp(x, y, activeGame, newTiles, "", 0)
 			score += checkDown(x, y, activeGame, newTiles, "", 0)
 		}
 
-
-		return score
-
 	}
 
-	// check to see if word is valid
+	if CheckValidWord(word){
+		
+	}
 
+
+
+	return score
+}
+
+func pullUp(game Game, x int, y int) string {
+	if game.Board[x][y-1] == "" {
+		return ""
+	}
+	return pullUp(game, x, y-1) + game.Board[x][y-1]
+}
+
+func pullDown(game Game, x int, y int) string {
+	if game.Board[x][y+1] == "" {
+		return ""
+	}
+	return game.Board[x][y+1]+ pullDown(game, x, y+1)
+}
+
+func pullLeft(game Game, x int, y int) string {
+	if game.Board[x-1][y] == "" {
+		return ""
+	}
+	return pullUp(game, x-1, y) + game.Board[x-1][y]
+}
+
+func pullRight(game Game, x int, y int) string {
+	if game.Board[x+1][y] == "" {
+		return ""
+	}
+	return game.Board[x+1][y]+ pullDown(game, x+1, y)
 }
 
 func checkTwoDirectionsX(activeGame Game, x int y int) tf bool{
