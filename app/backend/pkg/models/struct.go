@@ -19,7 +19,7 @@ type Move struct {
 	YLoc   int    `json:"yLoc"`
 }
 
-type Resp struct {
+type UpdateGameResp struct {
 	PlayerName string `json:"playerName"`
 	Updates    []Move `json:"updates"`
 }
@@ -27,4 +27,8 @@ type Resp struct {
 type WordScore struct {
 	Valid bool
 	Score int
+}
+
+type PlayerNameResp struct {
+	PlayerName string `json:"playerName"`
 }

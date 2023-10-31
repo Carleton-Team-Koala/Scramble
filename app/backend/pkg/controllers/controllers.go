@@ -40,12 +40,12 @@ func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var playerName string
+	var createGameResp models.PlayerNameResp
 	var unmarshalErr *json.UnmarshalTypeError
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
-	err := decoder.Decode(&playerName)
+	err := decoder.Decode(&createGameResp)
 	if err != nil {
 		if errors.As(err, &unmarshalErr) {
 			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
@@ -56,9 +56,13 @@ func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	newGame := a.AppInterface.CreateGame(playerName)
+	newGameID, err := a.AppInterface.CreateGame(createGameResp.PlayerName)
+	if err != nil {
+		errorResponse(w, "Not able to create new game", http.StatusBadRequest)
+		return
+	}
 
-	json.NewEncoder(w).Encode(newGame)
+	json.NewEncoder(w).Encode(newGameID)
 }
 
 // API endpoint to join game using unique ID
@@ -74,12 +78,12 @@ func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var newPlayerName string
+	var joinGameResp models.PlayerNameResp
 	var unmarshalErr *json.UnmarshalTypeError
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
-	err := decoder.Decode(&newPlayerName)
+	err := decoder.Decode(&joinGameResp)
 	if err != nil {
 		if errors.As(err, &unmarshalErr) {
 			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
@@ -90,7 +94,11 @@ func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 	}
 
 	
-	a.AppInterface.JoinGame(gameID, newPlayerName)
+	err = a.AppInterface.JoinGame(gameID, joinGameResp.PlayerName)
+	if err != nil {
+		errorResponse(w, "Not able to join game", http.StatusBadRequest)
+		return
+	}
 }
 
 // TODO: Figure out how to return this information for frontend
@@ -113,7 +121,7 @@ func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var listOfMoves models.Resp
+	var listOfMoves models.UpdateGameResp
 	var unmarshalErr *json.UnmarshalTypeError
 
 	decoder := json.NewDecoder(r.Body)
