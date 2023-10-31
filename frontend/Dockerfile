@@ -11,8 +11,7 @@ WORKDIR /app/frontend
 RUN npm install
 #RUN npm build
 
-EXPOSE 5173
 
 #CMD ["tail", "-f", "/dev/null"]
 
-CMD [ "npm", "run", "dev" ]
+CMD [ "npm", "start", "--host", "0.0.0.0"]
