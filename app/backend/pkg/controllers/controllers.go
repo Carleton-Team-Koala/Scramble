@@ -23,10 +23,9 @@ type AppControllerInterface interface {
 
 // Homepage
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	response := map[string]string{
-		"message": "Welcome to Scramble!",
-	}
-	json.NewEncoder(w).Encode(response)
+	welcomeMsg := "Welcome to Scramble!"
+	
+	json.NewEncoder(w).Encode(welcomeMsg)
 }
 
 // API endpoint to create new game
@@ -58,7 +57,7 @@ func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 
 	newGameID, err := a.AppInterface.CreateGame(createGameResp.PlayerName)
 	if err != nil {
-		errorResponse(w, "Not able to create new game", http.StatusBadRequest)
+		errorResponse(w, "Not able to create new game: " + err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -96,7 +95,7 @@ func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 	
 	err = a.AppInterface.JoinGame(gameID, joinGameResp.PlayerName)
 	if err != nil {
-		errorResponse(w, "Not able to join game", http.StatusBadRequest)
+		errorResponse(w, "Not able to join game: "+ err.Error(), http.StatusBadRequest)
 		return
 	}
 }
@@ -105,7 +104,11 @@ func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
-	gameDetails := a.AppInterface.StartGame(gameID)
+	gameDetails, err := a.AppInterface.StartGame(gameID)
+	if err != nil {
+		errorResponse(w, "Not able to start game: "+ err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	json.NewEncoder(w).Encode(gameDetails)
 }
@@ -136,17 +139,14 @@ func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var randomTiles []string
-
-	// update the board once every move is validated and get random tiles to replace tiles used
-	for _, move := range listOfMoves.Updates {
-		randomTile := a.AppInterface.UpdateBoard(gameID, move, listOfMoves.PlayerName)
-		randomTiles = append(randomTiles, *randomTile)
+	// update game score
+	updatedGame, err := a.AppInterface.UpdateGameState(gameID, listOfMoves.Updates, listOfMoves.PlayerName)
+	if err != nil {
+		errorResponse(w, "Not able to update game: "+ err.Error(), http.StatusBadRequest)
+		return
 	}
 
-	// TODO: Update Game Score
-
-	json.NewEncoder(w).Encode(randomTiles)
+	json.NewEncoder(w).Encode(*updatedGame)
 }
 
 // Error response

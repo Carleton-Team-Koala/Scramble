@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/dchest/uniuri"
@@ -14,34 +15,10 @@ type App struct {
 type AppInterface interface {
 	CreateGame(playerName string) (string, error)
 	JoinGame(gameID string, playerName string) error
-	UpdateBoard(gameID string, playerMove Move)
-	GetRandomTile(gameID string) string
-	GetGameById(gameID string) *Game
-	ValidateMove(playerMove Move, gameID string) bool
-}
-
-func generateNewGameID() string {
-	gameID := uniuri.NewLen(6)
-	return gameID
-}
-
-func (app *App) GetRandomTile(gameID string) string {
-	// get game from GameList
-	loadGame, err := app.GetGameById(gameID)
-	if err != nil {
-		fmt.Println(fmt.Errorf("%w", err))
-	}
-	var keys []string
-	// get list of tiles that are available
-	for k := range loadGame.AvailableLetters {
-		if loadGame.AvailableLetters[k] > 0 {
-			keys = append(keys, k)
-			loadGame.AvailableLetters[k] -= 1
-		}
-	}
-	// in golang, iteration order is not specified and is not guaranteed to be the same from one iteration to the next
-	// this will therefore return a random value
-	return keys[0]
+	StartGame(gameID string) (*Game, error)
+	GetGameById(gameID string) (*Game, error)
+	UpdateGameState(gameID string, playerMove []Move, playerName string) (*Game, error)
+	ValidateMove(playerMove Move, playerName string, gameID string) bool
 }
 
 // create new game struct
@@ -110,19 +87,19 @@ func (app *App) JoinGame(gameID string, playerName string) error {
 }
 
 // start game
-func (app *App) StartGame(gameID string) *Game {
-	var randomStartingTiles []string
-
+func (app *App) StartGame(gameID string) (*Game, error) {
 	// get game from GameList
 	loadGame, err := app.GetGameById(gameID)
 	if err != nil {
-		fmt.Println(fmt.Errorf("%w", err))
+		return nil, err
 	}
 
 	for player, _ := range loadGame.Players {
-		for i := 0; i < 7; i++ {              
-			randomTile := app.GetRandomTile(gameID) 
-			randomStartingTiles = append(randomStartingTiles, randomTile)  
+		var randomStartingTiles []string
+		for i := 0; i < 7; i++ {     
+			randomTile := getRandomTile(loadGame.AvailableLetters) 
+			randomStartingTiles = append(randomStartingTiles, randomTile) 
+			loadGame.AvailableLetters[randomTile] -= 1
 		}  
 		if copyPlayer, ok := loadGame.Players[player]; ok {
 			copyPlayer.Hand = randomStartingTiles
@@ -132,7 +109,7 @@ func (app *App) StartGame(gameID string) *Game {
     }
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadGame)
 
-	return loadGame
+	return loadGame, nil
 }
 
 // Load Game by GameID
@@ -150,41 +127,88 @@ func (app *App) GetGameById(gameID string) (*Game, error) {
 	return loadedGame, nil
 }
 
-// Update the Board with player's move
-func (app *App) UpdateBoard(gameID string, playerMove Move, playerName string) *string {
+func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName string) (*Game, error) {
 	loadedGame, err := app.GetGameById(gameID)
 	if err != nil{
-		fmt.Println(fmt.Errorf("%w", err))
-		return nil
+		return nil, err
+	}
+	
+	var randomTiles []string
+	var randomTile string
+
+	// update the board once every move is validated and get random tiles to replace tiles used
+	for _, move := range playerMove {
+		if app.ValidateMove(move, playerName, gameID) {
+			loadedGame, randomTile = updateBoardAndHand(*loadedGame, move, playerName)
+			randomTiles = append(randomTiles, randomTile)
+			} else {
+			return nil, errors.New("Invalid Move")
+		}
+		
 	}
 
-	if !app.ValidateMove(playerMove, playerName, gameID) {
-		// TODO: Change response to something else that makes more sense
-		fmt.Println("Invalid Move")
-		return nil
-	}
+	// TODO: get score for entered word
+	wordScore := 10
+	// wordScore, err := app.LanguageClient.scoring(*loadedGame, playerMove)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
+	loadedGame.Players, err = updateScore(wordScore, loadedGame.Players, playerName)
+
+	// update game on database
+	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
+
+	return loadedGame, nil
+}
+
+func generateNewGameID() string {
+	gameID := uniuri.NewLen(6)
+	return gameID
+}
+
+func getRandomTile(availableLetters map[string]int) string {
+	var keys []string
+	// get list of tiles that are available
+	for k := range availableLetters {
+		if availableLetters[k] > 0 {
+			keys = append(keys, k)
+		}
+	}
+	// in golang, iteration order is not specified and is not guaranteed to be the same from one iteration to the next
+	// this will therefore return a random value
+	return keys[0]
+}
+
+// Update the Board with player's move
+func updateBoardAndHand(loadedGame Game, playerMove Move, playerName string) (*Game, string) {
 	// update board state
 	loadedGame.Board[playerMove.XLoc][playerMove.YLoc] = playerMove.Letter
 
-	// update available tiles status
-	loadedGame.AvailableLetters[playerMove.Letter] -= 1
-
-	randomTile := app.GetRandomTile(gameID)
+	randomTile := getRandomTile(loadedGame.AvailableLetters)
 	index := 0
 	for _, iterateLetter := range loadedGame.Players[playerName].Hand {
 		if iterateLetter == playerMove.Letter {
-			loadedGame.Players[playerName].Hand[index] = iterateLetter
+			loadedGame.Players[playerName].Hand[index] = randomTile
 			break
 		}
 		index++
 	}
 
-	// update game on database
-	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
+	return &loadedGame, randomTile
+}
 
-	// TODO: Only used for debugging purposes. Remove this later
-	fmt.Println(loadedGame)
+// Update Player's Scores
+func updateScore(wordScore int, currPlayers map[string]PlayerInfo, currPlayer string) (map[string]PlayerInfo, error) {
+	// calculate new score
+	currScore := currPlayers[currPlayer].Score
+	newScore := currScore + wordScore
 
-	return &randomTile
+	// update player score to struct
+	if copyPlayer, ok := currPlayers[currPlayer]; ok {
+		copyPlayer.Score = newScore
+		currPlayers[currPlayer] = copyPlayer
+	}
+
+	return currPlayers, nil
 }
