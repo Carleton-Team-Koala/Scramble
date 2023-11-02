@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 )
 
 func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) {
@@ -19,6 +20,9 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) 
 
 		var boolXDir = checkTwoDirectionsX(activeGame, x, y)
 		var boolYDir = checkTwoDirectionsX(activeGame, x, y)
+
+		fmt.Printf("%t", boolXDir)
+		fmt.Printf("%t", boolYDir)
 
 		if boolXDir {
 			wordTwo = pullLeft(activeGame, x, y) + activeGame.Board[x][y] + pullRight(activeGame, x, y)
@@ -67,7 +71,6 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) 
 		}
 		return 0, errors.New("Invalid Words:" + wordTwo)
 	}
-
 
 	return 0, errors.New("Score not calculated")
 }
