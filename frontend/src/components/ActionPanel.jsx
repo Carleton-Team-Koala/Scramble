@@ -10,20 +10,22 @@ const ActionPanel = ({ tilesAp, shuffle, logger }) => {
     const submit = () => {
         console.log(boardTiles);
         let data = []
+        console.log(boardTiles);
         for (const [key, value] of Object.entries(boardTiles)) {
             data.push({letter: key, xLoc: value[0], yLoc: value[1]});
         }
         console.log(data);
 
-        const url = baseURL + "/" + gameID + "/updategame/"
+        const url = baseURL + gameID + "/updategame/"
         console.log(url);
+        console.log(data);
         // const data = JSON.stringify({ playerName: player, updates: tilePositions })
         fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({ playerName : "John", updates : data})
         })
             .then(response => response.json())
             .then(data => {

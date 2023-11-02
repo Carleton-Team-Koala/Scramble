@@ -5,6 +5,7 @@ import "./Welcome.css";
 export let gameID = "";
 export let player = "";
 export const baseURL = "http://localhost:8080/"
+let frontendURL = "/play/";
 
 export default function welcome() {
   const url = baseURL + "newgame/";
@@ -15,18 +16,21 @@ export default function welcome() {
   const createGame = () => {
     console.log(url);
     fetch(url, {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json"
     },
-      data: JSON.stringify({playerName : "John"})
+      body: JSON.stringify({playerName : "John"})
     })
-      .then(response => response.json(), console.log(response))
+      .then(response => response.json())
       .then(data => {
-        console.log(data)
+        console.log(data);
+        gameID = data;
+        frontendURL += gameID;
+        console.log(frontendURL);
         // gameID = data.GameID;
         // player = data.Players[0].name;
-        console.log(gameID);
+        // console.log(gameID);
         // console.log(player);
       })
       .catch(error => {
@@ -37,8 +41,7 @@ export default function welcome() {
 
   return (
     <div className="welcome-container">
-      {/* <Link to="/play/gameId"><button onClick={createGame}>New Game</button></Link> */}
-      <button onClick={createGame}>New Game</button>
+      <Link to="/play/"><button onClick={createGame}>New Game</button></Link>
       <button onClick={alertClick}>Load Game</button>
       <button onClick={alertClick}>Join Game</button>
     </div>
