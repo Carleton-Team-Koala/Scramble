@@ -26,6 +26,7 @@ func (app *App) ValidateMove(playerMove Move, playerName string, gameID string) 
 	return true
 }
 
+// TODO: check repeated same letters 
 func checkLetterAvailability(letter string, availableLetters []string) error {
 	for _, tile := range availableLetters {
 		if tile == letter {
