@@ -8,7 +8,7 @@ import (
 func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) {
 	score := 0
 	word, wordTwo, wordThree := "", "", ""
-	//up, down, left, right := WordScore{}, WordScore{}, WordScore{}, WordScore{}
+	up, down, left, right := WordScore{}, WordScore{}, WordScore{}, WordScore{}
 
 	for i := 0; i < len(newTiles); i++ {
 		word = word + newTiles[i].Letter
@@ -26,44 +26,44 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) 
 		fmt.Printf("%t\n", boolXDir)
 		fmt.Printf("%t\n", boolYDir)
 
-		// 	if boolXDir {
-		// 		wordTwo = pullLeft(activeGame, x, y) + activeGame.Board[x][y] + pullRight(activeGame, x, y)
-		// 	} else {
-		// 		up = c.checkUp(x, y, activeGame, newTiles[i].Letter, "", 0)
-		// 		down = c.checkDown(x, y, activeGame, newTiles[i].Letter, "", 0)
+		if boolXDir {
+			wordTwo = pullLeft(activeGame, x, y) + activeGame.Board[x][y] + pullRight(activeGame, x, y)
+		} else {
+			up = c.checkUp(x, y, activeGame, newTiles[i].Letter, "", 0)
+			down = c.checkDown(x, y, activeGame, newTiles[i].Letter, "", 0)
 
-		// 		if up.Valid {
-		// 			score += up.Score
-		// 		}
-		// 		if down.Valid {
-		// 			score += down.Score
-		// 		}
+			if up.Valid {
+				score += up.Score
+			}
+			if down.Valid {
+				score += down.Score
+			}
 
-		// 		fmt.Printf("up:%t\n", up.Valid)
-		// 		fmt.Printf("down:%t\n", down.Valid)
+			fmt.Printf("up:%t\n", up.Valid)
+			fmt.Printf("down:%t\n", down.Valid)
 
-		// 		if !up.Valid || !down.Valid {
-		// 			return 0, errors.New("invalid Words up/down")
-		// 		}
-		// 	}
+			if !up.Valid || !down.Valid {
+				return 0, errors.New("invalid Words up/down")
+			}
+		}
 
-		// 	if boolYDir {
-		// 		wordThree = pullUp(activeGame, x, y) + activeGame.Board[x][y] + pullDown(activeGame, x, y)
-		// 	} else {
-		// 		left = c.checkLeft(x, y, activeGame, newTiles[i].Letter, "", 0)
-		// 		right = c.checkRight(x, y, activeGame, newTiles[i].Letter, "", 0)
+		if boolYDir {
+			wordThree = pullUp(activeGame, x, y) + activeGame.Board[x][y] + pullDown(activeGame, x, y)
+		} else {
+			left = c.checkLeft(x, y, activeGame, newTiles[i].Letter, "", 0)
+			right = c.checkRight(x, y, activeGame, newTiles[i].Letter, "", 0)
 
-		// 		if left.Valid {
-		// 			score += left.Score
-		// 		}
-		// 		if right.Valid {
-		// 			score += right.Score
-		// 		}
+			if left.Valid {
+				score += left.Score
+			}
+			if right.Valid {
+				score += right.Score
+			}
 
-		// 		if !right.Valid || !left.Valid {
-		// 			return 0, errors.New("Invalid Words left/right")
-		// 		}
-		// 	}
+			if !right.Valid || !left.Valid {
+				return 0, errors.New("Invalid Words left/right")
+			}
+		}
 
 	}
 
@@ -132,7 +132,7 @@ func (c *LanguageClient) endOfWord(scoreValue int, word string) WordScore {
 	var foo WordScore
 	var validWord = c.CheckValidWord(word)
 
-	print(word + "\n")
+	print("end of word check: " + word + "\n")
 	if word == "" {
 		foo = WordScore{
 			Valid: true,

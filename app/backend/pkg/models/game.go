@@ -132,6 +132,13 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		return nil, err
 	}
 
+	for row := 0; row < 15; row++ {
+		for column := 0; column < 15; column++ {
+			fmt.Print(loadedGame.Board[row][column], " ")
+		}
+		fmt.Print("\n")
+	}
+
 	var randomTiles []string
 	var randomTile string
 
