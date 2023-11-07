@@ -38,7 +38,7 @@ export default function welcome() {
 
   return (
     <div className="welcome-container">
-      <Link to="/room"><button onClick={createGame}>New Game</button></Link>
+      <Link to="/play"><button onClick={createGame}>New Game</button></Link>
       <button onClick={alertClick}>Load Game</button>
       <button onClick={alertClick}>Join Game</button>
     </div>

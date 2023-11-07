@@ -4,31 +4,17 @@ import ActionPanel from "./ActionPanel";
 import Infoboard from "./Infoboard";
 import Tile from './Tile';
 import './Game.css';
-import { initialHand } from '../WaitingRoom';
 import { baseURL, gameID, player } from "../Welcome"
 
-
-export default function Game() {
-
+export default function Game({ initialhand }) {
   const [letterUpdates, setLetterUpdates] = useState({});
   const [tiles, setTiles] = useState(
     Array.from({ length: 7 }, (_, i) => ({ // hardcoding this data for now
       id: i,
-      letter: initialHand[i] === 'BLANK' ? '' : initialHand[i],
+      letter: initialhand[i] === 'BLANK' ? '' : initialhand[i],
       position: 'ActionPanel' // initial position
     })
   ));
-
-  useEffect(() => {
-    console.log(initialHand);
-    setTiles(
-      Array.from({ length: 7 }, (_, i) => ({ // hardcoding this data for now
-        id: i,
-        letter: initialHand[i] === 'BLANK' ? '' : initialHand[i],
-        position: 'ActionPanel' // initial position
-      })
-    ))
-  }, [initialHand])
 
   function handleTileDrop(id, cellKey, letter) {
     id = Number(id);
