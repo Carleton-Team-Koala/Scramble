@@ -4,9 +4,48 @@ import ActionPanel from "./ActionPanel";
 import Infoboard from "./Infoboard";
 import Tile from './Tile';
 import './Game.css';
+import { initialHand } from '../WaitingRoom';
+import { baseURL, gameID, player } from "../Welcome"
 
 
 export default function Game() {
+
+  const [letterUpdates, setLetterUpdates] = useState({});
+  const [tiles, setTiles] = useState(
+    Array.from({ length: 7 }, (_, i) => ({ // hardcoding this data for now
+      id: i,
+      letter: initialHand[i] === 'BLANK' ? '' : initialHand[i],
+      position: 'ActionPanel' // initial position
+    })
+  ));
+
+  useEffect(() => {
+    console.log(initialHand);
+    setTiles(
+      Array.from({ length: 7 }, (_, i) => ({ // hardcoding this data for now
+        id: i,
+        letter: initialHand[i] === 'BLANK' ? '' : initialHand[i],
+        position: 'ActionPanel' // initial position
+      })
+    ))
+  }, [initialHand])
+
+  function handleTileDrop(id, cellKey, letter) {
+    id = Number(id);
+
+    setLetterUpdates(prevState => ({
+      ...prevState,
+      [id]: [cellKey, letter]
+    }));
+
+    setTiles(prevTiles =>
+      prevTiles.map(tile =>
+        tile.id === id ? { ...tile, position: 'Board' } : tile
+      )
+    );
+    console.log(letterUpdates);
+  };
+
   const shuffle = () => {
     let indices = [0, 1, 2, 3, 4, 5, 6]
     let tilesCopy = [...tiles];
@@ -21,34 +60,37 @@ export default function Game() {
     setTiles(tilesCopy);
   }
 
-  function logger() {
-    console.log(tiles);
-  }
+  const submit = () => {
+    let data = []
+    console.log(letterUpdates);
+    for (const [key, value] of Object.entries(letterUpdates)) {
+        let locs = value[0].split("-");
+        data.push({letter: value[1], xLoc: Number(locs[1]), yLoc: Number(locs[0])});
+        console.log(locs[0]);
+        console.log(locs[1]);
+    }
+    console.log(data);
 
-  const [letterUpdates, setLetterUpdates] = useState({});
-  const [tiles, setTiles] = useState(
-    Array.from({ length: 7 }, (_, i) => ({ // hardcoding this data for now
-      id: i,
-      letter: i,
-      position: 'ActionPanel' // initial position
-    }))
-  );
-
-  function handleTileDrop(id, cellKey, letter) {
-    logger();
-    id = Number(id);
-
-    setLetterUpdates(prevState => ({
-      ...prevState,
-      [id]: [cellKey, letter]
-    }));
-
-    setTiles(prevTiles =>
-      prevTiles.map(tile =>
-        tile.id === id ? { ...tile, position: 'Board' } : tile
-      )
-    );
-  };
+    const url = baseURL + gameID + "/updategame/"
+    console.log(url);
+    console.log(data);
+    // const data = JSON.stringify({ playerName: player, updates: tilePositions })
+    fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ playerName : "John", updates : data})
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            alert(error);
+            console.log("Error: ", error);
+        })
+}
 
   return (
     <div>
@@ -67,8 +109,8 @@ export default function Game() {
             return <div key={tile.id} className="tile-placeholder"></div>;
           }
         })}
-        shuffle={shuffle}
-        logger={logger}
+        // shuffle={shuffle}
+        submit={submit}
       />
     </div>
   );

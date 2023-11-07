@@ -1,6 +1,5 @@
 import React from "react";
 import "./Cell.css";
-import { boardTiles } from "./Board";
 
 export default function Cell({ i, j, cellStyle, children, tile, onTileDrop }) {
 
@@ -10,7 +9,6 @@ export default function Cell({ i, j, cellStyle, children, tile, onTileDrop }) {
         e.preventDefault();
         const droppedLetter = e.dataTransfer.getData("letter");
         const droppedId = e.dataTransfer.getData("id");
-        boardTiles[droppedLetter] = [j, i];
         onTileDrop(droppedId, key, droppedLetter);
     };
 

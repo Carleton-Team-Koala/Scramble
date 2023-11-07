@@ -3,8 +3,6 @@ import Cell from "./Cell.jsx";
 import Tile from "./Tile.jsx";
 import "./Board.css";
 
-export let boardTiles = {};
-
 const Board = ({ onTileDrop, letterUpdates }) => {
 
     function getTiles (i, j) {
