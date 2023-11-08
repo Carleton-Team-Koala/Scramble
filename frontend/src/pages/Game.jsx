@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Board from "./Board";
-import ActionPanel from "./ActionPanel";
-import Infoboard from "./Infoboard";
-import Tile from './Tile';
-import './Game.css';
-import { baseURL, gameID, player } from "../Welcome"
+import Board from "../components/Board";
+import ActionPanel from "../components/ActionPanel";
+import Infoboard from "../components/Infoboard";
+import Tile from '../components/Tile';
+import '../css/Game.css';
+import { baseURL, gameID, player } from "./Welcome"
 
 export default function Game({ initialhand }) {
   const [letterUpdates, setLetterUpdates] = useState({});
@@ -14,7 +14,7 @@ export default function Game({ initialhand }) {
       letter: initialhand[i] === 'BLANK' ? '' : initialhand[i],
       position: 'ActionPanel' // initial position
     })
-  ));
+    ));
 
   function handleTileDrop(id, cellKey, letter) {
     id = Number(id);
@@ -50,10 +50,10 @@ export default function Game({ initialhand }) {
     let data = []
     console.log(letterUpdates);
     for (const [key, value] of Object.entries(letterUpdates)) {
-        let locs = value[0].split("-");
-        data.push({letter: value[1], xLoc: Number(locs[1]), yLoc: Number(locs[0])});
-        console.log(locs[0]);
-        console.log(locs[1]);
+      let locs = value[0].split("-");
+      data.push({ letter: value[1], xLoc: Number(locs[1]), yLoc: Number(locs[0]) });
+      console.log(locs[0]);
+      console.log(locs[1]);
     }
     console.log(data);
 
@@ -62,21 +62,21 @@ export default function Game({ initialhand }) {
     console.log(data);
     // const data = JSON.stringify({ playerName: player, updates: tilePositions })
     fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ playerName : "John", updates : data})
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ playerName: "John", updates: data })
     })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-        })
-        .catch(error => {
-            alert(error);
-            console.log("Error: ", error);
-        })
-}
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        alert(error);
+        console.log("Error: ", error);
+      })
+  }
 
   return (
     <div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Infoboard.css';
+import '../css/Infoboard.css';
 
 const Infoboard = (props) => {
     return (

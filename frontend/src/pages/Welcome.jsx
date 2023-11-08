@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./Welcome.css";
+import "../css/Welcome.css";
 
 export let player = "";
 export let gameID = "";
@@ -14,8 +14,8 @@ export const createGame = () => {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
-  },
-    body: JSON.stringify({playerName : "John"})
+    },
+    body: JSON.stringify({ playerName: "John" })
   })
     .then(response => response.json())
     .then(data => {
@@ -57,7 +57,7 @@ const enterName = () => {
 const enterGameID = () => {
   return (
     <form>
-      
+
     </form>
   )
 }

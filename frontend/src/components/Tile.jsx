@@ -1,5 +1,5 @@
 import React from "react";
-import "./Tile.css";
+import "../css/Tile.css";
 
 export default function Tile({ letter, id }) {
 
