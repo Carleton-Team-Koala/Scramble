@@ -29,9 +29,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 }
 
 // API endpoint to create new game
-// TODO: Figure out how to return this information for frontend
 func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
-	// TODO: Connect with FrontEnd
 	// unmarshal json response
 	headerContentType := r.Header.Get("Content-Type")
 	if headerContentType != "application/json" {
@@ -65,7 +63,6 @@ func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 }
 
 // API endpoint to join game using unique ID
-// TODO: Figure out how to return this information for frontend
 func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
@@ -100,7 +97,7 @@ func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// TODO: Figure out how to return this information for frontend
+// Start game endpoint
 func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
@@ -113,6 +110,7 @@ func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(gameDetails)
 }
 
+// Update move endpoint
 func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]

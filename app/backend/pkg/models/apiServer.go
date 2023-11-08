@@ -34,7 +34,6 @@ func (c *LanguageClient) CheckValidWord(inputWord string) bool {
 	newURL := c.BaseURL + "/checkWord/" + inputWord
 
 	req, err := http.NewRequest("GET", newURL, nil)
-
 	if err != nil {
 		panic(err)
 	}
@@ -57,7 +56,6 @@ func (c *LanguageClient) GetLetterScore(inputLetter string) int {
 	newURL := c.BaseURL + "/letterScores/" + inputLetter
 
 	req, err := http.NewRequest("GET", newURL, nil)
-
 	if err != nil {
 		panic(err)
 	}

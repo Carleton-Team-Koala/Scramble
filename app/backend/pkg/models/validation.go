@@ -19,14 +19,14 @@ func (app *App) ValidateMove(playerMove Move, playerName string, gameID string) 
 	}
 
 	// check if cell location is valid
-	if checkLocation(playerMove.XLoc, playerMove.YLoc, loadGame.Board) != nil {
+	if checkLocation(playerMove.Col, playerMove.Row, loadGame.Board) != nil {
 		fmt.Println(fmt.Errorf("ValidateMove:checkLocation: %v", err))
 		return false
 	}
 	return true
 }
 
-// TODO: check repeated same letters 
+// TODO: check repeated same letters
 func checkLetterAvailability(letter string, availableLetters []string) error {
 	for _, tile := range availableLetters {
 		if tile == letter {
@@ -47,4 +47,3 @@ func checkLocation(xLoc int, yLoc int, gameBoard [15][15]string) error {
 
 	return nil
 }
-
