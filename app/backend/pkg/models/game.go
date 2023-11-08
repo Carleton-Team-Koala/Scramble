@@ -37,7 +37,7 @@ func (app *App) CreateGame(playerName string) (string, error) {
 	// Create new player with input name
 	newPlayer := PlayerInfo{
 		Score: 0,
-		Hand: []string{},
+		Hand:  []string{},
 	}
 
 	// add player to player list
@@ -53,7 +53,6 @@ func (app *App) CreateGame(playerName string) (string, error) {
 		AvailableLetters: newLetterDistribution,
 		Players:          playerList,
 	}
-
 
 	// Add game to database
 	err := app.DatabaseClient.AddNewGameToDB(newGame)
@@ -75,7 +74,7 @@ func (app *App) JoinGame(gameID string, playerName string) error {
 	// create new player
 	newPlayer := PlayerInfo{
 		Score: 0,
-		Hand: []string{},
+		Hand:  []string{},
 	}
 
 	// add new player to player list
@@ -96,17 +95,17 @@ func (app *App) StartGame(gameID string) (*Game, error) {
 
 	for player, _ := range loadGame.Players {
 		var randomStartingTiles []string
-		for i := 0; i < 7; i++ {     
-			randomTile := getRandomTile(loadGame.AvailableLetters) 
-			randomStartingTiles = append(randomStartingTiles, randomTile) 
+		for i := 0; i < 7; i++ {
+			randomTile := getRandomTile(loadGame.AvailableLetters)
+			randomStartingTiles = append(randomStartingTiles, randomTile)
 			loadGame.AvailableLetters[randomTile] -= 1
-		}  
+		}
 		if copyPlayer, ok := loadGame.Players[player]; ok {
 			copyPlayer.Hand = randomStartingTiles
 			loadGame.Players[player] = copyPlayer
 		}
 
-    }
+	}
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadGame)
 
 	return loadGame, nil
@@ -114,12 +113,12 @@ func (app *App) StartGame(gameID string) (*Game, error) {
 
 // Load Game by GameID
 func (app *App) GetGameById(gameID string) (*Game, error) {
-	exists, _ :=  app.DatabaseClient.CheckGameExists(gameID)
+	exists, _ := app.DatabaseClient.CheckGameExists(gameID)
 	if !(*exists) {
 		return nil, nil
 	}
 	loadedGame, err := app.DatabaseClient.GetGameByGameID(gameID)
-	if err != nil{
+	if err != nil {
 		fmt.Println(fmt.Errorf("%w", err))
 		return nil, err
 	}
@@ -129,10 +128,10 @@ func (app *App) GetGameById(gameID string) (*Game, error) {
 
 func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName string) (*Game, error) {
 	loadedGame, err := app.GetGameById(gameID)
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
-	
+
 	var randomTiles []string
 	var randomTile string
 
@@ -141,10 +140,17 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		if app.ValidateMove(move, playerName, gameID) {
 			loadedGame, randomTile = updateBoardAndHand(*loadedGame, move, playerName)
 			randomTiles = append(randomTiles, randomTile)
-			} else {
+		} else {
 			return nil, errors.New("Invalid Move")
 		}
-		
+
+	}
+
+	for row := 0; row < 15; row++ {
+		for column := 0; column < 15; column++ {
+			fmt.Print(loadedGame.Board[row][column], " ")
+		}
+		fmt.Print("\n")
 	}
 
 	// TODO: get score for entered word
@@ -153,7 +159,6 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 	if err != nil {
 		return nil, err
 	}
-
 
 	loadedGame.Players, err = updateScore(wordScore, loadedGame.Players, playerName)
 
@@ -184,7 +189,7 @@ func getRandomTile(availableLetters map[string]int) string {
 // Update the Board with player's move
 func updateBoardAndHand(loadedGame Game, playerMove Move, playerName string) (*Game, string) {
 	// update board state
-	loadedGame.Board[playerMove.XLoc][playerMove.YLoc] = playerMove.Letter
+	loadedGame.Board[playerMove.Col][playerMove.Row] = playerMove.Letter
 
 	randomTile := getRandomTile(loadedGame.AvailableLetters)
 	index := 0
