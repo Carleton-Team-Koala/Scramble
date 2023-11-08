@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Game from "./components/Game";
-import Room from "./WaitingRoom"
-import "./App.css";
+import Game from "./pages/Game";
+import Room from "./pages/WaitingRoom"
+import "./css/App.css";
 
 function App() {
 
@@ -11,15 +11,15 @@ function App() {
   if (isGameStarted) {
     return (
       <div className="App" >
-      <Game initialhand={initialHand} /> 
-    </div>
+        <Game initialhand={initialHand} />
+      </div>
     )
   } else {
     return (
       <div className="App">
         <Room initialhand={initialHand} setinitialhand={setInitialHand} setisgamestarted={setIsGameStarted} />
       </div>
-    ) 
+    )
   }
 };
 

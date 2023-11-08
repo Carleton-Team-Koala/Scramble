@@ -1,5 +1,5 @@
 import React from "react";
-import "./Cell.css";
+import "../css/Cell.css";
 
 export default function Cell({ i, j, cellStyle, children, tile, onTileDrop }) {
 

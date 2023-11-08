@@ -1,5 +1,5 @@
 import React from 'react';
-import './ActionPanel.css';
+import '../css/ActionPanel.css';
 import shuffleImage from '../assets/shuffle.jpg';
 import refreshImage from '../assets/refresh.jpg';
 
