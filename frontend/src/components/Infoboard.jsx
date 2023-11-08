@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
 import '../css/Infoboard.css';
 
-const Infoboard = ({ p1_name = 'Player 1', p2_name = 'Player 2', p1_score, p2_score }) => {
+/**
+ * Sums up all values inside the tilebag
+ * 
+ * @param {*} tile_dict 
+ * @returns 
+ */
+function sumTiles(tile_dict) {
+    return Object.values(tile_dict).reduce((sum, value) => {
+        return sum + value;
+    }, 0);
+};
+
+const Infoboard = ({ tilebag, p1_name = 'Player 1', p2_name = 'Player 2', p1_score, p2_score }) => {
     return (
         <div id="infoboard">
             <div className="scoreboard">
@@ -18,11 +30,13 @@ const Infoboard = ({ p1_name = 'Player 1', p2_name = 'Player 2', p1_score, p2_sc
                 </div>
             </div>
             <div className="tilebag">
-                <p>Tilebag: 86</p>
+                <p>Tilebag: {sumTiles(tilebag)}</p>
                 <p>
-                    ?x2 Ax9 Bx2 Cx2 Dx4 Ex8 Fx2 Gx3 Hx2 Ix9 J K
-                     Lx4 Mx2 Nx3 Ox7 Px2 Q Rx6 Sx4 Tx4 Ux3 Vx2
-                      W X Yx2 Z
+                    ?x{tilebag['BLANK']} Ax{tilebag['A']} Bx{tilebag['B']} Cx{tilebag['C']} Dx{tilebag['D']} 
+                     Ex{tilebag['E']} Fx{tilebag['F']} Gx{tilebag['G']} Hx{tilebag['H']} Ix{tilebag['I']} Jx{tilebag['J']} 
+                     Kx{tilebag['K']} Lx{tilebag['L']} Mx{tilebag['M']} Nx{tilebag['N']} Ox{tilebag['O']} Px{tilebag['P']} 
+                     Qx{tilebag['Q']} Rx{tilebag['R']} Sx{tilebag['S']} Tx{tilebag['T']} Ux{tilebag['U']} Vx{tilebag['V']}
+                     Wx{tilebag['W']} Xx{tilebag['X']} Yx{tilebag['Y']} Zx{tilebag['Z']}
                 </p>
             </div>
         </div>

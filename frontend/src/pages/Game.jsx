@@ -6,6 +6,13 @@ import Tile from '../components/Tile';
 import '../css/Game.css';
 import { baseURL, gameID, player1, player2 } from "./Welcome";
 
+const defaultTilebag = {
+  'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0,
+  'H': 0, 'I': 0, 'J': 0, 'K': 0, 'L': 0, 'M': 0, 'N': 0,
+  'O': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'U': 0,
+  'V': 0, 'W': 0, 'X': 0, 'Y': 0, 'Z': 0, 'BLANK': 0
+};
+
 function initializeTiles(initialHand) {
   return Array.from({ length: initialHand.length }, (_, i) => ({
     id: i,
@@ -19,6 +26,7 @@ export default function Game({ initialhand, setInitialHand }) {
   const [scoredLetters, setScoredLetters] = useState({}); // {cellKey: letter}, letters returned by server go here
   const [letterUpdates, setLetterUpdates] = useState({}); // {id: [cellKey, letter]}, gets sent to server on submit
   const [tiles, setTiles] = useState(initializeTiles(initialhand)); // array of tiles, gets rendered on the board and hand
+  const [tilebag, setTilebag] = useState(defaultTilebag); // tilebag, gets rendered on the infoboard
   const [p1_score, setp1_score] = useState(0); // scores for both players
   const [p2_score, setp2_score] = useState(0);
 
@@ -94,7 +102,9 @@ export default function Game({ initialhand, setInitialHand }) {
 
     parseBoard(updates.Board);
     setInitialHand(updates.Players.John.hand);
+    setTilebag(updates.LetterDistribution);
     setp1_score(updates.Players.John.score);
+    // set score for player 2 here
 
   };
 
@@ -142,7 +152,8 @@ export default function Game({ initialhand, setInitialHand }) {
           onTileDrop={handleTileDrop}
           scoredLetters={scoredLetters}
         />
-        <Infoboard 
+        <Infoboard
+          tilebag={tilebag}
           p1_score={p1_score}
           p2_score={p2_score}
         />
