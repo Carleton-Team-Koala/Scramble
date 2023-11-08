@@ -8,7 +8,6 @@ export default function Room({ initialhand, setinitialhand, setisgamestarted }) 
   const startGame = () => {
     console.log(gameID);
     let url = baseURL + "startgame/" + gameID + "/"
-    console.log(url);
     fetch(url, {
       method: "GET",
       headers: {
@@ -18,7 +17,6 @@ export default function Room({ initialhand, setinitialhand, setisgamestarted }) 
       .then(response => response.json())
       .then(data => {
         setinitialhand(data.Players.John.hand);
-        console.log(initialhand);
         setisgamestarted(true); // Set game started state to true
       })
       .catch(error => {

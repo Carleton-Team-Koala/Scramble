@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/Welcome.css";
 
-export let player = "";
+export let player1 = "";
+export let player2 = "";
 export let gameID = "";
 export const baseURL = "http://localhost:8080/"
 let frontendURL = "/play/";

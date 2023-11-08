@@ -4,18 +4,36 @@ import ActionPanel from "../components/ActionPanel";
 import Infoboard from "../components/Infoboard";
 import Tile from '../components/Tile';
 import '../css/Game.css';
-import { baseURL, gameID, player } from "./Welcome"
+import { baseURL, gameID, player1, player2 } from "./Welcome";
 
-export default function Game({ initialhand }) {
-  const [letterUpdates, setLetterUpdates] = useState({});
-  const [tiles, setTiles] = useState(
-    Array.from({ length: 7 }, (_, i) => ({ // hardcoding this data for now
-      id: i,
-      letter: initialhand[i] === 'BLANK' ? '' : initialhand[i],
-      position: 'ActionPanel' // initial position
-    })
-    ));
+function initializeTiles(initialHand) {
+  return Array.from({ length: initialHand.length }, (_, i) => ({
+    id: i,
+    letter: initialHand[i] === 'BLANK' ? '' : initialHand[i],
+    position: 'ActionPanel', // initial position
+  }));
+};
 
+export default function Game({ initialhand, setInitialHand }) {
+
+  const [scoredLetters, setScoredLetters] = useState({}); // {cellKey: letter}, letters returned by server go here
+  const [letterUpdates, setLetterUpdates] = useState({}); // {id: [cellKey, letter]}, gets sent to server on submit
+  const [tiles, setTiles] = useState(initializeTiles(initialhand)); // array of tiles, gets rendered on the board and hand
+  const [p1_score, setp1_score] = useState(0); // scores for both players
+  const [p2_score, setp2_score] = useState(0);
+
+  useEffect(() => {
+    setTiles(initializeTiles(initialhand));
+  }, [initialhand]);
+
+  /**
+    * Handles the event when a tile is dropped onto the board.
+    * Sets letterUpdates and tiles states.
+    *
+    * @param {number} id - The ID of the tile that was dropped.
+    * @param {string} cellKey - The key of the cell where the tile was dropped.
+    * @param {string} letter - The letter on the tile that was dropped.
+    */
   function handleTileDrop(id, cellKey, letter) {
     id = Number(id);
 
@@ -46,20 +64,56 @@ export default function Game({ initialhand }) {
     setTiles(tilesCopy);
   }
 
+  /** 
+   * Parses the board returned by the server.
+  */
+  function parseBoard(board) {
+
+    let newpos = {};
+
+    for (let i = 0; i < 15; i++) {
+      for (let j = 0; j < 15; j++) {
+        if (board[i][j] !== '') {
+          let cellKey = `${i}-${j}`;
+          newpos[cellKey] = board[i][j];
+        }
+      }
+    }
+
+    setScoredLetters(prevScoredLetters => ({
+      ...prevScoredLetters,
+      ...newpos
+    }));
+
+  };
+
+  /**
+   * Parses all the updates returned by the server
+   */
+  function parseUpdates(updates) {
+
+    parseBoard(updates.Board);
+    setInitialHand(updates.Players.John.hand);
+    setp1_score(updates.Players.John.score);
+
+  };
+
+  /**
+   * Submits the current state of the game board.
+   *
+   * This function iterates over the `letterUpdates` object, which contains the updates to the letters on the board.
+   * For each update, it extracts the location and the letter and adds them to the `data` array.
+   * The location is split into x and y coordinates, which are converted to numbers.
+   * The `data` array is then ready to be sent to the server or processed further.
+   */
   const submit = () => {
     let data = []
-    console.log(letterUpdates);
     for (const [key, value] of Object.entries(letterUpdates)) {
       let locs = value[0].split("-");
-      data.push({ letter: value[1], xLoc: Number(locs[1]), yLoc: Number(locs[0]) });
-      console.log(locs[0]);
-      console.log(locs[1]);
-    }
-    console.log(data);
-
-    const url = baseURL + gameID + "/updategame/"
-    console.log(url);
-    console.log(data);
+      data.push({ letter: value[1], xLoc: Number(locs[0]), yLoc: Number(locs[1]) });
+    };
+    setLetterUpdates({});
+    const url = baseURL + gameID + "/updategame/";
     // const data = JSON.stringify({ playerName: player, updates: tilePositions })
     fetch(url, {
       method: "POST",
@@ -70,13 +124,15 @@ export default function Game({ initialhand }) {
     })
       .then(response => response.json())
       .then(data => {
+        // processing the server response
         console.log(data);
+        parseUpdates(data);
       })
       .catch(error => {
         alert(error);
         console.log("Error: ", error);
       })
-  }
+  };
 
   return (
     <div>
@@ -84,8 +140,12 @@ export default function Game({ initialhand }) {
         <Board
           letterUpdates={letterUpdates}
           onTileDrop={handleTileDrop}
+          scoredLetters={scoredLetters}
         />
-        <Infoboard />
+        <Infoboard 
+          p1_score={p1_score}
+          p2_score={p2_score}
+        />
       </div>
       <ActionPanel
         tilesAp={tiles.map(tile => {

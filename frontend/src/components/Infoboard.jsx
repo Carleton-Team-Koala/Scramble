@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import '../css/Infoboard.css';
 
-const Infoboard = (props) => {
+const Infoboard = ({ p1_name = 'Player 1', p2_name = 'Player 2', p1_score, p2_score }) => {
     return (
         <div id="infoboard">
             <div className="scoreboard">
                 <div className="scoreboard-cell">
-                    Player1: 0
+                    {p1_name}: {p1_score}
                 </div>
                 <div className="scoreboard-cell">
-                    Player2: 0
+                    {p2_name}: {p2_score}
                 </div>
             </div>
             <div className="turnboard">

@@ -3,7 +3,7 @@ import Cell from "./Cell.jsx";
 import Tile from "./Tile.jsx";
 import "../css/Board.css";
 
-const Board = ({ onTileDrop, letterUpdates }) => {
+const Board = ({ onTileDrop, letterUpdates, scoredLetters }) => {
 
     function getTiles (i, j) {
         const cellKey = `${i}-${j}`;
@@ -14,6 +14,8 @@ const Board = ({ onTileDrop, letterUpdates }) => {
         if (tileId) {
             const [, letter] = letterUpdates[tileId];
             return <Tile letter={letter} id={tileId} />;
+        } else if (scoredLetters.hasOwnProperty(cellKey)) {
+            return <Tile letter={scoredLetters[cellKey]} id="noid" draggable={false} />;
         }
         return null;
     }
