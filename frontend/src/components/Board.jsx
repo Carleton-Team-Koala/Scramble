@@ -1,7 +1,7 @@
 import React from "react";
 import Cell from "./Cell.jsx";
 import Tile from "./Tile.jsx";
-import "./Board.css";
+import "../css/Board.css";
 
 const Board = ({ onTileDrop, letterUpdates }) => {
 

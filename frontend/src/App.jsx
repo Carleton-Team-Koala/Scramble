@@ -1,14 +1,26 @@
-import React from "react";
-import Game from "./components/Game";
-import "./App.css";
+import React, { useState } from "react";
+import Game from "./pages/Game";
+import Room from "./pages/WaitingRoom"
+import "./css/App.css";
 
 function App() {
 
-  return (
-    <div className="App">
-      <Game /> 
-    </div>
-  );
+  const [initialHand, setInitialHand] = useState(['BLANK', 'B', 'C', 'D', 'E', 'A', 'G']);
+  const [isGameStarted, setIsGameStarted] = useState(false);
+
+  if (isGameStarted) {
+    return (
+      <div className="App" >
+        <Game initialhand={initialHand} />
+      </div>
+    )
+  } else {
+    return (
+      <div className="App">
+        <Room initialhand={initialHand} setinitialhand={setInitialHand} setisgamestarted={setIsGameStarted} />
+      </div>
+    )
+  }
 };
 
 export default App;
