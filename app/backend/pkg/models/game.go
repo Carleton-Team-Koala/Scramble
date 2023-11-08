@@ -135,6 +135,10 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 	var randomTiles []string
 	var randomTile string
 
+	if len(playerMove) <= 1 {
+		return nil, errors.New("Invalid Move: One letter words are not allowed")
+	}
+
 	// update the board once every move is validated and get random tiles to replace tiles used
 	for _, move := range playerMove {
 		if app.ValidateMove(move, playerName, gameID) {
@@ -153,8 +157,7 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		fmt.Print("\n")
 	}
 
-	// TODO: get score for entered word
-	// wordScore := 10
+	// Get score for entered word
 	wordScore, err := app.LanguageClient.scoring(*loadedGame, playerMove)
 	if err != nil {
 		return nil, err
