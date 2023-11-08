@@ -24,7 +24,7 @@ type AppControllerInterface interface {
 // Homepage
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	welcomeMsg := "Welcome to Scramble!"
-	
+
 	json.NewEncoder(w).Encode(welcomeMsg)
 }
 
@@ -52,10 +52,9 @@ func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
 	newGameID, err := a.AppInterface.CreateGame(createGameResp.PlayerName)
 	if err != nil {
-		errorResponse(w, "Not able to create new game: " + err.Error(), http.StatusBadRequest)
+		errorResponse(w, "Not able to create new game: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -66,7 +65,7 @@ func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
-	
+
 	// unmarshal json response
 	headerContentType := r.Header.Get("Content-Type")
 	if headerContentType != "application/json" {
@@ -89,10 +88,9 @@ func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	
 	err = a.AppInterface.JoinGame(gameID, joinGameResp.PlayerName)
 	if err != nil {
-		errorResponse(w, "Not able to join game: "+ err.Error(), http.StatusBadRequest)
+		errorResponse(w, "Not able to join game: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 }
@@ -103,7 +101,7 @@ func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
 	gameID := vars["gameID"]
 	gameDetails, err := a.AppInterface.StartGame(gameID)
 	if err != nil {
-		errorResponse(w, "Not able to start game: "+ err.Error(), http.StatusBadRequest)
+		errorResponse(w, "Not able to start game: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -140,7 +138,7 @@ func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 	// update game score
 	updatedGame, err := a.AppInterface.UpdateGameState(gameID, listOfMoves.Updates, listOfMoves.PlayerName)
 	if err != nil {
-		errorResponse(w, "Not able to update game: "+ err.Error(), http.StatusBadRequest)
+		errorResponse(w, "Not able to update game: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 

@@ -93,7 +93,7 @@ func (app *App) StartGame(gameID string) (*Game, error) {
 		return nil, err
 	}
 
-	for player, _ := range loadGame.Players {
+	for player := range loadGame.Players {
 		var randomStartingTiles []string
 		for i := 0; i < 7; i++ {
 			randomTile := getRandomTile(loadGame.AvailableLetters)
@@ -132,20 +132,16 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		return nil, err
 	}
 
-	var randomTiles []string
-	var randomTile string
-
 	if len(playerMove) <= 1 {
-		return nil, errors.New("Invalid Move: One letter words are not allowed")
+		return nil, errors.New("invalid Move: One letter words are not allowed")
 	}
 
 	// update the board once every move is validated and get random tiles to replace tiles used
 	for _, move := range playerMove {
 		if app.ValidateMove(move, playerName, gameID) {
-			loadedGame, randomTile = updateBoardAndHand(*loadedGame, move, playerName)
-			randomTiles = append(randomTiles, randomTile)
+			loadedGame = updateBoardAndHand(*loadedGame, move, playerName)
 		} else {
-			return nil, errors.New("Invalid Move")
+			return nil, errors.New("invalid Move")
 		}
 
 	}
@@ -164,6 +160,9 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 	}
 
 	loadedGame.Players, err = updateScore(wordScore, loadedGame.Players, playerName)
+	if err != nil {
+		return nil, err
+	}
 
 	// update game on database
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
@@ -190,7 +189,7 @@ func getRandomTile(availableLetters map[string]int) string {
 }
 
 // Update the Board with player's move
-func updateBoardAndHand(loadedGame Game, playerMove Move, playerName string) (*Game, string) {
+func updateBoardAndHand(loadedGame Game, playerMove Move, playerName string) *Game {
 	// update board state
 	loadedGame.Board[playerMove.Col][playerMove.Row] = playerMove.Letter
 
@@ -204,7 +203,7 @@ func updateBoardAndHand(loadedGame Game, playerMove Move, playerName string) (*G
 		index++
 	}
 
-	return &loadedGame, randomTile
+	return &loadedGame
 }
 
 // Update Player's Scores

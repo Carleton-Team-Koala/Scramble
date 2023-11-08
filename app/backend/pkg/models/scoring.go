@@ -20,7 +20,7 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) 
 
 		if (!c.CheckValidWord(leftAndRightWord) && len(leftAndRightWord) > 1) || (!c.CheckValidWord(upAndDownWord) && len(upAndDownWord) > 1) {
 			fmt.Println(leftAndRightWord, upAndDownWord)
-			return 0, errors.New("This is an invalid word:")
+			return 0, errors.New("this is an invalid word")
 		}
 
 		// then append to the list of words that would count towards the scores
@@ -84,26 +84,6 @@ func pullRight(game Game, x int, y int) string {
 	}
 	fmt.Println(game.Board[x][y] + pullRight(game, x+1, y))
 	return game.Board[x+1][y] + pullRight(game, x+1, y)
-}
-
-func checkTwoDirectionsX(activeGame Game, x int, y int) bool {
-	if x <= 0 || x >= 14 {
-		return false
-	}
-	if activeGame.Board[x-1][y] != "" && activeGame.Board[x+1][y] != "" {
-		return true
-	}
-	return false
-}
-
-func checkTwoDirectionsY(activeGame Game, x int, y int) bool {
-	if y <= 0 || y >= 14 {
-		return false
-	}
-	if activeGame.Board[x][y-1] != "" && activeGame.Board[x][y+1] != "" {
-		return true
-	}
-	return false
 }
 
 func checkWordExists(setOfWords []string, word string) bool {

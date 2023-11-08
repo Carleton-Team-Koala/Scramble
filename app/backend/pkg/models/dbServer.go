@@ -41,7 +41,7 @@ func (c *DatabaseClient) GetGameByGameID(gameID string) (*Game, error) {
 }
 
 // get game from database using game ID
-func (c *DatabaseClient) UpdateGameToDB(gameID string, updatedGame Game) (error) {
+func (c *DatabaseClient) UpdateGameToDB(gameID string, updatedGame Game) error {
 	newBoard, newLetters, newPlayers, err := jsonifyGameField(updatedGame)
 	if err != nil {
 		return fmt.Errorf("updateGameToDB: %v", err)
@@ -51,8 +51,8 @@ func (c *DatabaseClient) UpdateGameToDB(gameID string, updatedGame Game) (error)
 	if err != nil {
 		return fmt.Errorf("updateGameToDB: %v", err)
 	}
-	
-	fmt.Println("Done updating game %s on database", gameID)
+
+	fmt.Printf("Done updating game on database: %s", gameID)
 	return nil
 }
 
@@ -68,7 +68,6 @@ func (c *DatabaseClient) CheckGameExists(gameID string) (*bool, error) {
 	fmt.Println("Done checking game by gameID!")
 	return &exists, nil
 }
-
 
 // jsonify game fields
 func jsonifyGameField(game Game) ([]byte, []byte, []byte, error) {
