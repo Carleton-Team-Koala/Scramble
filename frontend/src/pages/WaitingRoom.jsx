@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
 import "../css/WaitingRoom.css";
 import { baseURL, gameID } from "./Welcome";
 
-export default function Room({ initialhand, setinitialhand, setisgamestarted }) {
+export default function Room({ setHand, setisgamestarted }) {
 
   const startGame = () => {
     console.log(gameID);
@@ -16,7 +15,7 @@ export default function Room({ initialhand, setinitialhand, setisgamestarted }) 
     })
       .then(response => response.json())
       .then(data => {
-        setinitialhand(data.Players.John.hand);
+        setHand(data.Players.John.hand);
         setisgamestarted(true); // Set game started state to true
       })
       .catch(error => {
