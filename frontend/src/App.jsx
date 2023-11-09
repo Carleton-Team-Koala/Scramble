@@ -11,7 +11,7 @@ function App() {
   if (isGameStarted) {
     return (
       <div className="App" >
-        <Game initialhand={initialHand} />
+        <Game initialhand={initialHand} setInitialHand={setInitialHand} />
       </div>
     )
   } else {

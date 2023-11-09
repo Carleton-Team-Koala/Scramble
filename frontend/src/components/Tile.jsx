@@ -1,7 +1,7 @@
 import React from "react";
 import "../css/Tile.css";
 
-export default function Tile({ letter, id }) {
+export default function Tile({ letter, id, draggable = true }) {
 
     const handleDragStart = (e) => {
         e.dataTransfer.setData("letter", letter);
@@ -11,8 +11,7 @@ export default function Tile({ letter, id }) {
     return (
         <div
             className="tile"
-            draggable="true"
-            onDragStart={handleDragStart}
+            {...(draggable ? { draggable: true, onDragStart: handleDragStart } : {})}
         >
             {letter}
         </div>
