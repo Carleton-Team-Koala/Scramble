@@ -5,6 +5,10 @@ import "./css/App.css";
 
 function App() {
 
+  /**
+   * Sets up the game and the waiting room from the initial server response.
+   */
+
   const [hand, setHand] = useState(['BLANK', 'B', 'C', 'D', 'E', 'A', 'G']); // hand, gets rendered in the action panel
   const [tilebag, setTilebag] = useState({
     'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0,

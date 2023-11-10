@@ -6,7 +6,7 @@ import Tile from '../components/Tile';
 import '../css/Game.css';
 import { baseURL, gameID, player1, player2 } from "./Welcome";
 
-function initializeTiles(hand) {
+function initializeTiles(hand) { // initialize tiles for the board and hand
   return Array.from({ length: hand.length }, (_, i) => ({
     id: i,
     letter: hand[i] === 'BLANK' ? '' : hand[i],
@@ -16,13 +16,19 @@ function initializeTiles(hand) {
 
 export default function Game({ hand, setHand, tilebag, setTilebag }) {
 
+  /**
+   * Main controller component for the actual game.
+   * Controls the display of the information to the user.
+   * Receives hand and tilebag from the initialization.
+   */
+
   const [scoredLetters, setScoredLetters] = useState({}); // {cellKey: letter}, letters returned by server go here
   const [letterUpdates, setLetterUpdates] = useState({}); // {id: [cellKey, letter]}, gets sent to server on submit
   const [tiles, setTiles] = useState(initializeTiles(hand)); // array of tiles, gets rendered on the board and hand
   const [p1_score, setp1_score] = useState(0); // scores for both players
   const [p2_score, setp2_score] = useState(0);
 
-  useEffect(() => {
+  useEffect(() => { // initialize tiles when hand changes
     setTiles(initializeTiles(hand));
   }, [hand]);
 

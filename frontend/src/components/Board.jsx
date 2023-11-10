@@ -5,7 +5,21 @@ import "../css/Board.css";
 
 const Board = ({ onTileDrop, letterUpdates, scoredLetters }) => {
 
+    /**
+     * Umbrella component for the board.
+     * Initializes all the cells inside it and assigns tiles to them based on the data.
+     * @param {*} i 
+     * @param {*} j 
+     * @returns 
+     */
+
     function getTiles (i, j) {
+        /**
+         * Determines whether we should a place a tile on the cell.
+         * If it is in letterUpdates, then it has just been dragged from the hand.
+         * If it is in scoredLetters, then it has been returned by the server.
+         * Otherwise we just return the cell itself.
+         */
         const cellKey = `${i}-${j}`;
         const tileId = Object.keys(letterUpdates).find(id =>
             letterUpdates[id] && letterUpdates[id][0] === cellKey
@@ -33,7 +47,7 @@ const Board = ({ onTileDrop, letterUpdates, scoredLetters }) => {
     const rows = [];
 
     for (let i = 0; i < 15; i++) { // make a board
-        const cells = [];
+        const cells = []; // cells for each row
 
         for (let j = 0; j < 15; j++) {
             let cellStyle = "";
@@ -57,6 +71,7 @@ const Board = ({ onTileDrop, letterUpdates, scoredLetters }) => {
             }
 
             cells.push(
+                // push the Cell component into the row
                 <Cell
                     key={`${i}-${j}`}
                     i={i}
@@ -68,7 +83,7 @@ const Board = ({ onTileDrop, letterUpdates, scoredLetters }) => {
                 />
             );
         }
-        rows.push(<div key={i} className="row">{cells}</div>);
+        rows.push(<div key={i} className="row">{cells}</div>); // push the row into the board
     }
 
     return (
