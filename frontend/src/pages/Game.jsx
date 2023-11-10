@@ -6,33 +6,31 @@ import Tile from '../components/Tile';
 import '../css/Game.css';
 import { baseURL, gameID, player1, player2 } from "./Welcome";
 
-const defaultTilebag = {
-  'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0,
-  'H': 0, 'I': 0, 'J': 0, 'K': 0, 'L': 0, 'M': 0, 'N': 0,
-  'O': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'U': 0,
-  'V': 0, 'W': 0, 'X': 0, 'Y': 0, 'Z': 0, 'BLANK': 0
-};
-
-function initializeTiles(initialHand) {
-  return Array.from({ length: initialHand.length }, (_, i) => ({
+function initializeTiles(hand) { // initialize tiles for the board and hand
+  return Array.from({ length: hand.length }, (_, i) => ({
     id: i,
-    letter: initialHand[i] === 'BLANK' ? '' : initialHand[i],
+    letter: hand[i] === 'BLANK' ? '' : hand[i],
     position: 'ActionPanel', // initial position
   }));
 };
 
-export default function Game({ initialhand, setInitialHand }) {
+export default function Game({ hand, setHand, tilebag, setTilebag }) {
+
+  /**
+   * Main controller component for the actual game.
+   * Controls the display of the information to the user.
+   * Receives hand and tilebag from the initialization.
+   */
 
   const [scoredLetters, setScoredLetters] = useState({}); // {cellKey: letter}, letters returned by server go here
   const [letterUpdates, setLetterUpdates] = useState({}); // {id: [cellKey, letter]}, gets sent to server on submit
-  const [tiles, setTiles] = useState(initializeTiles(initialhand)); // array of tiles, gets rendered on the board and hand
-  const [tilebag, setTilebag] = useState(defaultTilebag); // tilebag, gets rendered on the infoboard
+  const [tiles, setTiles] = useState(initializeTiles(hand)); // array of tiles, gets rendered on the board and hand
   const [p1_score, setp1_score] = useState(0); // scores for both players
   const [p2_score, setp2_score] = useState(0);
 
-  useEffect(() => {
-    setTiles(initializeTiles(initialhand));
-  }, [initialhand]);
+  useEffect(() => { // initialize tiles when hand changes
+    setTiles(initializeTiles(hand));
+  }, [hand]);
 
   /**
     * Handles the event when a tile is dropped onto the board.
@@ -101,7 +99,7 @@ export default function Game({ initialhand, setInitialHand }) {
   function parseUpdates(updates) {
 
     parseBoard(updates.Board);
-    setInitialHand(updates.Players.John.hand);
+    setHand(updates.Players.John.hand);
     setTilebag(updates.LetterDistribution);
     setp1_score(updates.Players.John.score);
     // set score for player 2 here
@@ -120,7 +118,7 @@ export default function Game({ initialhand, setInitialHand }) {
     let data = []
     for (const [key, value] of Object.entries(letterUpdates)) {
       let locs = value[0].split("-");
-      data.push({ letter: value[1], xLoc: Number(locs[0]), yLoc: Number(locs[1]) });
+      data.push({ letter: value[1], xLoc: Number(locs[1]), yLoc: Number(locs[0]) });
     };
     setLetterUpdates({});
     const url = baseURL + gameID + "/updategame/";
