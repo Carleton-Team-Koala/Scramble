@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 )
 
 func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) {
@@ -19,7 +18,7 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) 
 		upAndDownWord := pullUp(activeGame, x, y) + activeGame.Board[x][y] + pullDown(activeGame, x, y)
 
 		if (!c.CheckValidWord(leftAndRightWord) && len(leftAndRightWord) > 1) || (!c.CheckValidWord(upAndDownWord) && len(upAndDownWord) > 1) {
-			fmt.Println(leftAndRightWord, upAndDownWord)
+			// fmt.Println(leftAndRightWord, upAndDownWord)
 			return 0, errors.New("this is an invalid word")
 		}
 
@@ -32,7 +31,7 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) 
 			setOfWords = append(setOfWords, upAndDownWord)
 		}
 	}
-	fmt.Println(setOfWords)
+	// fmt.Println(setOfWords)
 
 	for _, word := range setOfWords {
 		if c.CheckValidWord(word) {
@@ -46,43 +45,43 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) 
 }
 
 func pullUp(game Game, x int, y int) string {
-	fmt.Println("pullUp: ", x, y)
+	// fmt.Println("pullUp: ", x, y)
 
 	if y <= 0 || game.Board[x][y] == "" {
 		return ""
 	}
-	fmt.Println(pullUp(game, x, y-1) + game.Board[x][y])
+	// fmt.Println(pullUp(game, x, y-1) + game.Board[x][y])
 	return pullUp(game, x, y-1) + game.Board[x][y-1]
 }
 
 func pullDown(game Game, x int, y int) string {
-	fmt.Println("pullDown: ", x, y)
+	// fmt.Println("pullDown: ", x, y)
 
 	if y <= 14 || game.Board[x][y] == "" {
 		return ""
 	}
-	fmt.Println(game.Board[x][y] + pullDown(game, x, y+1))
+	// fmt.Println(game.Board[x][y] + pullDown(game, x, y+1))
 	return game.Board[x][y+1] + pullDown(game, x, y+1)
 }
 
 func pullLeft(game Game, x int, y int) string {
-	fmt.Println("pullLeft: ", x, y)
+	// fmt.Println("pullLeft: ", x, y)
 
 	if x <= 0 || game.Board[x][y] == "" {
 		return ""
 	}
 
-	fmt.Println(pullLeft(game, x-1, y) + game.Board[x][y])
+	// fmt.Println(pullLeft(game, x-1, y) + game.Board[x][y])
 	return pullLeft(game, x-1, y) + game.Board[x-1][y]
 }
 
 func pullRight(game Game, x int, y int) string {
-	fmt.Println("pullRight: ", x, y)
+	// fmt.Println("pullRight: ", x, y)
 
 	if x >= 14 || game.Board[x][y] == "" {
 		return ""
 	}
-	fmt.Println(game.Board[x][y] + pullRight(game, x+1, y))
+	// fmt.Println(game.Board[x][y] + pullRight(game, x+1, y))
 	return game.Board[x+1][y] + pullRight(game, x+1, y)
 }
 

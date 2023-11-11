@@ -58,7 +58,12 @@ func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(newGameID)
+	resp := apiResponse {
+		GameID: &newGameID,
+		Valid: true,
+	}
+
+	json.NewEncoder(w).Encode(resp)
 }
 
 // API endpoint to join game using unique ID
@@ -105,7 +110,12 @@ func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(gameDetails)
+	resp := apiResponse {
+		GameResp: gameDetails,
+		Valid: true,
+	}
+
+	json.NewEncoder(w).Encode(resp)
 }
 
 // Update move endpoint
@@ -141,16 +151,22 @@ func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 		errorResponse(w, "Not able to update game: "+err.Error(), http.StatusBadRequest)
 		return
 	}
+	resp := apiResponse {
+		GameResp: updatedGame,
+		Valid: true,
+	}
 
-	json.NewEncoder(w).Encode(*updatedGame)
+	json.NewEncoder(w).Encode(resp)
 }
 
 // Error response
 func errorResponse(w http.ResponseWriter, message string, httpStatusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatusCode)
-	resp := make(map[string]string)
-	resp["message"] = message
+	resp := apiResponse{
+		ErrorMessage: &message,
+		Valid: false,
+	}
 	jsonResp, _ := json.Marshal(resp)
 	w.Write(jsonResp)
 }
