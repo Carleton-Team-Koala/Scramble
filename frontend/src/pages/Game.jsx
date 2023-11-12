@@ -111,6 +111,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
       setTiles(prevTiles =>
         prevTiles.map(tile => ({ ...tile, position: 'ActionPanel' }))
       );
+      alert(updates.message); // display the error message
     };
 
   };
