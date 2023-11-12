@@ -53,7 +53,6 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
         tile.id === id ? { ...tile, position: 'Board' } : tile
       )
     );
-    console.log(letterUpdates);
   };
 
   const shuffle = () => {
@@ -94,15 +93,25 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
   };
 
   /**
-   * Parses all the updates returned by the server
+   * Parses all the updates returned by the server.
+   * If the move is valid, it updates the game state accordingly.
+   * Otherwise it reverts all the moves.
    */
   function parseUpdates(updates) {
 
-    parseBoard(updates.Board);
-    setHand(updates.Players.John.hand);
-    setTilebag(updates.LetterDistribution);
-    setp1_score(updates.Players.John.score);
-    // set score for player 2 here
+    if (updates.valid) { // if move is valid, update the game state
+      const updatesState = updates.gameState;
+      parseBoard(updatesState.Board);
+      setHand(updatesState.Players.John.hand);
+      setTilebag(updatesState.LetterDistribution);
+      setp1_score(updatesState.Players.John.score);
+      // set score for player 2 here
+    }
+    else { // else revert all the moves
+      setTiles(prevTiles =>
+        prevTiles.map(tile => ({ ...tile, position: 'ActionPanel' }))
+      );
+    };
 
   };
 

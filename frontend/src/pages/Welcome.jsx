@@ -20,11 +20,13 @@ export const createGame = () => {
   })
     .then(response => response.json())
     .then(data => {
-      console.log(data);
-      gameID = data;
-      frontendURL += gameID;
-      console.log(gameID);
-      console.log(frontendURL);
+      if (data.valid) {
+        gameID = data.gameID;
+        frontendURL += gameID;
+      }
+      else {
+        alert("The game could not be started at the moment!");
+      }
     })
     .catch(error => {
       alert(error);
