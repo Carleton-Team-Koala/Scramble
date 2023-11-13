@@ -102,7 +102,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
     if (updates.valid) { // if move is valid, update the game state
       const updatesState = updates.gameState;
       parseBoard(updatesState.Board);
-      setHand(updatesState.Players.John.hand);
+      setHand(updatesState.Players[player1].hand);
       setTilebag(updatesState.LetterDistribution);
       setp1_score(updatesState.Players.John.score);
       // set score for player 2 here
