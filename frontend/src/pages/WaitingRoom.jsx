@@ -2,10 +2,9 @@ import React from "react";
 import "../css/WaitingRoom.css";
 import { baseURL, gameID } from "./Welcome";
 
-export default function Room({ setHand, setisgamestarted }) {
+export default function Room({ setHand, setTilebag, setisgamestarted }) {
 
   const startGame = () => {
-    console.log(gameID);
     let url = baseURL + "startgame/" + gameID + "/"
     fetch(url, {
       method: "GET",
@@ -15,8 +14,11 @@ export default function Room({ setHand, setisgamestarted }) {
     })
       .then(response => response.json())
       .then(data => {
-        setHand(data.Players.John.hand);
-        setisgamestarted(true); // Set game started state to true
+        if (data.valid) {
+          setHand(data.gameState.Players.John.hand);
+          setTilebag(data.gameState.LetterDistribution);
+          setisgamestarted(true); // Set game started state to true
+        }
       })
       .catch(error => {
         alert(error);

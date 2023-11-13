@@ -27,7 +27,7 @@ function App() {
   } else {
     return (
       <div className="App">
-        <Room hand={hand} setHand={setHand} setisgamestarted={setIsGameStarted} />
+        <Room setHand={setHand} setTilebag={setTilebag} setisgamestarted={setIsGameStarted} />
       </div>
     )
   }
