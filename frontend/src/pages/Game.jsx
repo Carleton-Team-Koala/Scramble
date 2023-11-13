@@ -104,7 +104,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
       parseBoard(updatesState.Board);
       setHand(updatesState.Players[player1].hand);
       setTilebag(updatesState.LetterDistribution);
-      setp1_score(updatesState.Players.John.score);
+      setp1_score(updatesState.Players[player1].score);
       // set score for player 2 here
     }
     else { // else revert all the moves
