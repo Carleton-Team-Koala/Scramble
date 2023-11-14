@@ -51,9 +51,10 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) 
 						OGWordScore += 3 * (c.GetLetterScore(string(word[i])))
 					case "dw":
 						scoreAggregateModifier *= 2
+						OGWordScore += (c.GetLetterScore(string(word[i])))
 					case "tw":
 						scoreAggregateModifier *= 3
-					case "na":
+						OGWordScore += (c.GetLetterScore(string(word[i])))
 					default:
 						OGWordScore += (c.GetLetterScore(string(word[i])))
 					}
