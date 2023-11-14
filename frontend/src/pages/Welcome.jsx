@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/Welcome.css";
+import Popup from "./Popup";
 
 export let player1 = "";
 export let player2 = "";
@@ -11,12 +12,14 @@ let frontendURL = "/play/";
 export const createGame = () => {
   const url = baseURL + "newgame/";
   console.log(url);
+  player1 = document.getElementById("username").value;
+  console.log(player1);
   fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ playerName: "John" })
+    body: JSON.stringify({ playerName: player1 })
   })
     .then(response => response.json())
     .then(data => {
@@ -34,33 +37,19 @@ export const createGame = () => {
     })
 }
 
-export default function welcome() {
+export default function Welcome() {
+  const [popup, setPopup] = useState(false);
+
   const alertClick = () => {
     alert("This functionality is not supported yet!");
   };
 
   return (
     <div className="welcome-container">
-      <Link to="/play"><button onClick={createGame}>New Game</button></Link>
+      <button onClick={()=>setPopup(true)}>New Game</button>
       <button onClick={alertClick}>Load Game</button>
       <button onClick={alertClick}>Join Game</button>
+      <Popup trigger={popup} setTrigger={setPopup} onSubmit={createGame}></Popup>
     </div>
   );
 };
-
-const enterName = () => {
-  return (
-    <form>
-      <label for="fname">Player Name:</label>
-      <input type="text" id="fname"></input>
-    </form>
-  )
-}
-
-const enterGameID = () => {
-  return (
-    <form>
-
-    </form>
-  )
-}
