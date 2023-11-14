@@ -12,12 +12,6 @@ type PlayerInfo struct {
 	Hand  []string `json:"hand"`
 }
 
-type Move struct {
-	Letter string `json:"letter"`
-	Col    int    `json:"yLoc"`
-	Row    int    `json:"xLoc"`
-}
-
 type UpdateGameResp struct {
 	PlayerName string `json:"playerName"`
 	Updates    []Move `json:"updates"`
@@ -30,4 +24,29 @@ type WordScore struct {
 
 type PlayerNameResp struct {
 	PlayerName string `json:"playerName"`
+}
+
+type Move struct {
+	Letter string `json:"letter"`
+	Col    int    `json:"yLoc"`
+	Row    int    `json:"xLoc"`
+}
+
+type MoveSlice []Move
+
+func (m MoveSlice) Len() int {
+	return len(m)
+}
+
+func (m MoveSlice) Less(i, j int) bool {
+	// First compare by Col.
+	if m[i].Col != m[j].Col {
+		return m[i].Col < m[j].Col
+	}
+	// If Col is the same, compare by Row.
+	return m[i].Row < m[j].Row
+}
+
+func (m MoveSlice) Swap(i, j int) {
+	m[i], m[j] = m[j], m[i]
 }
