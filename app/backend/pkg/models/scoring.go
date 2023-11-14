@@ -2,15 +2,18 @@ package models
 
 import (
 	"errors"
+	"sort"
 )
 
-func (c *LanguageClient) scoring(activeGame Game, newTiles []Move) (int, error) {
+func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, error) {
 	score := 0
 	setOfWords := []string{}
 	scoreModifier := [15]string{}
 	OriginalWord := ""
 	scoreAggregateModifier := 1
 	OGWordScore := 0
+
+	sort.Sort(newTiles)
 
 	for i := 0; i < len(newTiles); i++ {
 
