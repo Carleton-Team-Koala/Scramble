@@ -1,7 +1,6 @@
 import React from "react";
 import "../css/WaitingRoom.css";
 import { baseURL, gameID, player1, player2 } from "./Welcome";
-import { baseURL, gameID, player1, player2 } from "./Welcome";
 
 export default function Room({ setHand, setTilebag, setisgamestarted }) {
 
@@ -16,9 +15,7 @@ export default function Room({ setHand, setTilebag, setisgamestarted }) {
       .then(response => response.json())
       .then(data => {
         if (data.valid) {
-          console.log(data.gameState.Players.player1.hand);
-          console.log(data.gameState.Players.player1);
-          setHand(data.gameState.Players.player1.hand);
+          setHand(data.gameState.Players[player1].hand);
           setTilebag(data.gameState.LetterDistribution);
           setisgamestarted(true); // Set game started state to true
         }

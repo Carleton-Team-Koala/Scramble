@@ -8,7 +8,7 @@ const ActionPanel = ({ tilesAp, shuffle, submit }) => {
     return (
         <div className="action-panel">
             <div className="hand-container">
-                <button className="button-hand"
+                <button className="button-hand" onClick={shuffle}
                     style={{
                         backgroundImage: `url(${shuffleImage})`,
                     }}>

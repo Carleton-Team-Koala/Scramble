@@ -60,12 +60,8 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
     let tilesCopy = [...tiles];
     for (let i = 0; i < 7; i++) {
       let loc = Math.floor(Math.random() * indices.length);
-      console.log(indices[loc]);
       tilesCopy[i] = tiles[indices[loc]];
-      // indices.splice(loc, 1); 
-      indices = indices.filter(value => value !== loc);
-      console.log(indices);
-      console.log(indices.length);
+      indices = indices.filter(value => value !== indices[loc]);
     }
     setTiles(tilesCopy);
   }
@@ -139,7 +135,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ playerName: "John", updates: data })
+      body: JSON.stringify({ playerName: player1, updates: data })
     })
       .then(response => response.json())
       .then(data => {
