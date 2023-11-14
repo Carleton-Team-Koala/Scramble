@@ -1,6 +1,7 @@
 import React from "react";
 import "../css/WaitingRoom.css";
 import { baseURL, gameID, player1, player2 } from "./Welcome";
+import { baseURL, gameID, player1, player2 } from "./Welcome";
 
 export default function Room({ setHand, setTilebag, setisgamestarted }) {
 

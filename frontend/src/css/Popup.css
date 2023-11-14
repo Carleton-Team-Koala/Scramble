@@ -1,0 +1,32 @@
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: black;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.close-btn {
+    position: fixed;
+    top: 50px;
+    left: 50px;
+    width: 150px;
+    height: 100px;
+}
+
+.submit-btn {
+    width: 200px;
+    height: 100px;
+}
+
+input {
+    height: 60px;
+    font-size: 20px;
+    padding: 10px;
+}
+
