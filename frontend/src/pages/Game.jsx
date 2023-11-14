@@ -61,10 +61,11 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
     for (let i = 0; i < 7; i++) {
       let loc = Math.floor(Math.random() * indices.length);
       console.log(indices[loc]);
-      tilesCopy[indices[loc]] = tiles[i];
+      tilesCopy[i] = tiles[indices[loc]];
       // indices.splice(loc, 1); 
       indices = indices.filter(value => value !== loc);
       console.log(indices);
+      console.log(indices.length);
     }
     setTiles(tilesCopy);
   }
@@ -174,7 +175,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
             return <div key={tile.id} className="tile-placeholder"></div>;
           }
         })}
-        // shuffle={shuffle}
+        shuffle={shuffle}
         submit={submit}
       />
     </div>

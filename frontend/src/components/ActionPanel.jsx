@@ -3,7 +3,7 @@ import '../css/ActionPanel.css';
 import shuffleImage from '../assets/shuffle.jpg';
 import refreshImage from '../assets/refresh.jpg';
 
-const ActionPanel = ({ tilesAp, shuffle, logger, submit }) => {
+const ActionPanel = ({ tilesAp, shuffle, submit }) => {
 
     return (
         <div className="action-panel">
@@ -26,7 +26,7 @@ const ActionPanel = ({ tilesAp, shuffle, logger, submit }) => {
             <div className="button-container">
                 <button className="button-ap">Resign</button>
                 <button className="button-ap">Skip</button>
-                <button className="button-ap">Swap</button>
+                <button className="button-ap" onClick={shuffle}>Shuffle</button>
                 <button className="button-ap submit-button" onClick={submit}>Submit</button>
             </div>
         </div>
