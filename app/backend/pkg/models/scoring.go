@@ -22,6 +22,11 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 
 	sort.Sort(newTiles)
 
+	isSequentialInX, isSequentialInY := checkSequential(newTiles)
+	if !isSequentialInX && !isSequentialInY {
+		return 0, errors.New("new tiles must be placed in a single row or column")
+	}
+
 	for i := 0; i < len(newTiles); i++ {
 
 		var x = int(newTiles[i].Col)
@@ -34,8 +39,9 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		leftAndRightWord := pullLeft(activeGame, x, y) + activeGame.Board[x][y] + pullRight(activeGame, x, y)
 		upAndDownWord := pullUp(activeGame, x, y) + activeGame.Board[x][y] + pullDown(activeGame, x, y)
 
+		fmt.Println("leftAndRightWord: ", leftAndRightWord, " upAndDownWord: ", upAndDownWord)
 		if (!c.CheckValidWord(leftAndRightWord) && len(leftAndRightWord) > 1) || (!c.CheckValidWord(upAndDownWord) && len(upAndDownWord) > 1) {
-			return 0, errors.New("this is an invalid word")
+			return 0, errors.New("this is an invalid word: " + leftAndRightWord + " or " + upAndDownWord)
 		}
 
 		if len(leftAndRightWord) < 2 && len(upAndDownWord) < 2 && len(newTiles) == 1 {
@@ -51,7 +57,8 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 			setOfWords = append(setOfWords, upAndDownWord)
 		}
 	}
-	// fmt.Println(setOfWords)
+
+	fmt.Println("Valid words: ", setOfWords)
 
 	for _, word := range setOfWords {
 		if c.CheckValidWord(word) {
@@ -87,36 +94,21 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 	return score, nil
 }
 
-// pullUp recursively pulls up the letters above the given position (x,y) on the game board of the given game.
-// If the position is already at the top of the board or the position is empty, it returns an empty string.
-// Otherwise, it returns the concatenation of the letter at the current position and the result of calling pullUp on the position above it.
-func pullUp(game Game, x int, y int) string {
-	// fmt.Println("pullUp: ", x, y)
-
+func pullLeft(game Game, x int, y int) string {
 	if y <= 0 || game.Board[x][y] == "" {
 		return ""
 	}
-	// fmt.Println(pullUp(game, x, y-1) + game.Board[x][y])
-	return pullUp(game, x, y-1) + game.Board[x][y-1]
+	return pullLeft(game, x, y-1) + game.Board[x][y-1]
 }
 
-// pullDown recursively concatenates the letters below the given position (x,y) on the game board of the given game.
-// If the position is at the bottom of the board or empty, it returns an empty string.
-// Otherwise, it returns the letter at the given position concatenated with the result of calling pullDown on the position below it.
-func pullDown(game Game, x int, y int) string {
-	// fmt.Println("pullDown: ", x, y)
-
-	if y <= 14 || game.Board[x][y] == "" {
+func pullRight(game Game, x int, y int) string {
+	if y >= 14 || game.Board[x][y] == "" {
 		return ""
 	}
-	// fmt.Println(game.Board[x][y] + pullDown(game, x, y+1))
-	return game.Board[x][y+1] + pullDown(game, x, y+1)
+	return game.Board[x][y+1] + pullRight(game, x, y+1)
 }
 
-// pullLeft recursively pulls the letters to the left of the given position (x,y) on the game board
-// and returns them as a string. If the position is already at the leftmost edge of the board or
-// the position is empty, it returns an empty string.
-func pullLeft(game Game, x int, y int) string {
+func pullUp(game Game, x int, y int) string {
 	// fmt.Println("pullLeft: ", x, y)
 
 	if x <= 0 || game.Board[x][y] == "" {
@@ -124,20 +116,17 @@ func pullLeft(game Game, x int, y int) string {
 	}
 
 	// fmt.Println(pullLeft(game, x-1, y) + game.Board[x][y])
-	return pullLeft(game, x-1, y) + game.Board[x-1][y]
+	return pullUp(game, x-1, y) + game.Board[x-1][y]
 }
 
-// pullRight recursively pulls the letters to the right of the given position (x,y) on the game board
-// and returns them as a string. If the position is at the right edge of the board or the cell is empty,
-// it returns an empty string.
-func pullRight(game Game, x int, y int) string {
+func pullDown(game Game, x int, y int) string {
 	// fmt.Println("pullRight: ", x, y)
 
 	if x >= 14 || game.Board[x][y] == "" {
 		return ""
 	}
 	// fmt.Println(game.Board[x][y] + pullRight(game, x+1, y))
-	return game.Board[x+1][y] + pullRight(game, x+1, y)
+	return game.Board[x+1][y] + pullDown(game, x+1, y)
 }
 
 // checkWordExists checks if a given word exists in a set of words.
@@ -186,4 +175,55 @@ func checkForScoreModifier(x int, y int) string {
 	}
 
 	return "na"
+}
+
+// checkSequential verifies if all tiles are in a line either horizontally or vertically.
+func checkSequential(tiles MoveSlice) (bool, bool) {
+	isSequentialInX := true
+	isSequentialInY := true
+
+	// Check if sequential in X direction (same Row)
+	for i := 1; i < len(tiles); i++ {
+		if tiles[i].Row != tiles[0].Row {
+			isSequentialInX = false
+			break
+		}
+	}
+
+	// If not sequential in X, check if sequential in Y direction (same Col)
+	if !isSequentialInX {
+		for i := 1; i < len(tiles); i++ {
+			if tiles[i].Col != tiles[0].Col {
+				isSequentialInY = false
+				break
+			}
+		}
+	} else {
+		isSequentialInY = false // If they are sequential in X, they cannot be in Y
+	}
+
+	// If sequential in either direction, the adjacent elements must have consecutive indexes
+	if isSequentialInX {
+		sort.SliceStable(tiles, func(i, j int) bool {
+			return tiles[i].Col < tiles[j].Col
+		})
+		for i := 1; i < len(tiles); i++ {
+			if tiles[i].Col != tiles[i-1].Col+1 {
+				isSequentialInX = false
+				break
+			}
+		}
+	} else if isSequentialInY {
+		sort.SliceStable(tiles, func(i, j int) bool {
+			return tiles[i].Row < tiles[j].Row
+		})
+		for i := 1; i < len(tiles); i++ {
+			if tiles[i].Row != tiles[i-1].Row+1 {
+				isSequentialInY = false
+				break
+			}
+		}
+	}
+
+	return isSequentialInX, isSequentialInY
 }
