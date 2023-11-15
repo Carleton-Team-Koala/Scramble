@@ -52,7 +52,7 @@ func (c *DatabaseClient) UpdateGameToDB(gameID string, updatedGame Game) error {
 		return fmt.Errorf("updateGameToDB: %v", err)
 	}
 
-	fmt.Printf("Done updating game on database: %s", gameID)
+	fmt.Printf("Done updating game on database: %s\n", gameID)
 	return nil
 }
 
