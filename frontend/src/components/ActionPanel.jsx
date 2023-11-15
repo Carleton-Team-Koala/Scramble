@@ -3,7 +3,7 @@ import '../css/ActionPanel.css';
 import shuffleImage from '../assets/shuffle.jpg';
 import refreshImage from '../assets/refresh.jpg';
 
-const ActionPanel = ({ tilesAp, shuffle, submit }) => {
+const ActionPanel = ({ tilesAp, shuffle, submit, reset }) => {
 
     return (
         <div className="action-panel">
@@ -16,7 +16,7 @@ const ActionPanel = ({ tilesAp, shuffle, submit }) => {
                 <div className='tile-hand'>
                     {tilesAp}
                 </div>
-                <button className="button-hand"
+                <button className="button-hand" onClick={reset}
                     style={{
                         backgroundImage: `url(${refreshImage})`,
                         backgroundSize: "30px",
