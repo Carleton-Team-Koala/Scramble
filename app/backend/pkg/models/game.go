@@ -171,6 +171,26 @@ func generateNewGameID() string {
 	return gameID
 }
 
+// refreshHand refreshes the hand of a player in a game by returning their current tiles to the bag and drawing new tiles from the bag.
+// It takes in the loadedGame object and the name of the player whose hand needs to be refreshed.
+// It returns a pointer to the updated loadedGame object.
+func (app *App) RefreshHand(gameID string, playerName string) (*[]string, error) {
+	loadedGame, err := app.GetGameById(gameID)
+	newTiles := []string{}
+	if err != nil {
+		return nil, err
+	}
+	
+	for index, letter := range loadedGame.Players[playerName].Hand {
+		returnTilesToBag(*loadedGame, []Move{{Letter: letter}})
+		newTile := getRandomTile(loadedGame.AvailableLetters)
+		loadedGame.Players[playerName].Hand[index] = newTile
+		newTiles = append(newTiles, newTile)
+	}
+
+	return &newTiles, nil
+}
+
 func getRandomTile(availableLetters map[string]int) string {
 	var keys []string
 	// get list of tiles that are available
@@ -210,17 +230,6 @@ func returnTilesToBag(loadedGame Game, playerMove []Move) {
 	for _, move := range playerMove {
 		loadedGame.AvailableLetters[move.Letter] += 1
 	}
-}
-
-// refreshHand refreshes the hand of a player in a game by returning their current tiles to the bag and drawing new tiles from the bag.
-// It takes in the loadedGame object and the name of the player whose hand needs to be refreshed.
-// It returns a pointer to the updated loadedGame object.
-func refreshHand(loadedGame Game, playerName string) *Game {
-	for index, letter := range loadedGame.Players[playerName].Hand {
-		returnTilesToBag(loadedGame, []Move{{Letter: letter}})
-		loadedGame.Players[playerName].Hand[index] = getRandomTile(loadedGame.AvailableLetters)
-	}
-	return &loadedGame
 }
 
 // Update Player's Scores

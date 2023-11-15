@@ -19,6 +19,7 @@ type AppControllerInterface interface {
 	AppJoinGame(w http.ResponseWriter, r *http.Request)
 	AppUpdateMove(w http.ResponseWriter, r *http.Request)
 	AppStartGame(w http.ResponseWriter, r *http.Request)
+	AppRefreshHand(w http.ResponseWriter, r *http.Request)
 }
 
 // Homepage
@@ -157,6 +158,42 @@ func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(resp)
+}
+
+// API endpoint to refresh hand game using unique ID
+func (a *AppController) AppRefreshHand(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	gameID := vars["gameID"]
+
+	// unmarshal json response
+	headerContentType := r.Header.Get("Content-Type")
+	if headerContentType != "application/json" {
+		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
+		return
+	}
+
+	var joinGameResp models.PlayerNameResp
+	var unmarshalErr *json.UnmarshalTypeError
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&joinGameResp)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
+		} else {
+			errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+
+	newHand, err := a.AppInterface.RefreshHand(gameID, joinGameResp.PlayerName)
+	if err != nil {
+		errorResponse(w, "Not able to refresh hand: "+err.Error(), http.StatusOK)
+		return
+	}
+
+	json.NewEncoder(w).Encode(newHand)
 }
 
 // Error response
