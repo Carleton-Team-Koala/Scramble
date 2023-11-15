@@ -22,18 +22,12 @@ GRANT CONNECT ON DATABASE scramble_db TO ReadOnlyUser;
 GRANT USAGE ON SCHEMA public TO ReadOnlyUser;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO ReadOnlyUser;
 
-CREATE TABLE IF NOT EXISTS games (
-    GameID TEXT PRIMARY KEY,
-    Board JSONB NOT NULL,
-    LetterDistribution JSONB NOT NULL,
-    Player1ID TEXT REFERENCES players(PlayerID),
-    Player1Score INT,
-    Player2ID TEXT REFERENCES players(PlayerID),
-    Player2Score INT
-);
+
 
 ALTER TABLE games
-ADD COLUMN IF NOT EXISTS PlayerScores JSONB;
+ADD COLUMN IF NOT EXISTS Player1Score INT;
+ADD COLUMN IF NOT EXISTS Player2Score INT;
+
 
 
 WITH PlayerScores AS (
