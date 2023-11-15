@@ -1,11 +1,18 @@
 package models
 
+// scoring.go contains the scoring logic for the game of Scramble.
 import (
 	"errors"
+	"fmt"
 	"sort"
 )
 
+// scoring calculates the score of a move in a game of Scramble.
+// It takes an activeGame of type Game and a newTiles of type MoveSlice as input.
+// It returns an integer score and an error if the move is invalid.
 func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, error) {
+	fmt.Println("scoring: ", newTiles)
+
 	score := 0
 	setOfWords := []string{}
 	scoreModifier := [15]string{}
@@ -28,8 +35,11 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		upAndDownWord := pullUp(activeGame, x, y) + activeGame.Board[x][y] + pullDown(activeGame, x, y)
 
 		if (!c.CheckValidWord(leftAndRightWord) && len(leftAndRightWord) > 1) || (!c.CheckValidWord(upAndDownWord) && len(upAndDownWord) > 1) {
-			// fmt.Println(leftAndRightWord, upAndDownWord)
 			return 0, errors.New("this is an invalid word")
+		}
+
+		if len(leftAndRightWord) < 2 && len(upAndDownWord) < 2 && len(newTiles) == 1 {
+			return 0, errors.New("words must be longer than a single letter")
 		}
 
 		// then append to the list of words that would count towards the scores
@@ -47,6 +57,7 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		if c.CheckValidWord(word) {
 			if OriginalWord == word {
 				for i := 0; i < len(word); i++ {
+
 					switch scoreModifier[i] {
 					case "dl":
 						OGWordScore += 2 * (c.GetLetterScore(string(word[i])))
@@ -70,11 +81,15 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		}
 	}
 
+	// fmt.Println("OGWordScore: ", OGWordScore)
 	score += (scoreAggregateModifier * OGWordScore)
-
+	fmt.Println("DONE: score: ", score)
 	return score, nil
 }
 
+// pullUp recursively pulls up the letters above the given position (x,y) on the game board of the given game.
+// If the position is already at the top of the board or the position is empty, it returns an empty string.
+// Otherwise, it returns the concatenation of the letter at the current position and the result of calling pullUp on the position above it.
 func pullUp(game Game, x int, y int) string {
 	// fmt.Println("pullUp: ", x, y)
 
@@ -85,6 +100,9 @@ func pullUp(game Game, x int, y int) string {
 	return pullUp(game, x, y-1) + game.Board[x][y-1]
 }
 
+// pullDown recursively concatenates the letters below the given position (x,y) on the game board of the given game.
+// If the position is at the bottom of the board or empty, it returns an empty string.
+// Otherwise, it returns the letter at the given position concatenated with the result of calling pullDown on the position below it.
 func pullDown(game Game, x int, y int) string {
 	// fmt.Println("pullDown: ", x, y)
 
@@ -95,6 +113,9 @@ func pullDown(game Game, x int, y int) string {
 	return game.Board[x][y+1] + pullDown(game, x, y+1)
 }
 
+// pullLeft recursively pulls the letters to the left of the given position (x,y) on the game board
+// and returns them as a string. If the position is already at the leftmost edge of the board or
+// the position is empty, it returns an empty string.
 func pullLeft(game Game, x int, y int) string {
 	// fmt.Println("pullLeft: ", x, y)
 
@@ -106,6 +127,9 @@ func pullLeft(game Game, x int, y int) string {
 	return pullLeft(game, x-1, y) + game.Board[x-1][y]
 }
 
+// pullRight recursively pulls the letters to the right of the given position (x,y) on the game board
+// and returns them as a string. If the position is at the right edge of the board or the cell is empty,
+// it returns an empty string.
 func pullRight(game Game, x int, y int) string {
 	// fmt.Println("pullRight: ", x, y)
 
@@ -116,6 +140,7 @@ func pullRight(game Game, x int, y int) string {
 	return game.Board[x+1][y] + pullRight(game, x+1, y)
 }
 
+// checkWordExists checks if a given word exists in a set of words.
 func checkWordExists(setOfWords []string, word string) bool {
 	for _, eachWord := range setOfWords {
 		if eachWord == word {
@@ -125,10 +150,7 @@ func checkWordExists(setOfWords []string, word string) bool {
 	return false
 }
 
-/*
- This function checks if a given tile if a double word, triple word, double letter, or triple letter score.
-*/
-
+// checkForScoreModifier checks if a given position (x,y) on the game board is a score modifier (double word, double letter, triple letter, triple word).
 func checkForScoreModifier(x int, y int) string {
 	tw := [][2]int{{0, 0}, {0, 7}, {0, 14}, {7, 0}, {7, 14}, {14, 0}, {14, 7}, {14, 14}}
 	dw := [][2]int{{1, 1}, {2, 2}, {3, 3}, {4, 4}, {10, 10}, {11, 11}, {12, 12}, {13, 13}, {1, 13}, {2, 12}, {3, 11}, {4, 10}, {10, 4}, {11, 3}, {12, 2}, {13, 1}}
