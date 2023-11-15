@@ -185,15 +185,6 @@ func getRandomTile(availableLetters map[string]int) string {
 	return keys[0]
 }
 
-// returnTilesToBag returns the tiles used in the player's move back to the game's available letters.
-// loadedGame is the game being played.
-// playerMove is a slice of moves made by the player.
-func returnTilesToBag(loadedGame Game, playerMove []Move) {
-	for _, move := range playerMove {
-		loadedGame.AvailableLetters[move.Letter] += 1
-	}
-}
-
 // Update the Board with player's move
 func updateBoardAndHand(loadedGame Game, playerMove Move, playerName string) *Game {
 	// update board state
@@ -210,6 +201,15 @@ func updateBoardAndHand(loadedGame Game, playerMove Move, playerName string) *Ga
 	}
 
 	return &loadedGame
+}
+
+// returnTilesToBag returns the tiles used in the player's move back to the game's available letters.
+// loadedGame is the game being played.
+// playerMove is a slice of moves made by the player.
+func returnTilesToBag(loadedGame Game, playerMove []Move) {
+	for _, move := range playerMove {
+		loadedGame.AvailableLetters[move.Letter] += 1
+	}
 }
 
 // refreshHand refreshes the hand of a player in a game by returning their current tiles to the bag and drawing new tiles from the bag.
