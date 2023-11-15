@@ -188,6 +188,9 @@ func (app *App) RefreshHand(gameID string, playerName string) (*[]string, error)
 		newTiles = append(newTiles, newTile)
 	}
 
+	// update game on database
+	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
+
 	return &newTiles, nil
 }
 
