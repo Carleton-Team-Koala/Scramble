@@ -66,6 +66,27 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
     setTiles(tilesCopy);
   }
 
+  /**
+   * Reset tiles on the board back into the hand.
+   */
+  const reset = () => {
+    let ids = Object.keys(letterUpdates);
+    console.log(ids);
+    for (let i = 0; i < ids.length; i++) {
+      setTiles(prevTiles =>
+        prevTiles.map(tile =>
+          // console.log(ids[i]),
+          tile.id === Number(ids[i]) ? { ...tile, position: 'ActionPanel' } : tile
+        )
+      )
+    }
+    ids = [];
+    console.log(tiles);
+    // console.log("before: ", letterUpdates);
+    setLetterUpdates(() => {});
+    console.log("after: ", letterUpdates);
+  }
+
   /** 
    * Parses the board returned by the server.
   */
@@ -173,6 +194,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
         })}
         shuffle={shuffle}
         submit={submit}
+        // reset={reset}
       />
     </div>
   );
