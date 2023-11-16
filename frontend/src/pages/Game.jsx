@@ -70,21 +70,36 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
    * Reset tiles on the board back into the hand.
    */
   const reset = () => {
-    let ids = Object.keys(letterUpdates);
-    console.log(ids);
-    for (let i = 0; i < ids.length; i++) {
-      setTiles(prevTiles =>
-        prevTiles.map(tile =>
-          // console.log(ids[i]),
-          tile.id === Number(ids[i]) ? { ...tile, position: 'ActionPanel' } : tile
-        )
-      )
-    }
-    ids = [];
-    console.log(tiles);
+    setTiles(prevTiles =>
+      prevTiles.map(tile => ({ ...tile, position: 'ActionPanel' }))
+    );
     // console.log("before: ", letterUpdates);
-    setLetterUpdates(() => {});
+    setLetterUpdates({});
     console.log("after: ", letterUpdates);
+  }
+
+  /**
+   * Refreshes all the tiles in the hand with a random set of 7 tiles
+   */
+  const refresh = () => {
+    let url = baseURL + "refreshhand/" + gameID + "/";
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ playerName: player1})
+    })
+      .then(response => response.json())
+      .then(data => {
+        // processing the server response
+        console.log(data);
+        setHand(data);
+      })
+      .catch(error => {
+        alert(error);
+        console.log("Error: ", error);
+      })
   }
 
   /** 
@@ -194,7 +209,8 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
         })}
         shuffle={shuffle}
         submit={submit}
-        // reset={reset}
+        reset={reset}
+        refresh={refresh}
       />
     </div>
   );

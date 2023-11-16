@@ -13,5 +13,5 @@ var RegisterRoutes = func(router *mux.Router, appInterface controllers.AppContro
 	router.HandleFunc("/joingame/{gameID}/", appInterface.AppJoinGame).Methods("POST")
 	router.HandleFunc("/{gameID}/updategame/", appInterface.AppUpdateMove).Methods("POST")
 	router.HandleFunc("/startgame/{gameID}/", appInterface.AppStartGame).Methods("GET")
-	router.HandleFunc("/refreshhand/{gameID}/", appInterface.AppRefreshHand).Methods("GET")
+	router.HandleFunc("/refreshhand/{gameID}/", appInterface.AppRefreshHand).Methods("POST")
 }
