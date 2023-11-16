@@ -1,10 +1,12 @@
 import React from "react";
 import "../css/WaitingRoom.css";
-import { baseURL, gameID, player1, player2 } from "./Welcome";
+import { baseURL } from "./Welcome";
 
 export default function Room({ setHand, setTilebag, setisgamestarted }) {
 
   const startGame = () => {
+    let gameID = sessionStorage.getItem('gameId');
+    let player1 = sessionStorage.getItem('playerName');
     let url = baseURL + "startgame/" + gameID + "/"
     fetch(url, {
       method: "GET",

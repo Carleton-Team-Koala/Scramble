@@ -4,7 +4,7 @@ import ActionPanel from "../components/ActionPanel";
 import Infoboard from "../components/Infoboard";
 import Tile from '../components/Tile';
 import '../css/Game.css';
-import { baseURL, gameID, player1, player2 } from "./Welcome";
+import { baseURL } from "./Welcome";
 
 function initializeTiles(hand) { // initialize tiles for the board and hand
   return Array.from({ length: hand.length }, (_, i) => ({
@@ -82,13 +82,15 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
    * Refreshes all the tiles in the hand with a random set of 7 tiles
    */
   const refresh = () => {
+    let player = sessionStorage.getItem('playerName');
+    let gameID = sessionStorage.getItem('gameId');
     let url = baseURL + "refreshhand/" + gameID + "/";
     fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ playerName: player1})
+      body: JSON.stringify({ playerName: player})
     })
       .then(response => response.json())
       .then(data => {
@@ -130,15 +132,15 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
    * If the move is valid, it updates the game state accordingly.
    * Otherwise it reverts all the moves.
    */
-  function parseUpdates(updates) {
+  function parseOwnUpdates(updates) {
+    let player = sessionStorage.getItem('playerName');
 
     if (updates.valid) { // if move is valid, update the game state
       const updatesState = updates.gameState;
       parseBoard(updatesState.Board);
-      setHand(updatesState.Players[player1].hand);
+      setHand(updatesState.Players[player].hand);
       setTilebag(updatesState.LetterDistribution);
-      setp1_score(updatesState.Players[player1].score);
-      // set score for player 2 here
+      setp1_score(updatesState.Players[player].score);
     }
     else { // else revert all the moves
       setTiles(prevTiles =>
@@ -158,6 +160,8 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
    * The `data` array is then ready to be sent to the server or processed further.
    */
   const submit = () => {
+    let player = sessionStorage.getItem('playerName');
+    let gameID = sessionStorage.getItem('gameId');
     let data = []
     for (const [key, value] of Object.entries(letterUpdates)) {
       let locs = value[0].split("-");
@@ -171,13 +175,13 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ playerName: player1, updates: data })
+      body: JSON.stringify({ playerName: player, updates: data })
     })
       .then(response => response.json())
       .then(data => {
         // processing the server response
         console.log(data);
-        parseUpdates(data);
+        parseOwnUpdates(data);
       })
       .catch(error => {
         alert(error);
