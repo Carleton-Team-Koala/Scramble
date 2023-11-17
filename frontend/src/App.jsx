@@ -4,11 +4,9 @@ import Room from "./pages/WaitingRoom"
 import "./css/App.css";
 
 function App() {
-
   /**
    * Sets up the game and the waiting room from the initial server response.
    */
-
   const [hand, setHand] = useState(['BLANK', 'B', 'C', 'D', 'E', 'A', 'G']); // hand, gets rendered in the action panel
   const [tilebag, setTilebag] = useState({
     'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0,
@@ -16,7 +14,8 @@ function App() {
     'O': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'U': 0,
     'V': 0, 'W': 0, 'X': 0, 'Y': 0, 'Z': 0, 'BLANK': 0
   }); // tilebag, gets rendered on the infoboard
-  const [isGameStarted, setIsGameStarted] = useState(false);
+  // const [isGameStarted, setIsGameStarted] = useState(false);
+  const isGameStarted = true;
 
   if (isGameStarted) {
     return (

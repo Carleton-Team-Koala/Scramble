@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import { gameID } from "./WaitingRoom";
 import '../css/Popup.css';
 
 export default function Popup(props) {
@@ -30,7 +31,7 @@ export default function Popup(props) {
                     </div>
                 )}
 
-                <Link to="/play">
+                <Link to={`/play/${gameID}`}>
                     <button className='submit-btn' onClick={handleSubmit}>Submit</button>
                 </Link>
             </div>
