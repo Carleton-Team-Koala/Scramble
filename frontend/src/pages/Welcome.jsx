@@ -2,55 +2,48 @@ import React, { useState, useEffect } from 'react';
 import "../css/Welcome.css";
 import Popup from "./Popup";
 
-export const baseURL = "http://localhost:8080/"
-let frontendURL = "/play/";
+export const baseURL = "http://localhost:8080/";
 
 function createGame() {
-  /**
-   * Sets up game ID in sessionStorage, making it tab-unique.
-   * Sends a POST request to the backend to create a new game.
-   */
   const url = baseURL + "newgame/";
   const player = sessionStorage.getItem('playerName');
-  fetch(url, {
+
+  // Return the fetch promise
+  return fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({ playerName: player })
   })
-    .then(response => response.json())
-    .then(data => {
-      if (data.valid) {
-        sessionStorage.setItem('gameId', data.gameID);
-        frontendURL += data.gameID;
-        console.log(data.gameID);
-      }
-      else {
-        alert("The game could not be started at the moment!");
-      }
-    })
-    .catch(error => {
-      alert(error);
-      console.error("Error: ", error);
-    })
-}
+  .then(response => response.json())
+  .then(data => {
+    if (data.valid) {
+      sessionStorage.setItem('gameId', data.gameID);
+      console.log(data.gameID);
+      return data.gameID;  // Resolve with gameID
+    } else {
+      alert("The game could not be started at the moment!");
+      return null;  // Resolve with null
+    }
+  })
+  .catch(error => {
+    alert(error);
+    console.error("Error: ", error);
+    return null;  // Resolve with null in case of error
+  });
+};
 
 function joinGame() {
-  /**
-   * Uses sessionStorage to get player name and the ID of the game they would like to join.
-   * Sends a POST request to the backend to join a game.
-   */
-  const url = baseURL + "joingame/";
   const player = sessionStorage.getItem('playerName'); // Get player name from sessionStorage
   const gameID = sessionStorage.getItem('gameId'); // Get game ID from sessionStorage
+  const url = baseURL + "joingame/" + gameID + "/";
 
   if (!player || !gameID) {
     alert("Player name or game ID is missing.");
     return; // Exit the function if the necessary data is missing
   }
 
-  frontendURL += gameID;
   fetch(url, {
     method: "POST",
     headers: {
@@ -58,20 +51,21 @@ function joinGame() {
     },
     body: JSON.stringify({ playerName: player })
   })
-    .then(response => response.json())
-    .then(data => {
-      if (data.valid) {
-        console.log("Great success!");
-      }
-      else {
-        alert("This gameID doesn't exist or this game could not be joined at the moment!");
-      }
-    })
-    .catch(error => {
-      alert(error);
-      console.error("Error: ", error);
-    })
-}
+  .then(response => {
+    if (response.ok) {
+      // If the response status code is 200
+      console.log("Joined game successfully!");
+    } else {
+      // If the response status code is not 200
+      console.error(`Failed to join game: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  })
+  .catch(error => {
+    alert(error);
+    console.error("Error: ", error);
+  })
+};
 
 export default function Welcome() {
   const [newGamePopup, setNewGamePopup] = useState(false);

@@ -1,23 +1,27 @@
-import { React, useState } from 'react';
-import { Link } from "react-router-dom";
+import { React } from 'react';
+import { useNavigate } from "react-router-dom";
 import '../css/Popup.css';
 
 export default function Popup(props) {
 
-    const [gameID, setGameID] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const player = document.getElementById('playerName').value;
         sessionStorage.setItem('playerName', player);
-
+    
+        let gameId = '';
+    
         if (props.type === 'joinGame') {
-            setGameID(document.getElementById('gameId').value);
-            console.log(gameID);
-            sessionStorage.setItem('gameId', gameID);
-            console.log("storage ", sessionStorage.getItem('gameId'));
+            gameId = document.getElementById('gameId').value;
+            sessionStorage.setItem('gameId', gameId);
+            props.onSubmit();
+        } else {
+            // Await the createGame function to complete and get the gameId
+            gameId = await props.onSubmit();
         }
-
-        props.onSubmit();
+    
+        navigate(`/room/${gameId}`);
     };
 
     return (props.trigger) ? (
@@ -33,10 +37,9 @@ export default function Popup(props) {
                         <input type='text' id='gameId'></input>
                     </div>
                 )}
+                
+                <button className='submit-btn' onClick={handleSubmit}>Submit</button>
 
-                <Link to={`/play/${gameID}`}>
-                    <button className='submit-btn' onClick={handleSubmit}>Submit</button>
-                </Link>
             </div>
         </div>
     ) : "";
