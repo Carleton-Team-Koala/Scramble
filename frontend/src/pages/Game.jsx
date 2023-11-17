@@ -7,7 +7,6 @@ import '../css/Game.css';
 import '../css/Rules.css'
 import { baseURL } from "./Welcome";
 import Rules from './Rules';
-import { gameID } from './WaitingRoom';
 
 
 function initializeTiles(hand) { // initialize tiles for the board and hand
@@ -34,35 +33,38 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
   const [isRulesOpen, setIsRulesOpen] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
 
-  useEffect(() => { // initialize tiles when hand changes
-    // setTiles(initializeTiles(hand));    // This was commented out.
-
-
+  useEffect(() => { // initialize scores
     //call the endpoint to check isGameStarted from backend here, and then update isGameStarted from frontend here.
     // I think setTiles should also be in the function call.
+    let playerName = sessionStorage.getItem('playerName');
+    let gameID = sessionStorage.getItem('gameId');
 
-    // const url = baseURL + "/getgamestate/" + gameID + "/";
-    // fetch(url, {
-    //   method: "GET",
-    //   headers: {
-    //     "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify({ playerName: playerName })
-    // })
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     setIsGameStarted(data.gameStarted);
-    //   })
-    //   .catch(error => {
-    //     alert(error);
-    //     console.error("Error: ", error);
-    //   })
+    const url = baseURL + "/getgamestate/" + gameID + "/";
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ playerName: playerName })
+    })
+      .then(response => response.json())
+      .then(data => {
+        setIsGameStarted(data.gameState.gameStarted);
+      })
+      .catch(error => {
+        alert(error);
+        console.error("Error: ", error);
+      })
 
     // setIsGameStarted(true);        //this was for testing purposes. Uncomment to see the bug i was talking about.
 
     console.log("Hello!");
     console.log("game: ", isGameStarted);
   }, []);
+
+  useEffect(() => { // initialize tiles when hand changes
+    setTiles(initializeTiles(hand));
+  }, [hand]);
 
   /**
     * Handles the event when a tile is dropped onto the board.
@@ -128,7 +130,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ playerName: player})
+      body: JSON.stringify({ playerName: player })
     })
       .then(response => response.json())
       .then(data => {
@@ -227,7 +229,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
       })
   };
 
-  if (isGameStarted) { 
+  if (isGameStarted) {
     return (
       <div>
         <div className="board-score">

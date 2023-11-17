@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import Game from "./pages/Game";
 import Room from "./pages/WaitingRoom"
 import "./css/App.css";
@@ -14,8 +15,20 @@ function App() {
     'O': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'U': 0,
     'V': 0, 'W': 0, 'X': 0, 'Y': 0, 'Z': 0, 'BLANK': 0
   }); // tilebag, gets rendered on the infoboard
-  // const [isGameStarted, setIsGameStarted] = useState(false);
-  const isGameStarted = true;
+  const [isGameStarted, setIsGameStarted] = useState(false);
+
+  const { id } = useParams(); // This retrieves the game ID from the URL parameter
+  const [gameId, setGameId] = useState(null);
+
+  useEffect(() => {
+    // Here you can retrieve the gameId from the session
+    // and set it using the setGameId function.
+    // This is a placeholder for session retrieval logic.
+    const storedGameId = sessionStorage.getItem('gameId'); // Assuming gameId is stored in sessionStorage
+    if (storedGameId) {
+      setGameId(storedGameId);
+    }
+  }, []);
 
 
   if (isGameStarted) {

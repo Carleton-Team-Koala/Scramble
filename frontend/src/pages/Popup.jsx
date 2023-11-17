@@ -1,16 +1,17 @@
-import React from 'react';
+import { React, useState } from 'react';
 import { Link } from "react-router-dom";
-import { gameID } from "./WaitingRoom";
 import '../css/Popup.css';
 
 export default function Popup(props) {
 
+    const [gameID, setGameID] = useState('');
+
     const handleSubmit = () => {
-        const username = document.getElementById('playerName').value;
-        sessionStorage.setItem('playerName', username);
+        const player = document.getElementById('playerName').value;
+        sessionStorage.setItem('playerName', player);
 
         if (props.type === 'joinGame') {
-            const gameID = document.getElementById('gameId').value;
+            setGameID(document.getElementById('gameId').value);
             sessionStorage.setItem('gameId', gameID);
         }
 

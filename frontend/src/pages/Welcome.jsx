@@ -11,19 +11,18 @@ function createGame() {
    * Sends a POST request to the backend to create a new game.
    */
   const url = baseURL + "newgame/";
-  const playerName = sessionStorage.getItem('playerName');
+  const player = sessionStorage.getItem('playerName');
   fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ playerName: playerName })
+    body: JSON.stringify({ playerName: player })
   })
     .then(response => response.json())
     .then(data => {
       if (data.valid) {
         sessionStorage.setItem('gameId', data.gameID);
-        sessionStorage.setItem('playerId', '1');
         frontendURL += data.gameID;
         console.log(data.gameID);
       }
@@ -43,10 +42,10 @@ function joinGame() {
    * Sends a POST request to the backend to join a game.
    */
   const url = baseURL + "joingame/";
-  const playerName = sessionStorage.getItem('playerName'); // Get player name from sessionStorage
+  const player = sessionStorage.getItem('playerName'); // Get player name from sessionStorage
   const gameID = sessionStorage.getItem('gameId'); // Get game ID from sessionStorage
 
-  if (!playerName || !gameID) {
+  if (!player || !gameID) {
     alert("Player name or game ID is missing.");
     return; // Exit the function if the necessary data is missing
   }
@@ -57,13 +56,12 @@ function joinGame() {
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ playerName: player1 })
+    body: JSON.stringify({ playerName: player })
   })
     .then(response => response.json())
     .then(data => {
       if (data.valid) {
         console.log("Great success!");
-        sessionStorage.setItem('playerID', '2');
       }
       else {
         alert("This gameID doesn't exist or this game could not be joined at the moment!");
