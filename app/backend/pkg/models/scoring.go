@@ -69,43 +69,6 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		}
 	}
 
-	// // check if at least one new tile is adjacent to an already placed tile, unless the board is completely blank
-	// if len(activeGame.Board) > 0 {
-	// 	isAdjacent := false
-	// 	for row := 0; row < len(activeGame.Board); row++ {
-	// 		for col := 0; col < len(activeGame.Board[row]); col++ {
-	// 			if activeGame.Board[row][col] != "" {
-	// 				isNewTile := false
-	// 				for _, tile := range newTiles {
-	// 					if tile.Row == row && tile.Col == col {
-	// 						isNewTile = true
-	// 						break
-	// 					}
-	// 				}
-	// 				if !isNewTile {
-	// 					switch {
-	// 					case row > 0 && activeGame.Board[row-1][col] != "":
-	// 						isAdjacent = true
-	// 					case row < 14 && activeGame.Board[row+1][col] != "":
-	// 						isAdjacent = true
-	// 					case col > 0 && activeGame.Board[row][col-1] != "":
-	// 						isAdjacent = true
-	// 					case col < 14 && activeGame.Board[row][col+1] != "":
-	// 						isAdjacent = true
-	// 					default:
-	// 						isAdjacent = false
-	// 					}
-	// 				}
-	// 			}
-	// 			if isAdjacent {
-	// 				break
-	// 			}
-	// 		}
-	// 		if isAdjacent {
-	// 			break
-	// 		}
-	// 	}
-
 	isAdjacent := TestAdjacentToPlacedTile(activeGame, newTiles)
 
 	if !isAdjacent {
@@ -323,14 +286,15 @@ func checkSequential(tiles MoveSlice, game Game) (bool, bool) {
 // It takes an activeGame of type Game and a newTiles of type MoveSlice as input.
 // It returns a boolean value indicating whether at least one new tile is adjacent to an already placed tile.
 func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
-	if len(activeGame.Board) == 0 {
-		// If the board is completely blank, then any new tile is adjacent to an already placed tile.
+	tempBoard := [15][15]string{}
+	if activeGame.Board == tempBoard {
+		fmt.Println("board is empty")
 		return true
 	}
 
 	// Check if at least one new tile is adjacent to an already placed tile.
 
-	fmt.Println("checking adjacency")
+	fmt.Println("checking adjacency, board is not empty")
 	for _, tile := range newTiles {
 		row, col := tile.Col, tile.Row
 		fmt.Println("tile: ", tile, " row: ", row, " col: ", col, " activeGame.Board[row-1][col]: ", activeGame.Board[row-1][col], "containsTile: ", containsTile(newTiles, row-1, col))
