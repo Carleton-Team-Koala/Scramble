@@ -14,12 +14,14 @@ type AppController struct {
 	AppInterface models.App
 }
 
+// set up interface for application
 type AppControllerInterface interface {
 	AppCreateGame(w http.ResponseWriter, r *http.Request)
 	AppJoinGame(w http.ResponseWriter, r *http.Request)
 	AppUpdateMove(w http.ResponseWriter, r *http.Request)
 	AppStartGame(w http.ResponseWriter, r *http.Request)
 	AppRefreshHand(w http.ResponseWriter, r *http.Request)
+	AppReturnGameState(w http.ResponseWriter, r *http.Request)
 }
 
 // Homepage
@@ -101,7 +103,7 @@ func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Start game endpoint
+// API endpoint to start game
 func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
@@ -119,7 +121,7 @@ func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resp)
 }
 
-// Update move endpoint
+// API endpoint to update game
 func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
@@ -194,6 +196,23 @@ func (a *AppController) AppRefreshHand(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(newHand)
+}
+
+func (a *AppController) AppReturnGameState(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	gameID := vars["gameID"]
+	gameDetails, err := a.AppInterface.GetGameById(gameID)
+	if err != nil {
+		errorResponse(w, "Not able to return game state: "+err.Error(), http.StatusOK)
+		return
+	}
+
+	resp := apiResponse {
+		GameResp: gameDetails,
+		Valid: true,
+	}
+
+	json.NewEncoder(w).Encode(resp)
 }
 
 // Error response
