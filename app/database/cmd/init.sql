@@ -4,7 +4,11 @@ CREATE TABLE IF NOT EXISTS games (
     GameID TEXT,
     Board JSONB NOT NULL,
     LetterDistribution JSONB NOT NULL,
-    Players JSONB
+    Players JSONB,
+    CurrentPlayer TEXT,
+    PlayerList JSONB,
+    TotalMoves INTEGER,
+    GameStarted BOOLEAN
 );
 
 CREATE ROLE KoalaAdmin 

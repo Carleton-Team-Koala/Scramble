@@ -14,12 +14,14 @@ type AppController struct {
 	AppInterface models.App
 }
 
+// set up interface for application
 type AppControllerInterface interface {
 	AppCreateGame(w http.ResponseWriter, r *http.Request)
 	AppJoinGame(w http.ResponseWriter, r *http.Request)
 	AppUpdateMove(w http.ResponseWriter, r *http.Request)
 	AppStartGame(w http.ResponseWriter, r *http.Request)
 	AppRefreshHand(w http.ResponseWriter, r *http.Request)
+	AppReturnGameState(w http.ResponseWriter, r *http.Request)
 }
 
 // Homepage
@@ -59,9 +61,9 @@ func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := apiResponse {
+	resp := apiResponse{
 		GameID: &newGameID,
-		Valid: true,
+		Valid:  true,
 	}
 
 	json.NewEncoder(w).Encode(resp)
@@ -101,7 +103,7 @@ func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Start game endpoint
+// API endpoint to start game
 func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
@@ -111,15 +113,15 @@ func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := apiResponse {
+	resp := apiResponse{
 		GameResp: gameDetails,
-		Valid: true,
+		Valid:    true,
 	}
 
 	json.NewEncoder(w).Encode(resp)
 }
 
-// Update move endpoint
+// API endpoint to update game
 func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
@@ -152,9 +154,9 @@ func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 		errorResponse(w, "Not able to update game: "+err.Error(), http.StatusOK)
 		return
 	}
-	resp := apiResponse {
+	resp := apiResponse{
 		GameResp: updatedGame,
-		Valid: true,
+		Valid:    true,
 	}
 
 	json.NewEncoder(w).Encode(resp)
@@ -196,13 +198,30 @@ func (a *AppController) AppRefreshHand(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newHand)
 }
 
+func (a *AppController) AppReturnGameState(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	gameID := vars["gameID"]
+	gameDetails, err := a.AppInterface.GetGameById(gameID)
+	if err != nil {
+		errorResponse(w, "Not able to return game state: "+err.Error(), http.StatusOK)
+		return
+	}
+
+	resp := apiResponse{
+		GameResp: gameDetails,
+		Valid:    true,
+	}
+
+	json.NewEncoder(w).Encode(resp)
+}
+
 // Error response
 func errorResponse(w http.ResponseWriter, message string, httpStatusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatusCode)
 	resp := apiResponse{
 		ErrorMessage: &message,
-		Valid: false,
+		Valid:        false,
 	}
 	jsonResp, _ := json.Marshal(resp)
 	w.Write(jsonResp)

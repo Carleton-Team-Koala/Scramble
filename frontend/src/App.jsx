@@ -17,6 +17,7 @@ function App() {
   // const [isGameStarted, setIsGameStarted] = useState(false);
   const isGameStarted = true;
 
+
   if (isGameStarted) {
     return (
       <div className="App" >

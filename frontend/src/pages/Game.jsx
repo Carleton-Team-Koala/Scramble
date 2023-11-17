@@ -4,7 +4,11 @@ import ActionPanel from "../components/ActionPanel";
 import Infoboard from "../components/Infoboard";
 import Tile from '../components/Tile';
 import '../css/Game.css';
+import '../css/Rules.css'
 import { baseURL } from "./Welcome";
+import Rules from './Rules';
+import { gameID } from './WaitingRoom';
+
 
 function initializeTiles(hand) { // initialize tiles for the board and hand
   return Array.from({ length: hand.length }, (_, i) => ({
@@ -27,10 +31,38 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
   const [tiles, setTiles] = useState(initializeTiles(hand)); // array of tiles, gets rendered on the board and hand
   const [p1_score, setp1_score] = useState(0); // scores for both players
   const [p2_score, setp2_score] = useState(0);
+  const [isRulesOpen, setIsRulesOpen] = useState(false);
+  const [isGameStarted, setIsGameStarted] = useState(false);
 
   useEffect(() => { // initialize tiles when hand changes
-    setTiles(initializeTiles(hand));
-  }, [hand]);
+    // setTiles(initializeTiles(hand));    // This was commented out.
+
+
+    //call the endpoint to check isGameStarted from backend here, and then update isGameStarted from frontend here.
+    // I think setTiles should also be in the function call.
+
+    // const url = baseURL + "/getgamestate/" + gameID + "/";
+    // fetch(url, {
+    //   method: "GET",
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify({ playerName: playerName })
+    // })
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     setIsGameStarted(data.gameStarted);
+    //   })
+    //   .catch(error => {
+    //     alert(error);
+    //     console.error("Error: ", error);
+    //   })
+
+    // setIsGameStarted(true);        //this was for testing purposes. Uncomment to see the bug i was talking about.
+
+    console.log("Hello!");
+    console.log("game: ", isGameStarted);
+  }, []);
 
   /**
     * Handles the event when a tile is dropped onto the board.
@@ -85,6 +117,12 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
     let player = sessionStorage.getItem('playerName');
     let gameID = sessionStorage.getItem('gameId');
     let url = baseURL + "refreshhand/" + gameID + "/";
+
+    setTiles(prevTiles =>
+      prevTiles.map(tile => ({ ...tile, position: 'ActionPanel' }))
+    );
+    setLetterUpdates({});
+
     fetch(url, {
       method: "POST",
       headers: {
@@ -189,33 +227,38 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
       })
   };
 
-  return (
-    <div>
-      <div className="board-score">
-        <Board
-          letterUpdates={letterUpdates}
-          onTileDrop={handleTileDrop}
-          scoredLetters={scoredLetters}
+  if (isGameStarted) { 
+    return (
+      <div>
+        <div className="board-score">
+          <Board
+            letterUpdates={letterUpdates}
+            onTileDrop={handleTileDrop}
+            scoredLetters={scoredLetters}
+          />
+          <Infoboard
+            tilebag={tilebag}
+            p1_score={p1_score}
+            p2_score={p2_score}
+          />
+        </div>
+        <ActionPanel
+          tilesAp={tiles.map(tile => {
+            if (tile.position === 'ActionPanel') {
+              return <Tile key={tile.id} letter={tile.letter} id={tile.id} />;
+            } else {
+              return <div key={tile.id} className="tile-placeholder"></div>;
+            }
+          })}
+          shuffle={shuffle}
+          submit={submit}
+          reset={reset}
+          refresh={refresh}
         />
-        <Infoboard
-          tilebag={tilebag}
-          p1_score={p1_score}
-          p2_score={p2_score}
-        />
+        <Rules isRulesOpen={isRulesOpen} setIsRulesOpen={setIsRulesOpen}></Rules>
       </div>
-      <ActionPanel
-        tilesAp={tiles.map(tile => {
-          if (tile.position === 'ActionPanel') {
-            return <Tile key={tile.id} letter={tile.letter} id={tile.id} />;
-          } else {
-            return <div key={tile.id} className="tile-placeholder"></div>;
-          }
-        })}
-        shuffle={shuffle}
-        submit={submit}
-        reset={reset}
-        refresh={refresh}
-      />
-    </div>
-  );
+    );
+  } else {
+    alert("Game has not started yet!");
+  }
 };
