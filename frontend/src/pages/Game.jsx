@@ -7,6 +7,7 @@ import '../css/Game.css';
 import '../css/Rules.css'
 import { baseURL, gameID, player1, player2 } from "./Welcome";
 import Rules from './Rules';
+import Scores from '../components/Scores';
 
 function initializeTiles(hand) { // initialize tiles for the board and hand
   return Array.from({ length: hand.length }, (_, i) => ({
@@ -197,6 +198,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
   return (
     <div>
       <div className="board-score">
+        <Scores></Scores>
         <Board
           letterUpdates={letterUpdates}
           onTileDrop={handleTileDrop}
