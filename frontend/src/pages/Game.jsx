@@ -86,6 +86,12 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
    */
   const refresh = () => {
     let url = baseURL + "refreshhand/" + gameID + "/";
+
+    setTiles(prevTiles =>
+      prevTiles.map(tile => ({ ...tile, position: 'ActionPanel' }))
+    );
+    setLetterUpdates({});
+
     fetch(url, {
       method: "POST",
       headers: {
