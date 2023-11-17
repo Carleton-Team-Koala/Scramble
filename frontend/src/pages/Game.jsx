@@ -4,7 +4,9 @@ import ActionPanel from "../components/ActionPanel";
 import Infoboard from "../components/Infoboard";
 import Tile from '../components/Tile';
 import '../css/Game.css';
+import '../css/Rules.css'
 import { baseURL, gameID, player1, player2 } from "./Welcome";
+import Rules from './Rules';
 
 function initializeTiles(hand) { // initialize tiles for the board and hand
   return Array.from({ length: hand.length }, (_, i) => ({
@@ -27,6 +29,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
   const [tiles, setTiles] = useState(initializeTiles(hand)); // array of tiles, gets rendered on the board and hand
   const [p1_score, setp1_score] = useState(0); // scores for both players
   const [p2_score, setp2_score] = useState(0);
+  const [isRulesOpen, setIsRulesOpen] = useState(false);
 
   useEffect(() => { // initialize tiles when hand changes
     setTiles(initializeTiles(hand));
@@ -212,6 +215,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
         reset={reset}
         refresh={refresh}
       />
+      <Rules isRulesOpen={isRulesOpen} setIsRulesOpen={setIsRulesOpen}></Rules>
     </div>
   );
 };
