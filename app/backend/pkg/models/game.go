@@ -54,10 +54,10 @@ func (app *App) CreateGame(playerName string) (string, error) {
 		Board:            [15][15]string{},
 		AvailableLetters: newLetterDistribution,
 		Players:          playerStructList,
-		CurrentPlayer: "",
-		PlayerList: playerList,
-		TotalMoves: 0,
-		GameStarted: false,
+		CurrentPlayer:    "",
+		PlayerList:       playerList,
+		TotalMoves:       0,
+		GameStarted:      false,
 	}
 
 	// Add game to database
@@ -195,7 +195,7 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 
 	loadedGame.TotalMoves += 1
 
-	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves % 2]
+	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves%2]
 
 	// update game on database
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
@@ -212,7 +212,7 @@ func (app *App) RefreshHand(gameID string, playerName string) (*[]string, error)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	for index, letter := range loadedGame.Players[playerName].Hand {
 		returnTilesToBag(*loadedGame, []Move{{Letter: letter}})
 		newTile := getRandomTile(loadedGame.AvailableLetters)

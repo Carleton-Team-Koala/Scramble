@@ -5,10 +5,10 @@ type Game struct {
 	Board            [15][15]string        `json:"Board"`
 	AvailableLetters map[string]int        `json:"LetterDistribution"`
 	Players          map[string]PlayerInfo `json:"Players"`
-	CurrentPlayer string `json:"CurrentPlayer"`
-	PlayerList []string `json:"-"`
-	TotalMoves int `json:"TotalMoves"`
-	GameStarted bool `json:"GameStarted"`
+	CurrentPlayer    string                `json:"CurrentPlayer"`
+	PlayerList       []string              `json:"-"`
+	TotalMoves       int                   `json:"TotalMoves"`
+	GameStarted      bool                  `json:"GameStarted"`
 }
 
 type PlayerInfo struct {
@@ -35,4 +35,3 @@ type Move struct {
 	Col    int    `json:"yLoc"`
 	Row    int    `json:"xLoc"`
 }
-
