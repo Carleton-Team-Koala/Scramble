@@ -4,6 +4,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"reflect"
 	"sort"
 )
 
@@ -144,8 +145,9 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		score += 50
 	}
 
-	// fmt.Println("OGWordScore: ", OGWordScore)
-	score += (scoreAggregateModifier * OGWordScore)
+	fmt.Println("OGWordScore: ", OGWordScore, ", scoreAggregateModifier: ", scoreAggregateModifier)
+	score += OGWordScore
+	score *= scoreAggregateModifier
 	fmt.Println("DONE: score: ", score)
 	return score, nil
 }
@@ -287,7 +289,8 @@ func checkSequential(tiles MoveSlice, game Game) (bool, bool) {
 // It returns a boolean value indicating whether at least one new tile is adjacent to an already placed tile.
 func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 	tempBoard := [15][15]string{}
-	if activeGame.Board == tempBoard {
+
+	if reflect.DeepEqual(activeGame.Board, tempBoard) {
 		fmt.Println("board is empty")
 		return true
 	}
