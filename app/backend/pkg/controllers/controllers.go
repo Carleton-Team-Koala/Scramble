@@ -61,9 +61,9 @@ func (a *AppController) AppCreateGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := apiResponse {
+	resp := apiResponse{
 		GameID: &newGameID,
-		Valid: true,
+		Valid:  true,
 	}
 
 	json.NewEncoder(w).Encode(resp)
@@ -113,9 +113,9 @@ func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := apiResponse {
+	resp := apiResponse{
 		GameResp: gameDetails,
-		Valid: true,
+		Valid:    true,
 	}
 
 	json.NewEncoder(w).Encode(resp)
@@ -154,9 +154,9 @@ func (a *AppController) AppUpdateMove(w http.ResponseWriter, r *http.Request) {
 		errorResponse(w, "Not able to update game: "+err.Error(), http.StatusOK)
 		return
 	}
-	resp := apiResponse {
+	resp := apiResponse{
 		GameResp: updatedGame,
-		Valid: true,
+		Valid:    true,
 	}
 
 	json.NewEncoder(w).Encode(resp)
@@ -207,9 +207,9 @@ func (a *AppController) AppReturnGameState(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	resp := apiResponse {
+	resp := apiResponse{
 		GameResp: gameDetails,
-		Valid: true,
+		Valid:    true,
 	}
 
 	json.NewEncoder(w).Encode(resp)
@@ -221,7 +221,7 @@ func errorResponse(w http.ResponseWriter, message string, httpStatusCode int) {
 	w.WriteHeader(httpStatusCode)
 	resp := apiResponse{
 		ErrorMessage: &message,
-		Valid: false,
+		Valid:        false,
 	}
 	jsonResp, _ := json.Marshal(resp)
 	w.Write(jsonResp)
