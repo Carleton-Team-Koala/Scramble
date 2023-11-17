@@ -18,6 +18,7 @@ function App() {
   }); // tilebag, gets rendered on the infoboard
   const [isGameStarted, setIsGameStarted] = useState(false);
 
+
   if (isGameStarted) {
     return (
       <div className="App" >

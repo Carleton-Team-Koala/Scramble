@@ -48,7 +48,7 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 
 	sort.Sort(newTiles)
 
-	adjacentToPlacedTile := adjacentToPlacedTile(activeGame, newTiles)
+	adjacentToPlacedTile := TestAdjacentToPlacedTile(activeGame, newTiles)
 	if !adjacentToPlacedTile {
 		return 0, errors.New("at least one new tile must be adjacent to an already placed tile")
 	}
@@ -88,47 +88,49 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		}
 	}
 
-	// check if at least one new tile is adjacent to an already placed tile, unless the board is completely blank
-	if len(activeGame.Board) > 0 {
-		isAdjacent := false
-		for row := 0; row < len(activeGame.Board); row++ {
-			for col := 0; col < len(activeGame.Board[row]); col++ {
-				if activeGame.Board[row][col] != "" {
-					isNewTile := false
-					for _, tile := range newTiles {
-						if tile.Row == row && tile.Col == col {
-							isNewTile = true
-							break
-						}
-					}
-					if !isNewTile {
-						switch {
-						case row > 0 && activeGame.Board[row-1][col] != "":
-							isAdjacent = true
-						case row < 14 && activeGame.Board[row+1][col] != "":
-							isAdjacent = true
-						case col > 0 && activeGame.Board[row][col-1] != "":
-							isAdjacent = true
-						case col < 14 && activeGame.Board[row][col+1] != "":
-							isAdjacent = true
-						default:
-							isAdjacent = false
-						}
-					}
-				}
-				if isAdjacent {
-					break
-				}
-			}
-			if isAdjacent {
-				break
-			}
-		}
+	// // check if at least one new tile is adjacent to an already placed tile, unless the board is completely blank
+	// if len(activeGame.Board) > 0 {
+	// 	isAdjacent := false
+	// 	for row := 0; row < len(activeGame.Board); row++ {
+	// 		for col := 0; col < len(activeGame.Board[row]); col++ {
+	// 			if activeGame.Board[row][col] != "" {
+	// 				isNewTile := false
+	// 				for _, tile := range newTiles {
+	// 					if tile.Row == row && tile.Col == col {
+	// 						isNewTile = true
+	// 						break
+	// 					}
+	// 				}
+	// 				if !isNewTile {
+	// 					switch {
+	// 					case row > 0 && activeGame.Board[row-1][col] != "":
+	// 						isAdjacent = true
+	// 					case row < 14 && activeGame.Board[row+1][col] != "":
+	// 						isAdjacent = true
+	// 					case col > 0 && activeGame.Board[row][col-1] != "":
+	// 						isAdjacent = true
+	// 					case col < 14 && activeGame.Board[row][col+1] != "":
+	// 						isAdjacent = true
+	// 					default:
+	// 						isAdjacent = false
+	// 					}
+	// 				}
+	// 			}
+	// 			if isAdjacent {
+	// 				break
+	// 			}
+	// 		}
+	// 		if isAdjacent {
+	// 			break
+	// 		}
+	// 	}
 
-		if !isAdjacent {
-			return 0, errors.New("at least one new tile must be adjacent to an already placed tile")
-		}
+	isAdjacent := TestAdjacentToPlacedTile(activeGame, newTiles)
+
+	if !isAdjacent {
+		return 0, errors.New("at least one new tile must be adjacent to an already placed tile")
 	}
+	// }
 
 	// check if all new tiles are in a line either horizontally or vertically
 	for i := 0; i < len(newTiles); i++ {
@@ -295,42 +297,37 @@ func checkSequential(tiles MoveSlice, game Game) (bool, bool) {
 	// Check if sequential in X direction (same Row)
 	for i := 1; i < len(tiles); i++ {
 		if tiles[i].Row != tiles[0].Row {
-			isSequentialInX = false
+			isSequentialInY = false
 			break
 		}
 	}
+	fmt.Println("isSequentialInX: ", isSequentialInX)
 
 	// If not sequential in X, check if sequential in Y direction (same Col)
 	if !isSequentialInX {
 		for i := 1; i < len(tiles); i++ {
 			if tiles[i].Col != tiles[0].Col {
-				isSequentialInY = false
+				isSequentialInX = false
 				break
 			}
 		}
 	} else {
-		isSequentialInY = false // If they are sequential in X, they cannot be in Y
+		isSequentialInX = false // If they are sequential in X, they cannot be in Y
 	}
+	fmt.Println("isSequentialInY: ", isSequentialInY)
 
 	// If sequential in either direction, the adjacent elements must have consecutive indexes
-	if isSequentialInX {
+	if isSequentialInX || isSequentialInY {
 		sort.SliceStable(tiles, func(i, j int) bool {
-			return tiles[i].Col < tiles[j].Col
-		})
-
-		for i := 1; i < len(tiles); i++ {
-			if tiles[i].Col-tiles[i-1].Col != 1 {
-				return false, false
+			if isSequentialInX {
+				return tiles[i].Col < tiles[j].Col
 			}
-		}
-
-	} else if isSequentialInY {
-		sort.SliceStable(tiles, func(i, j int) bool {
 			return tiles[i].Row < tiles[j].Row
 		})
 
+		// Check if adjacent elements have consecutive indexes
 		for i := 1; i < len(tiles); i++ {
-			if tiles[i].Row-tiles[i-1].Row != 1 {
+			if (isSequentialInX && tiles[i].Col-tiles[i-1].Col != 1) || (isSequentialInY && tiles[i].Row-tiles[i-1].Row != 1) {
 				return false, false
 			}
 		}
@@ -344,7 +341,7 @@ func checkSequential(tiles MoveSlice, game Game) (bool, bool) {
 // adjacentToPlacedTile checks if at least one new tile is adjacent to an already placed tile, unless the board is completely blank.
 // It takes an activeGame of type Game and a newTiles of type MoveSlice as input.
 // It returns a boolean value indicating whether at least one new tile is adjacent to an already placed tile.
-func adjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
+func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 	if len(activeGame.Board) == 0 {
 		// If the board is completely blank, then any new tile is adjacent to an already placed tile.
 		return true
@@ -354,21 +351,33 @@ func adjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 
 	fmt.Println("checking adjacency")
 	for _, tile := range newTiles {
-		row, col := tile.Row, tile.Col
-		if row > 0 && activeGame.Board[row-1][col] != "" && !containsTile(newTiles, row-1, col) {
+		row, col := tile.Col, tile.Row
+		fmt.Println("tile: ", tile, " row: ", row, " col: ", col, " activeGame.Board[row-1][col]: ", activeGame.Board[row-1][col], "containsTile: ", containsTile(newTiles, row-1, col))
+		if activeGame.Board[row-1][col] != "" && !containsTile(newTiles, row-1, col) {
+			fmt.Println("tile above is not empty")
 			return true
 		}
-		if row < 14 && activeGame.Board[row+1][col] != "" && !containsTile(newTiles, row+1, col) {
-			return true
-		}
-		if col > 0 && activeGame.Board[row][col-1] != "" && !containsTile(newTiles, row, col-1) {
-			return true
-		}
-		if col < 14 && activeGame.Board[row][col+1] != "" && !containsTile(newTiles, row, col+1) {
-			return true
-		}
-	}
 
+		fmt.Println("tile: ", tile, " row: ", row, " col: ", col, " activeGame.Board[row+1][col]: ", activeGame.Board[row+1][col], "containsTile: ", containsTile(newTiles, row+1, col))
+		if activeGame.Board[row+1][col] != "" && !containsTile(newTiles, row+1, col) {
+			fmt.Println("tile below is not empty")
+			return true
+		}
+
+		fmt.Println("tile: ", tile, " row: ", row, " col: ", col, " activeGame.Board[row][col-1]: ", activeGame.Board[row][col-1], "containsTile: ", containsTile(newTiles, row, col-1))
+		if activeGame.Board[row][col-1] != "" && !containsTile(newTiles, row, col-1) {
+			fmt.Println("tile to the left is not empty")
+			return true
+		}
+
+		fmt.Println("tile: ", tile, " row: ", row, " col: ", col, " activeGame.Board[row][col+1]: ", activeGame.Board[row][col+1], "containsTile: ", containsTile(newTiles, row, col+1))
+		if activeGame.Board[row][col+1] != "" && !containsTile(newTiles, row, col+1) {
+			fmt.Println("tile to the right is not empty")
+			return true
+		}
+		fmt.Println("no adjacent tiles: ", tile)
+
+	}
 	return false
 }
 
