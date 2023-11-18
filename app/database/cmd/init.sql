@@ -1,5 +1,15 @@
 \c scramble_db;
 
+-- Creates a table named "games" if it does not already exist.
+-- The table has the following columns:
+-- - GameID: Text data type
+-- - Board: JSONB data type, not nullable
+-- - LetterDistribution: JSONB data type, not nullable
+-- - Players: JSONB data type
+-- - CurrentPlayer: Text data type
+-- - PlayerList: JSONB data type
+-- - TotalMoves: Integer data type
+-- - GameStarted: Boolean data type
 CREATE TABLE IF NOT EXISTS games (
     GameID TEXT,
     Board JSONB NOT NULL,
@@ -10,6 +20,10 @@ CREATE TABLE IF NOT EXISTS games (
     TotalMoves INTEGER,
     GameStarted BOOLEAN
 );
+
+/*
+This script initializes the database by creating roles, granting privileges, and adding columns to the 'games' table.
+*/
 
 CREATE ROLE KoalaAdmin 
 LOGIN
@@ -35,6 +49,13 @@ ALTER TABLE games
 ADD COLUMN IF NOT EXISTS Player2Score INT;
 
 
+/*
+    This SQL query calculates the total score for each player in a game.
+    It retrieves the player names and scores from the 'games' table and uses a CTE (Common Table Expression) to organize the data.
+    The CTE 'PlayerScores' extracts the player names and scores from the 'games' table using JSON functions.
+    The main query then combines the player names and scores from the CTE using UNION ALL, and calculates the total score for each player using the SUM function.
+    The result is grouped by player name and ordered by the total score in descending order.
+*/
 
 WITH PlayerScores AS (
     SELECT
