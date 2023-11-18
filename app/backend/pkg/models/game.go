@@ -187,7 +187,6 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		} else {
 			return nil, errors.New("invalid move")
 		}
-
 	}
 
 	for row := 0; row < 15; row++ {
@@ -233,12 +232,20 @@ func (app *App) RefreshHand(gameID string, playerName string) (*[]string, error)
 		return nil, err
 	}
 
+	if loadedGame.CurrentPlayer != playerName {
+		return nil, errors.New("not able to refresh hand: wait! not your turn")
+	}
+
 	for index, letter := range loadedGame.Players[playerName].Hand {
 		returnTilesToBag(*loadedGame, []Move{{Letter: letter}})
 		newTile := getRandomTile(loadedGame.AvailableLetters)
 		loadedGame.Players[playerName].Hand[index] = newTile
 		newTiles = append(newTiles, newTile)
 	}
+
+	loadedGame.TotalMoves += 1
+
+	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves % 2]
 
 	// update game on database
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
