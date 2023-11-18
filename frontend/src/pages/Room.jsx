@@ -4,6 +4,11 @@ import "../css/WaitingRoom.css";
 import "../css/App.css";
 import { baseURL } from "./Welcome";
 
+/**
+ * Renders the Room component.
+ * 
+ * @returns {JSX.Element} The rendered Room component.
+ */
 export default function Room() {
 
   const navigate = useNavigate();

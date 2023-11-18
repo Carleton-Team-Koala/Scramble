@@ -1,3 +1,11 @@
+/**
+ * 
+ * CSS styles for the action panel component.
+ */
+
+/**
+ * Styles for buttons.
+ */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -8,10 +16,16 @@ button {
   background-color: lightgray;
 }
 
+/**
+ * Styles for the action panel container.
+ */
 .action-panel {
   display: inline;
 }
 
+/**
+ * Styles for the tile hand container.
+ */
 .tile-hand {
   display: flex;
   width: 250px;
@@ -24,6 +38,9 @@ button {
   padding: 5px;
 }
 
+/**
+ * Styles for the tile placeholder.
+ */
 .tile-placeholder {
   width: 35px;
   height: 30px;
@@ -31,6 +48,9 @@ button {
   visibility: hidden; 
 }
 
+/**
+ * Styles for the button hand.
+ */
 .button-hand {
   background-size: 40px auto;
   background-repeat: no-repeat;
@@ -41,6 +61,9 @@ button {
   margin-right: 10px;
 }
 
+/**
+ * Styles for the hand container.
+ */
 .hand-container {
   display: flex;
   width: 470px;
@@ -54,6 +77,9 @@ button {
   padding: 5px;
 }
 
+/**
+ * Styles for the button container.
+ */
 .button-container {
   display: inline-flex;
   align-items: center;
@@ -62,15 +88,24 @@ button {
   margin-top: 10px;
 }
 
+/**
+ * Styles for button hover effect.
+ */
 button:hover {
   border: 1px solid #7c7c7c;
 }
 
+/**
+ * Styles for the action panel button.
+ */
 .button-ap {
   width: 120px;
   height: 50px;
 }
 
+/**
+ * Styles for the submit button.
+ */
 .submit-button {
   background-color: rgb(87, 201, 127);
 }

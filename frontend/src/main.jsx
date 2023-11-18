@@ -1,3 +1,10 @@
+/**
+ * Main entry point of the application.
+ * Renders the React application and sets up the routing.
+ *
+ * @module Main
+ */
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";

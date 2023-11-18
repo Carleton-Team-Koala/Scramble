@@ -1,9 +1,13 @@
+/**
+ * CSS styles for the rules component.
+ */
+
 .open-btn {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    cursor: pointer;
-  }
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+}
 
 .close-btn {
   cursor: pointer;

@@ -5,7 +5,8 @@ import (
 	"fmt"
 )
 
-// add new game to database
+// DatabaseClient is a struct that contains a pointer to a database.
+// It is used to interact with the database.
 func (c *DatabaseClient) AddNewGameToDB(newGame Game) error {
 	newBoard, newLetters, newPlayers, newPlayerList, err := jsonifyGameField(newGame)
 	if err != nil {
@@ -19,7 +20,9 @@ func (c *DatabaseClient) AddNewGameToDB(newGame Game) error {
 	return nil
 }
 
-// get game from database using game ID
+// GetGameByGameID retrieves a game from the database based on the provided game ID.
+// It returns a pointer to the retrieved Game struct and an error if any.
+// It returns nil if the game does not exist.
 func (c *DatabaseClient) GetGameByGameID(gameID string) (*Game, error) {
 	selectedGame := Game{}
 	var jsonBoard []byte
@@ -41,7 +44,10 @@ func (c *DatabaseClient) GetGameByGameID(gameID string) (*Game, error) {
 	return &selectedGame, nil
 }
 
-// get game from database using game ID
+// UpdateGameToDB updates the game with the given gameID in the database.
+// It takes the updatedGame as a parameter and updates the corresponding fields in the database.
+// Returns an error if there is any issue with updating the game in the database.
+// Returns nil if the game is updated successfully.
 func (c *DatabaseClient) UpdateGameToDB(gameID string, updatedGame Game) error {
 	newBoard, newLetters, newPlayers, newPlayerList, err := jsonifyGameField(updatedGame)
 	if err != nil {
@@ -57,7 +63,8 @@ func (c *DatabaseClient) UpdateGameToDB(gameID string, updatedGame Game) error {
 	return nil
 }
 
-// get game from database using game ID
+// CheckGameExists checks if a game with the given gameID exists in the database.
+// It returns a pointer to a boolean indicating whether the game exists, and an error if any.
 func (c *DatabaseClient) CheckGameExists(gameID string) (*bool, error) {
 	var exists bool
 	selectedRow := c.database.QueryRow("SELECT count(1) > 0 FROM games WHERE \"gameid\" = $1", gameID)
@@ -70,7 +77,9 @@ func (c *DatabaseClient) CheckGameExists(gameID string) (*bool, error) {
 	return &exists, nil
 }
 
-// jsonify game fields
+// jsonifyGameField takes a Game struct as input and returns the JSON representation of its fields.
+// It returns the JSON representation of the game board, available letters, players, and player list.
+// If there is an error during the JSON marshaling process, it returns an error.
 func jsonifyGameField(game Game) ([]byte, []byte, []byte, []byte, error) {
 	jsonBoard, err := json.Marshal(game.Board)
 	if err != nil {
@@ -95,7 +104,9 @@ func jsonifyGameField(game Game) ([]byte, []byte, []byte, []byte, error) {
 	return jsonBoard, jsonLetters, jsonPlayers, jsonPlayerList, nil
 }
 
-// unjsonify game fields
+// unJsonifyGameField takes in JSON-encoded data for the selected board, letters, players, and player list,
+// and unmarshals them into their respective Go data structures.
+// It returns the unmarshaled board, letters, players, player list, and any error encountered during unmarshaling.
 func unJsonifyGameField(selectedBoard []byte, selectedLetters []byte, selectedPlayers []byte, selectedPlayerList []byte) ([15][15]string, map[string]int, map[string]PlayerInfo, []string, error) {
 	var board [15][15]string
 	if err := json.Unmarshal([]byte(selectedBoard), &board); err != nil {
