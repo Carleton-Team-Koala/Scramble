@@ -207,12 +207,7 @@ func (a *AppController) AppReturnGameState(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	resp := apiResponse{
-		GameResp: gameDetails,
-		Valid:    true,
-	}
-
-	json.NewEncoder(w).Encode(resp)
+	json.NewEncoder(w).Encode(gameDetails)
 }
 
 // Error response
