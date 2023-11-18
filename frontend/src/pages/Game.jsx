@@ -223,7 +223,8 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
         reset={reset}
         refresh={refresh}
       />
-      <Rules isRulesOpen={isRulesOpen} setIsRulesOpen={setIsRulesOpen}></Rules>
+      <a className='rules' href="https://users.cs.northwestern.edu/~robby/uc-courses/22001-2008-winter/scrabble.html" target="_blank">Rules</a>
+      {/* <Rules isRulesOpen={isRulesOpen} setIsRulesOpen={setIsRulesOpen}></Rules> */}
     </div>
   );
 };

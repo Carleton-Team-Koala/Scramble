@@ -1,42 +1,23 @@
-.open-btn {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    cursor: pointer;
-    width: 150px;
-    height: 100px;
-    text-align: center;
-  }
-
-.close-btn {
-  top: 0;
-  left: 0;
-  cursor: pointer;
-}
-
 .rules {
-  background-color: rgba(0, 0, 0, 0.5);
-  width: 100vw;
-  height: 100vh;
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  top: 30px;
+  left: 30px;
+  cursor: pointer;
+  width: 100px;
+  height: 30px;
+  padding: 10px;
+
+  font-size: 20px;
+  text-align: center;
+
+
+  background-color: black;
+  color: white;
+
+  border-radius: 10px;
 }
 
-.rules-container {
-  background-color: white;
-  border: 2px solid black;
-  border-radius: 10px;
-  color: black;
-  font-size: 20px;
-  width: fit-content;
-  height: fit-content;
-  top: 50%;
-  left: 50%;
-  padding: 30px;
-  z-index: 10;
+.rules:hover {
+  color: #535bf2;
+  border-color: #646cff;
 }
