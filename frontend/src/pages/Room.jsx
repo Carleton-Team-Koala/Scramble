@@ -60,6 +60,9 @@ export default function Room() {
           console.log("Great success!");
           navigate(`/play/${gameID}`);
         }
+        else {
+          alert("You need two players to start the game!");
+        }
       })
       .catch(error => {
         alert(error);

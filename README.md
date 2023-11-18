@@ -43,7 +43,7 @@ The core server will start up last. The game is ready to connect and play when y
 scramble-game-1       | Server is running on :8080
 ```
 
-The app can be accessed at http://localhost:8080
+The user-ready app can be accessed at http://localhost:3000
 
 ## Player Leaderboard (Written by Fast Ntense)
 Starter Code for player leaderboard
