@@ -22,6 +22,8 @@ type AppControllerInterface interface {
 	AppStartGame(w http.ResponseWriter, r *http.Request)
 	AppRefreshHand(w http.ResponseWriter, r *http.Request)
 	AppReturnGameState(w http.ResponseWriter, r *http.Request)
+	AppSkipTurn(w http.ResponseWriter, r *http.Request)
+	AppResignGame(w http.ResponseWriter, r *http.Request)
 }
 
 // Homepage
@@ -207,7 +209,65 @@ func (a *AppController) AppReturnGameState(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	json.NewEncoder(w).Encode(gameDetails)
+}
 
+// API endpoint to skip turn using unique ID
+func (a *AppController) AppSkipTurn(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	gameID := vars["gameID"]
+
+	var skipTurnResp models.PlayerNameResp
+	var unmarshalErr *json.UnmarshalTypeError
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&skipTurnResp)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
+		} else {
+			errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+
+	gameDetails, err := a.AppInterface.SkipTurn(gameID, skipTurnResp.PlayerName)
+
+	if err != nil {
+		errorResponse(w, "Not able to skip turn: "+err.Error(), http.StatusOK)
+		return
+	}
+	json.NewEncoder(w).Encode(gameDetails)
+}
+
+// API endpoint to skip turn using unique ID
+func (a *AppController) AppResignGame(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	gameID := vars["gameID"]
+
+	var ResignGameResp models.PlayerNameResp
+	var unmarshalErr *json.UnmarshalTypeError
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&ResignGameResp)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
+		} else {
+			errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+
+	gameDetails, err := a.AppInterface.ResignGame(gameID, ResignGameResp.PlayerName)
+
+	if err != nil {
+		errorResponse(w, "Not able to resign game: "+err.Error(), http.StatusOK)
+		return
+	}
+
+	json.NewEncoder(w).Encode(gameDetails)
 }
 
 // Error response
