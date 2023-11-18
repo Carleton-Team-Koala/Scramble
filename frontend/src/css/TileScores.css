@@ -1,0 +1,16 @@
+.scores {
+    background-color: white;
+    color: black;
+    width: 10%;
+    align-items: center;
+    margin: 15px;
+    border: 10px solid black;
+    border-radius: 8px;
+    padding: 5px;
+    padding-inline: 20px;
+}
+
+.scores-header {
+    font-weight: 700;
+    font-size: 25px;
+}
