@@ -8,6 +8,25 @@ import (
 	"sort"
 )
 
+type MoveSlice []Move
+
+func (m MoveSlice) Len() int {
+	return len(m)
+}
+
+func (m MoveSlice) Less(i, j int) bool {
+	// First compare by Col.
+	if m[i].Col != m[j].Col {
+		return m[i].Col < m[j].Col
+	}
+	// If Col is the same, compare by Row.
+	return m[i].Row < m[j].Row
+}
+
+func (m MoveSlice) Swap(i, j int) {
+	m[i], m[j] = m[j], m[i]
+}
+
 // scoring calculates the score of a move in a game of Scramble.
 // It takes an activeGame of type Game and a newTiles of type MoveSlice as input.
 // It returns an integer score and an error if the move is invalid.

@@ -41,8 +41,10 @@ func (app *App) CreateGame(playerName string) (string, error) {
 	}
 
 	// add player to player list
-	playerList := make(map[string]PlayerInfo)
-	playerList[playerName] = newPlayer
+	playerStructList := make(map[string]PlayerInfo)
+	playerStructList[playerName] = newPlayer
+
+	playerList := []string{playerName}
 
 	newLetterDistribution := app.LanguageClient.GetNewLetterDistribution()
 
@@ -51,7 +53,11 @@ func (app *App) CreateGame(playerName string) (string, error) {
 		GameID:           gameID,
 		Board:            [15][15]string{},
 		AvailableLetters: newLetterDistribution,
-		Players:          playerList,
+		Players:          playerStructList,
+		CurrentPlayer:    "",
+		PlayerList:       playerList,
+		TotalMoves:       0,
+		GameStarted:      false,
 	}
 
 	// Add game to database
@@ -71,6 +77,18 @@ func (app *App) JoinGame(gameID string, playerName string) error {
 		return err
 	}
 
+	if playerName == loadGame.PlayerList[0] {
+		return errors.New("player already exists in game, try a different name")
+	}
+
+	if loadGame.GameStarted {
+		return errors.New("cannot join a game: game already started")
+	}
+
+	if len(loadGame.PlayerList) >= 2 {
+		return errors.New("cannot join a game: game already has two players")
+	}
+
 	// create new player
 	newPlayer := PlayerInfo{
 		Score: 0,
@@ -79,6 +97,8 @@ func (app *App) JoinGame(gameID string, playerName string) error {
 
 	// add new player to player list
 	loadGame.Players[playerName] = newPlayer
+
+	loadGame.PlayerList = append(loadGame.PlayerList, playerName)
 
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadGame)
 
@@ -93,19 +113,26 @@ func (app *App) StartGame(gameID string) (*Game, error) {
 		return nil, err
 	}
 
+	if len(loadGame.PlayerList) < 2 {
+		return nil, errors.New("cannot start game: two players are needed to start game")
+	}
+
 	for player := range loadGame.Players {
 		var randomStartingTiles []string
 		for i := 0; i < 7; i++ {
 			randomTile := getRandomTile(loadGame.AvailableLetters)
 			randomStartingTiles = append(randomStartingTiles, randomTile)
-			loadGame.AvailableLetters[randomTile] -= 1
 		}
 		if copyPlayer, ok := loadGame.Players[player]; ok {
 			copyPlayer.Hand = randomStartingTiles
 			loadGame.Players[player] = copyPlayer
 		}
-
 	}
+
+	loadGame.CurrentPlayer = loadGame.PlayerList[0]
+
+	loadGame.GameStarted = true
+
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadGame)
 
 	return loadGame, nil
@@ -123,6 +150,8 @@ func (app *App) GetGameById(gameID string) (*Game, error) {
 		return nil, err
 	}
 
+	fmt.Println(loadedGame)
+
 	return loadedGame, nil
 }
 
@@ -132,12 +161,16 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		return nil, err
 	}
 
+	if playerName != loadedGame.CurrentPlayer {
+		return nil, errors.New("wait! not your turn")
+	}
+
 	// update the board once every move is validated and get random tiles to replace tiles used
 	for _, move := range playerMove {
 		if app.ValidateMove(move, playerName, gameID) {
 			loadedGame = updateBoardAndHand(*loadedGame, move, playerName)
 		} else {
-			return nil, errors.New("invalid Move")
+			return nil, errors.New("invalid move")
 		}
 
 	}
@@ -160,10 +193,37 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		return nil, err
 	}
 
+	loadedGame.TotalMoves += 1
+
+	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves%2]
+
 	// update game on database
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
 
 	return loadedGame, nil
+}
+
+// refreshHand refreshes the hand of a player in a game by returning their current tiles to the bag and drawing new tiles from the bag.
+// It takes in the loadedGame object and the name of the player whose hand needs to be refreshed.
+// It returns a pointer to the updated loadedGame object.
+func (app *App) RefreshHand(gameID string, playerName string) (*[]string, error) {
+	loadedGame, err := app.GetGameById(gameID)
+	newTiles := []string{}
+	if err != nil {
+		return nil, err
+	}
+
+	for index, letter := range loadedGame.Players[playerName].Hand {
+		returnTilesToBag(*loadedGame, []Move{{Letter: letter}})
+		newTile := getRandomTile(loadedGame.AvailableLetters)
+		loadedGame.Players[playerName].Hand[index] = newTile
+		newTiles = append(newTiles, newTile)
+	}
+
+	// update game on database
+	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
+
+	return &newTiles, nil
 }
 
 func generateNewGameID() string {
@@ -212,10 +272,9 @@ func getRandomTile(availableLetters map[string]int) string {
 func updateBoardAndHand(loadedGame Game, playerMove Move, playerName string) *Game {
 	// update board state
 	loadedGame.Board[playerMove.Col][playerMove.Row] = playerMove.Letter
-
-	randomTile := getRandomTile(loadedGame.AvailableLetters)
 	index := 0
 	for _, iterateLetter := range loadedGame.Players[playerName].Hand {
+		randomTile := getRandomTile(loadedGame.AvailableLetters)
 		if iterateLetter == playerMove.Letter {
 			loadedGame.Players[playerName].Hand[index] = randomTile
 			break

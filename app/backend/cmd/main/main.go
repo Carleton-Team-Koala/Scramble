@@ -15,6 +15,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// main program for Scramble
 func main() {
 	router := mux.NewRouter()
 	err := godotenv.Load()
@@ -28,15 +29,18 @@ func main() {
 	// set up database client
 	dbClient := models.NewDatabaseClient(os.Getenv("POSTGRES_HOST"), os.Getenv("POSTGRES_PORT"), os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), os.Getenv("POSTGRES_DB"))
 
+	// create app with the client informations
 	newApp := &models.App{
 		LanguageClient: *langClient,
 		DatabaseClient: *dbClient,
 	}
 
+	// create controller interface
 	newAppControllerInterface := &controllers.AppController{
 		AppInterface: *newApp,
 	}
 
+	// register routes for our app
 	routes.RegisterRoutes(router, newAppControllerInterface)
 
 	// http://localhost:8080/
