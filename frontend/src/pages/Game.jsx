@@ -219,6 +219,7 @@ export default function Game() {
       .then(response => response.json())
       .then(data => {
         // processing the server response
+        alert(data);
         console.log(data);
         setHand(data);
       })
