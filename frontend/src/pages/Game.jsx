@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { baseURL } from "./Welcome";
 import Board from "../components/Board";
 import ActionPanel from "../components/ActionPanel";
 import Infoboard from "../components/Infoboard";
 import Tile from '../components/Tile';
-import '../css/Game.css';
-import '../css/Rules.css'
-import { baseURL, gameID, player1, player2 } from "./Welcome";
 import Rules from './Rules';
+import '../css/Game.css';
+import '../css/Rules.css';
+import "../css/App.css";
+
+const gameID = sessionStorage.getItem('gameId');
+const playerName = sessionStorage.getItem('playerName');
 
 function initializeTiles(hand) { // initialize tiles for the board and hand
   return Array.from({ length: hand.length }, (_, i) => ({
@@ -16,7 +20,7 @@ function initializeTiles(hand) { // initialize tiles for the board and hand
   }));
 };
 
-export default function Game({ hand, setHand, tilebag, setTilebag }) {
+export default function Game() {
 
   /**
    * Main controller component for the actual game.
@@ -24,14 +28,58 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
    * Receives hand and tilebag from the initialization.
    */
 
+  const [hand, setHand] = useState(['BLANK', 'B', 'C', 'D', 'E', 'A', 'G']); // array of letters, gets rendered in the hand
+  const [tilebag, setTilebag] = useState({
+    'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0,
+    'H': 0, 'I': 0, 'J': 0, 'K': 0, 'L': 0, 'M': 0, 'N': 0,
+    'O': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'U': 0,
+    'V': 0, 'W': 0, 'X': 0, 'Y': 0, 'Z': 0, 'BLANK': 0
+  }); // array of letters, gets rendered in the tilebag
   const [scoredLetters, setScoredLetters] = useState({}); // {cellKey: letter}, letters returned by server go here
   const [letterUpdates, setLetterUpdates] = useState({}); // {id: [cellKey, letter]}, gets sent to server on submit
   const [tiles, setTiles] = useState(initializeTiles(hand)); // array of tiles, gets rendered on the board and hand
-  const [p1_score, setp1_score] = useState(0); // scores for both players
-  const [p2_score, setp2_score] = useState(0);
   const [isRulesOpen, setIsRulesOpen] = useState(false);
 
-  useEffect(() => { // initialize tiles when hand changes
+  async function getGame() {
+    const url = baseURL + "/getgamestate/" + gameID + "/";
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Check if the necessary data is present
+      if (data.gameState && data.gameState.Players && data.gameState.Players[playerName]) {
+        setHand(data.gameState.Players[playerName].hand);
+        setTilebag(data.gameState.LetterDistribution);
+      } else {
+        console.error("Unexpected data format: ", data);
+      }
+    } catch (error) {
+      alert(`An error occurred: ${error.message}`);
+      console.error("Error: ", error);
+    }
+  }
+
+  // useEffect to fetch game state and set tiles on component mount
+  useEffect(() => {
+    getGame().then(() => {
+      console.log("getGame finished, now setting tiles");
+      // This will trigger the second useEffect hook
+    });
+  }, []);
+
+  // useEffect to update tiles whenever hand changes
+  useEffect(() => {
+    console.log("Hand updated, now updating tiles");
     setTiles(initializeTiles(hand));
   }, [hand]);
 
@@ -97,7 +145,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ playerName: player1})
+      body: JSON.stringify({ playerName: playerName })
     })
       .then(response => response.json())
       .then(data => {
@@ -139,15 +187,13 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
    * If the move is valid, it updates the game state accordingly.
    * Otherwise it reverts all the moves.
    */
-  function parseUpdates(updates) {
+  function parseOwnUpdates(updates) {
 
     if (updates.valid) { // if move is valid, update the game state
       const updatesState = updates.gameState;
       parseBoard(updatesState.Board);
-      setHand(updatesState.Players[player1].hand);
+      setHand(updatesState.Players[playerName].hand);
       setTilebag(updatesState.LetterDistribution);
-      setp1_score(updatesState.Players[player1].score);
-      // set score for player 2 here
     }
     else { // else revert all the moves
       setTiles(prevTiles =>
@@ -180,13 +226,13 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ playerName: player1, updates: data })
+      body: JSON.stringify({ playerName: playerName, updates: data })
     })
       .then(response => response.json())
       .then(data => {
         // processing the server response
         console.log(data);
-        parseUpdates(data);
+        parseOwnUpdates(data);
       })
       .catch(error => {
         alert(error);
@@ -195,7 +241,7 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
   };
 
   return (
-    <div>
+    <div className='App'>
       <div className="board-score">
         <Board
           letterUpdates={letterUpdates}
@@ -204,8 +250,8 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
         />
         <Infoboard
           tilebag={tilebag}
-          p1_score={p1_score}
-          p2_score={p2_score}
+          p1_score={0}
+          p2_score={0}
         />
       </div>
       <ActionPanel
