@@ -33,6 +33,7 @@ To run the whole program, go to the `Scramble` directory and use the following c
 ```
 
 On first startup, Docker will download and install many dependencies required to run. This may take a while. After initial setup, to run Scramble you only need run:
+
 ```terminal
 > docker compose up
 ```

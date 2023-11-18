@@ -9,9 +9,6 @@ import '../css/Game.css';
 import '../css/Rules.css';
 import "../css/App.css";
 
-const gameID = sessionStorage.getItem('gameId');
-const playerName = sessionStorage.getItem('playerName');
-
 function initializeTiles(hand) { // initialize tiles for the board and hand
   return Array.from({ length: hand.length }, (_, i) => ({
     id: i,
@@ -27,6 +24,8 @@ export default function Game() {
    * Controls the display of the information to the user.
    * Receives hand and tilebag from the initialization.
    */
+  const gameID = sessionStorage.getItem('gameId');
+  const playerName = sessionStorage.getItem('playerName');
 
   const [hand, setHand] = useState(['BLANK', 'B', 'C', 'D', 'E', 'A', 'G']); // array of letters, gets rendered in the hand
   const [tilebag, setTilebag] = useState({
@@ -38,10 +37,58 @@ export default function Game() {
   const [scoredLetters, setScoredLetters] = useState({}); // {cellKey: letter}, letters returned by server go here
   const [letterUpdates, setLetterUpdates] = useState({}); // {id: [cellKey, letter]}, gets sent to server on submit
   const [tiles, setTiles] = useState(initializeTiles(hand)); // array of tiles, gets rendered on the board and hand
+  const [lastUpdate, setLastUpdate] = useState(null); // State to track the last update
+  const [isPolling, setIsPolling] = useState(true); // State to control polling
   const [isRulesOpen, setIsRulesOpen] = useState(false);
 
-  async function getGame() {
+  async function initializeGame() {
+    /*
+    * Fetches the initial game state from the server and updates the hand and tilebag.
+    * The gameID and playerName are taken from the sessionStorage.
+    */
     const url = baseURL + "/getgamestate/" + gameID + "/";
+
+    // Check if gameID and playerName are available
+    if (!gameID || !playerName) {
+      console.error("gameID or playerName is not available in sessionStorage.");
+      return;
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setHand(data.Players[playerName].hand);
+      setTilebag(data.LetterDistribution);
+
+    } catch (error) {
+      alert(`An error occurred: ${error.message}`);
+      console.error("Error: ", error);
+    }
+  };
+
+  async function getGame() {
+    /*
+    * Fetches the game state from the server and updates the hand and tilebag.
+    * The gameID and playerName are taken from the sessionStorage.
+    */
+    const url = baseURL + "/getgamestate/" + gameID + "/";
+
+    // Check if gameID and playerName are available
+    if (!gameID || !playerName) {
+      console.error("gameID or playerName is not available in sessionStorage.");
+      return;
+    }
+
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -56,24 +103,24 @@ export default function Game() {
 
       const data = await response.json();
 
-      // Check if the necessary data is present
-      if (data.gameState && data.gameState.Players && data.gameState.Players[playerName]) {
-        setHand(data.gameState.Players[playerName].hand);
-        setTilebag(data.gameState.LetterDistribution);
-      } else {
-        console.error("Unexpected data format: ", data);
+      if (data.CurrentPlayer === playerName && data.TotalMoves !== 0) {
+        setHand(data.Players[playerName].hand);
+        setTilebag(data.LetterDistribution);
+        parseBoard(data.Board); 
+        setLastUpdate(data.TotalMoves); // Update the last known update
+        setIsPolling(false); // Stop polling after processing the update
       }
+
     } catch (error) {
       alert(`An error occurred: ${error.message}`);
       console.error("Error: ", error);
     }
-  }
+  };
 
   // useEffect to fetch game state and set tiles on component mount
   useEffect(() => {
-    getGame().then(() => {
+    initializeGame().then(() => {
       console.log("getGame finished, now setting tiles");
-      // This will trigger the second useEffect hook
     });
   }, []);
 
@@ -82,6 +129,16 @@ export default function Game() {
     console.log("Hand updated, now updating tiles");
     setTiles(initializeTiles(hand));
   }, [hand]);
+
+  useEffect(() => {
+    let intervalId;
+    if (isPolling) {
+      intervalId = setInterval(() => {
+        getGame();
+      }, 1000); // Poll every second if isPolling is true
+    }
+    return () => clearInterval(intervalId); // Clean up
+  }, [isPolling]);
 
   /**
     * Handles the event when a tile is dropped onto the board.
@@ -162,7 +219,7 @@ export default function Game() {
   /** 
    * Parses the board returned by the server.
   */
-  function parseBoard(board) {
+  const parseBoard = (board) => {
 
     let newpos = {};
 
@@ -233,6 +290,7 @@ export default function Game() {
         // processing the server response
         console.log(data);
         parseOwnUpdates(data);
+        setIsPolling(true); // Start polling again
       })
       .catch(error => {
         alert(error);

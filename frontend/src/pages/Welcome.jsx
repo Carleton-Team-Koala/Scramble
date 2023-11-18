@@ -25,8 +25,7 @@ function createGame() {
   .then(response => response.json())
   .then(data => {
     if (data.valid) {
-      sessionStorage.setItem('gameId', data.gameID);
-      console.log(data.gameID);
+      sessionStorage.setItem('gameId', data.gameID); // Store game ID in sessionStorage
       return data.gameID;  // Resolve with gameID
     } else {
       alert("The game could not be started at the moment!");
@@ -47,9 +46,6 @@ function createGame() {
  * If the response status code is not 200, an error message is logged to the console and an error is thrown.
  * Any caught errors are alerted and logged to the console.
  */
-function joinGame() {
-  // Function code here
-}
 function joinGame() {
   const player = sessionStorage.getItem('playerName'); // Get player name from sessionStorage
   const gameID = sessionStorage.getItem('gameId'); // Get game ID from sessionStorage

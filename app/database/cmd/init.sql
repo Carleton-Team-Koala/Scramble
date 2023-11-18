@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS games (
     CurrentPlayer TEXT,
     PlayerList JSONB,
     TotalMoves INTEGER,
-    GameStarted BOOLEAN
+    GameStarted BOOLEAN,
+    GameOver BOOLEAN
 );
 
 /*
