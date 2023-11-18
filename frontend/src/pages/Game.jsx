@@ -4,9 +4,8 @@ import Board from "../components/Board";
 import ActionPanel from "../components/ActionPanel";
 import Infoboard from "../components/Infoboard";
 import Tile from '../components/Tile';
-import Rules from './Rules';
+import Scores from '../components/TileScores';
 import '../css/Game.css';
-import '../css/Rules.css';
 import "../css/App.css";
 
 function initializeTiles(hand) { // initialize tiles for the board and hand
