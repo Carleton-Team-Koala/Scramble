@@ -25,8 +25,7 @@ function createGame() {
   .then(response => response.json())
   .then(data => {
     if (data.valid) {
-      sessionStorage.setItem('gameId', data.gameID);
-      console.log(data.gameID);
+      sessionStorage.setItem('gameId', data.gameID); // Store game ID in sessionStorage
       return data.gameID;  // Resolve with gameID
     } else {
       alert("The game could not be started at the moment!");
