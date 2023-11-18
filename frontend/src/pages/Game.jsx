@@ -39,6 +39,8 @@ export default function Game() {
   const [tiles, setTiles] = useState(initializeTiles(hand)); // array of tiles, gets rendered on the board and hand
   const [lastUpdate, setLastUpdate] = useState(null); // State to track the last update
   const [isPolling, setIsPolling] = useState(true); // State to control polling
+  const [playerScores, setPlayerScores] = useState({});
+  const [playerNames, setPlayerNames] = useState([]);
   const [isRulesOpen, setIsRulesOpen] = useState(false);
 
   async function initializeGame() {
@@ -69,6 +71,8 @@ export default function Game() {
       const data = await response.json();
       setHand(data.Players[playerName].hand);
       setTilebag(data.LetterDistribution);
+      let names = Object.keys(data.Players);
+      setPlayerNames(names); // Set player names
 
     } catch (error) {
       alert(`An error occurred: ${error.message}`);
@@ -106,7 +110,13 @@ export default function Game() {
       if (data.CurrentPlayer === playerName && data.TotalMoves !== 0) {
         setHand(data.Players[playerName].hand);
         setTilebag(data.LetterDistribution);
-        parseBoard(data.Board); 
+        parseBoard(data.Board);
+        let scores = {};
+        let names = Object.keys(data.Players); // Extract player names
+        names.forEach(name => {
+          scores[name] = data.Players[name].score;
+        });
+        setPlayerScores(scores);
         setLastUpdate(data.TotalMoves); // Update the last known update
         setIsPolling(false); // Stop polling after processing the update
       }
@@ -251,6 +261,12 @@ export default function Game() {
       parseBoard(updatesState.Board);
       setHand(updatesState.Players[playerName].hand);
       setTilebag(updatesState.LetterDistribution);
+      let scores = {};
+      let names = Object.keys(updatesState.Players); // Extract player names
+      names.forEach(name => {
+        scores[name] = updatesState.Players[name].score;
+      });
+      setPlayerScores(scores);
     }
     else { // else revert all the moves
       setTiles(prevTiles =>
@@ -308,8 +324,10 @@ export default function Game() {
         />
         <Infoboard
           tilebag={tilebag}
-          p1_score={0}
-          p2_score={0}
+          p1_score={playerScores[playerNames[0]] || 0}
+          p2_score={playerScores[playerNames[1]] || 0}
+          p1_name={playerNames[0] || 'Player 1'}
+          p2_name={playerNames[1] || 'Player 2'}
         />
       </div>
       <ActionPanel
