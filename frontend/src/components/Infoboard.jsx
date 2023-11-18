@@ -13,7 +13,7 @@ function sumTiles(tile_dict) {
     }, 0);
 };
 
-const Infoboard = ({ tilebag, p1_name = 'Player 1', p2_name = 'Player 2', p1_score, p2_score }) => {
+const Infoboard = ({ tilebag, p1_name, p2_name, p1_score, p2_score }) => {
 
     /**
      * Displays the game information (scores, tiles left) to the user.
