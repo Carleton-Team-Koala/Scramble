@@ -42,13 +42,9 @@ The core server will start up last. The game is ready to connect and play when y
 scramble-game-1       | Server is running on :8080
 ```
 
+The app can be accessed at http://localhost:8080
 
-~~The app will be available on http://localhost:8000/~~
-
-
-
-
-## Player Leaderboard
+## Player Leaderboard (Written by Fast Ntense)
 Starter Code for player leaderboard
 Add columns for player1 score and player2 score
 Run through a game and get score for each player 
@@ -60,3 +56,13 @@ as main project.
 ## Tests
 
 ## Credits
+
+### Work Distribution:
+- Frontend: Artem Yushko & John Win
+- Backend: Sunny Kim & Roo Case
+
+### Additional Support & Resources
+- Nat Case, for beta testing
+- Matt Lepinski, for general support and resourcefulness throughout the process
+- Carleton CS Labs for use of space and time
+- StackOverflow for all the debugging assistance
