@@ -31,7 +31,19 @@ To run the whole program, go to the `Scramble` directory and use the following c
 > docker compose up
 ```
 
-Open Docker and click on each port number to view each service.
+Wait until you see the following command:
+
+```terminal
+scramble-game-1       | Server is running on :8080
+```
+
+This ensures that the game is running. 
+
+The app will be available on http://localhost:3000/
+
+Once you go into the url, you will be able to access 
+
+
 
 ### Frontend
 To run the skeleton of our frontend app, go to the `Scramble` directory and use the following commands on the terminal:

@@ -211,6 +211,7 @@ func (a *AppController) AppReturnGameState(w http.ResponseWriter, r *http.Reques
 		GameResp: gameDetails,
 		Valid:    true,
 	}
+	
 
 	json.NewEncoder(w).Encode(resp)
 }
