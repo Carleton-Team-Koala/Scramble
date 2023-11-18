@@ -12,7 +12,9 @@ export default function Popup(props) {
 
         if (props.type === 'joinGame') {
             setGameID(document.getElementById('gameId').value);
+            console.log(gameID);
             sessionStorage.setItem('gameId', gameID);
+            console.log(sessionStorage.getItem('gameId'));
         }
 
         props.onSubmit();
