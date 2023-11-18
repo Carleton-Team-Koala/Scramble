@@ -48,9 +48,6 @@ function createGame() {
  * Any caught errors are alerted and logged to the console.
  */
 function joinGame() {
-  // Function code here
-}
-function joinGame() {
   const player = sessionStorage.getItem('playerName'); // Get player name from sessionStorage
   const gameID = sessionStorage.getItem('gameId'); // Get game ID from sessionStorage
   const url = baseURL + "joingame/" + gameID + "/";

@@ -12,9 +12,6 @@ import '../css/Popup.css';
  * @returns {JSX.Element} The rendered popup component.
  */
 export default function Popup(props) {
-    // ...existing code...
-}
-export default function Popup(props) {
 
     const navigate = useNavigate();
 

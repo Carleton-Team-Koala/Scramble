@@ -9,6 +9,7 @@ type Game struct {
 	PlayerList       []string              `json:"-"`
 	TotalMoves       int                   `json:"TotalMoves"`
 	GameStarted      bool                  `json:"GameStarted"`
+	GameOver	bool `json:"GameOver"`
 }
 
 type PlayerInfo struct {

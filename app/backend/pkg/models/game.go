@@ -58,6 +58,7 @@ func (app *App) CreateGame(playerName string) (string, error) {
 		PlayerList:       playerList,
 		TotalMoves:       0,
 		GameStarted:      false,
+		GameOver: false,
 	}
 
 	// Add game to database
@@ -82,11 +83,15 @@ func (app *App) JoinGame(gameID string, playerName string) error {
 	}
 
 	if loadGame.GameStarted {
-		return errors.New("cannot join a game: game already started")
+		return errors.New("cannot join game: game already started")
 	}
 
 	if len(loadGame.PlayerList) >= 2 {
-		return errors.New("cannot join a game: game already has two players")
+		return errors.New("cannot join game: game already has two players")
+	}
+
+	if loadGame.GameOver {
+		return errors.New("cannot join game: this game is already over")
 	}
 
 	// create new player
@@ -117,11 +122,21 @@ func (app *App) StartGame(gameID string) (*Game, error) {
 		return nil, errors.New("cannot start game: two players are needed to start game")
 	}
 
+	if loadGame.GameOver {
+		return nil, errors.New("cannot start game: this game is already over")
+	}
+
+	if loadGame.GameStarted {
+		return loadGame, nil
+	}
+
 	for player := range loadGame.Players {
 		var randomStartingTiles []string
 		for i := 0; i < 7; i++ {
 			randomTile := getRandomTile(loadGame.AvailableLetters)
-			randomStartingTiles = append(randomStartingTiles, randomTile)
+			if randomTile != " " {
+				randomStartingTiles = append(randomStartingTiles, randomTile)
+			}
 		}
 		if copyPlayer, ok := loadGame.Players[player]; ok {
 			copyPlayer.Hand = randomStartingTiles
@@ -195,7 +210,12 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 
 	loadedGame.TotalMoves += 1
 
-	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves%2]
+	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves % 2]
+
+	// check if game is over
+	if !checkPlayerHand(loadedGame.Players) || !checkGameBag(loadedGame.AvailableLetters) {
+		loadedGame.GameOver = true
+	}
 
 	// update game on database
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
@@ -231,6 +251,7 @@ func generateNewGameID() string {
 	return gameID
 }
 
+// get a random tile from the game tile bag
 func getRandomTile(availableLetters map[string]int) string {
 	var keys []string
 	// get list of tiles that are available
@@ -238,6 +259,9 @@ func getRandomTile(availableLetters map[string]int) string {
 		if availableLetters[k] > 0 {
 			keys = append(keys, k)
 		}
+	}
+	if len(keys) == 0 {
+		return " "
 	}
 	// in golang, iteration order is not specified and is not guaranteed to be the same from one iteration to the next
 	// this will therefore return a random value
@@ -253,7 +277,9 @@ func updateBoardAndHand(loadedGame Game, playerMove Move, playerName string) *Ga
 	for _, iterateLetter := range loadedGame.Players[playerName].Hand {
 		randomTile := getRandomTile(loadedGame.AvailableLetters)
 		if iterateLetter == playerMove.Letter {
-			loadedGame.Players[playerName].Hand[index] = randomTile
+			if randomTile != " " {
+				loadedGame.Players[playerName].Hand[index] = randomTile
+			}
 			break
 		}
 		index++
@@ -284,4 +310,26 @@ func updateScore(wordScore int, currPlayers map[string]PlayerInfo, currPlayer st
 	}
 
 	return currPlayers, nil
+}
+
+func checkPlayerHand(currPlayers map[string]PlayerInfo) bool {
+	// check if any player hands are empty
+	for _, currPlayerInfo := range currPlayers {
+		if len(currPlayerInfo.Hand) == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func checkGameBag(availableLetters map[string]int) bool {
+	keys := []string{}
+	// check if any tiles are left in the tile bag
+	for k := range availableLetters {
+		if availableLetters[k] > 0 {
+			keys = append(keys, k)
+		}
+	}
+	
+	return len(keys) > 0
 }
