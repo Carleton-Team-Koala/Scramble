@@ -4,9 +4,7 @@ import ActionPanel from "../components/ActionPanel";
 import Infoboard from "../components/Infoboard";
 import Tile from '../components/Tile';
 import '../css/Game.css';
-import '../css/Rules.css'
 import { baseURL, gameID, player1, player2 } from "./Welcome";
-import Rules from './Rules';
 import Scores from '../components/TileScores';
 
 function initializeTiles(hand) { // initialize tiles for the board and hand
@@ -224,7 +222,6 @@ export default function Game({ hand, setHand, tilebag, setTilebag }) {
         refresh={refresh}
       />
       <a className='rules' href="https://users.cs.northwestern.edu/~robby/uc-courses/22001-2008-winter/scrabble.html" target="_blank">Rules</a>
-      {/* <Rules isRulesOpen={isRulesOpen} setIsRulesOpen={setIsRulesOpen}></Rules> */}
     </div>
   );
 };
