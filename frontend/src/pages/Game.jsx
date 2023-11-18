@@ -37,10 +37,10 @@ export default function Game() {
   const [scoredLetters, setScoredLetters] = useState({}); // {cellKey: letter}, letters returned by server go here
   const [letterUpdates, setLetterUpdates] = useState({}); // {id: [cellKey, letter]}, gets sent to server on submit
   const [tiles, setTiles] = useState(initializeTiles(hand)); // array of tiles, gets rendered on the board and hand
-  const [lastUpdate, setLastUpdate] = useState(null); // State to track the last update
   const [isPolling, setIsPolling] = useState(true); // State to control polling
   const [playerScores, setPlayerScores] = useState({});
   const [playerNames, setPlayerNames] = useState([]);
+  const [currentPlayer, setCurrentPlayer] = useState('Player 0');
   const [isRulesOpen, setIsRulesOpen] = useState(false);
 
   async function initializeGame() {
@@ -117,8 +117,11 @@ export default function Game() {
           scores[name] = data.Players[name].score;
         });
         setPlayerScores(scores);
-        setLastUpdate(data.TotalMoves); // Update the last known update
+        setCurrentPlayer(data.CurrentPlayer); // tell the current player that it's their turn
         setIsPolling(false); // Stop polling after processing the update
+      }
+      else if (data.currentPlayer != currentPlayer) {
+        setCurrentPlayer(data.CurrentPlayer);
       }
 
     } catch (error) {
@@ -328,6 +331,7 @@ export default function Game() {
           p2_score={playerScores[playerNames[1]] || 0}
           p1_name={playerNames[0] || 'Player 1'}
           p2_name={playerNames[1] || 'Player 2'}
+          currentPlayer={currentPlayer}
         />
       </div>
       <ActionPanel
