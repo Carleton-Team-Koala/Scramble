@@ -1,3 +1,7 @@
+/**
+ * CSS styles for the waiting room page.
+ */
+
 .welcome-container {
     display: flex;
     flex-direction: column;

@@ -1,3 +1,8 @@
+/**
+ * This CSS file contains styles for the index page of the Scramble application.
+ * It defines the root styles, font family, color scheme, and background color.
+ * It also includes styles for links, buttons, headings, and media queries for light mode.
+ */
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -14,6 +19,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
+/** 
+ * Styles for anchor elements.
+ */
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -22,7 +31,9 @@ a {
 a:hover {
   color: #535bf2;
 }
-
+/* 
+ * Styles for the body element.
+ */
 body {
   margin: 0;
   display: flex;
@@ -30,12 +41,17 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
-
+/* 
+ * Styles for the root element.
+ */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
+/* 
+ * Styles for the button element.
+ */
 button {
   border-radius: 8px;
   border: 1px solid transparent;

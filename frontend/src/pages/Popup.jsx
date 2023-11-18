@@ -2,6 +2,18 @@ import { React } from 'react';
 import { useNavigate } from "react-router-dom";
 import '../css/Popup.css';
 
+/**
+ * Renders a popup component.
+ * @param {Object} props - The component props.
+ * @param {boolean} props.trigger - Determines whether the popup is triggered or not.
+ * @param {string} props.type - The type of the popup ('joinGame' or other).
+ * @param {Function} props.setTrigger - Function to set the trigger state.
+ * @param {Function} props.onSubmit - Function to handle form submission.
+ * @returns {JSX.Element} The rendered popup component.
+ */
+export default function Popup(props) {
+    // ...existing code...
+}
 export default function Popup(props) {
 
     const navigate = useNavigate();

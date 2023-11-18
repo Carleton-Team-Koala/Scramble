@@ -4,6 +4,12 @@ import Popup from "./Popup";
 
 export const baseURL = "http://localhost:8080/";
 
+/**
+ * Creates a new game by sending a POST request to the server.
+ * 
+ * @returns {Promise<string|null>} A promise that resolves with the game ID if the game is created successfully,
+ *                                or null if there is an error or the game cannot be started.
+ */
 function createGame() {
   const url = baseURL + "newgame/";
   const player = sessionStorage.getItem('playerName');
@@ -34,6 +40,16 @@ function createGame() {
   });
 };
 
+/**
+ * Joins a game by sending a POST request to the server with the player name and game ID.
+ * If the necessary data is missing, an alert is displayed and the function exits.
+ * If the response status code is 200, a success message is logged to the console.
+ * If the response status code is not 200, an error message is logged to the console and an error is thrown.
+ * Any caught errors are alerted and logged to the console.
+ */
+function joinGame() {
+  // Function code here
+}
 function joinGame() {
   const player = sessionStorage.getItem('playerName'); // Get player name from sessionStorage
   const gameID = sessionStorage.getItem('gameId'); // Get game ID from sessionStorage

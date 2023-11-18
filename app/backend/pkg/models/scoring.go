@@ -14,6 +14,10 @@ func (m MoveSlice) Len() int {
 	return len(m)
 }
 
+// Less compares two moves in the MoveSlice based on their column and row values.
+// It returns true if the move at index i should be considered "less" than the move at index j.
+// Moves are considered "less" if their column values are smaller, or if their column values are equal
+// and their row values are smaller.
 func (m MoveSlice) Less(i, j int) bool {
 	// First compare by Col.
 	if m[i].Col != m[j].Col {
@@ -27,9 +31,10 @@ func (m MoveSlice) Swap(i, j int) {
 	m[i], m[j] = m[j], m[i]
 }
 
-// scoring calculates the score of a move in a game of Scramble.
-// It takes an activeGame of type Game and a newTiles of type MoveSlice as input.
-// It returns an integer score and an error if the move is invalid.
+// scoring calculates the score for a given move in a game.
+// It takes the activeGame, which represents the current state of the game,
+// and newTiles, which represents the tiles being placed in the move.
+// It returns the calculated score and an error if any invalid conditions are encountered.
 func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, error) {
 
 	fmt.Println("scoring: ", newTiles)
@@ -139,18 +144,18 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		if c.CheckValidWord(word) {
 			fmt.Println("word: ", word)
 
+			//scoring piece by piece, adding allowances for score modifiers
 			i := 0
 			indexOfSM := 0
 			fmt.Println("scoreModifier: ", scoreModifier)
 			for i < len(word) {
-
+				// valueOfModifier is either "dl", "tl", "dw", "tw", or "na" for double letter, triple letter, double word, triple word, or no modifier, respectively.
 				valueOfModifier := checkForScoreModifier(scoreModifier[indexOfSM][0], scoreModifier[indexOfSM][1])
-				// tileIn := containsTile(newTiles, scoreModifier[i][0], scoreModifier[i][1])
+				// tileIn is true if the tile at the given position is the same as the current letter in the word.
 				tileIn := false
 				if activeGame.Board[scoreModifier[indexOfSM][0]][scoreModifier[indexOfSM][1]] == string(word[i]) {
 					tileIn = true
 				}
-
 				fmt.Println("letter: ", string(word[i]), "x/y pos: ", scoreModifier[indexOfSM][0], scoreModifier[indexOfSM][1], " valueOfModifier: ", valueOfModifier, " tileIn: ", tileIn)
 				if valueOfModifier == "dl" && tileIn {
 					fmt.Println("dl: ", c.GetLetterScore(string(word[i])))
@@ -176,12 +181,7 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 				i++
 				indexOfSM++
 			}
-			// } else {
-			// 	fmt.Println()
-			// 	for _, letter := range word {
-			// 		score += c.GetLetterScore(string(letter))
-			// 	}
-			// }
+
 		} else {
 			return 0, errors.New("this is an invalid word: " + word)
 		}
@@ -191,32 +191,6 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		fmt.Println("DONE: score: ", score)
 	}
 
-	// if !OGWordCalculated && len(setOfWords) == 1 {
-	// 	word := setOfWords[0]
-	// 	score = 0
-	// 	for i := 0; i < len(word); i++ {
-	// 		switch scoreModifier[i] {
-	// 		case "dl":
-	// 			fmt.Println("dl: ", c.GetLetterScore(string(word[i])))
-	// 			OGWordScore += 2 * (c.GetLetterScore(string(word[i])))
-	// 		case "tl":
-	// 			fmt.Println("tl: ", c.GetLetterScore(string(word[i])))
-	// 			OGWordScore += 3 * (c.GetLetterScore(string(word[i])))
-	// 		case "dw":
-	// 			fmt.Println("dw: ", c.GetLetterScore(string(word[i])))
-	// 			scoreAggregateModifier *= 2
-	// 			OGWordScore += (c.GetLetterScore(string(word[i])))
-	// 		case "tw":
-	// 			fmt.Println("tw: ", c.GetLetterScore(string(word[i])))
-	// 			scoreAggregateModifier *= 3
-	// 			OGWordScore += (c.GetLetterScore(string(word[i])))
-	// 		default:
-	// 			fmt.Println("default: ", c.GetLetterScore(string(word[i])))
-	// 			OGWordScore += (c.GetLetterScore(string(word[i])))
-	// 		}
-	// 	}
-	// }
-
 	// Add 50 points if all 7 tiles are used
 	if newTiles.Len() == 7 {
 		score += 50
@@ -225,6 +199,7 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 	return score, nil
 }
 
+// pullLeft recursively pulls the letters to the left of the given position (x,y) on the game board.
 func pullLeft(game Game, x int, y int) string {
 	if y <= 0 || game.Board[x][y] == "" {
 		return ""
@@ -232,6 +207,7 @@ func pullLeft(game Game, x int, y int) string {
 	return pullLeft(game, x, y-1) + game.Board[x][y-1]
 }
 
+// pullRight recursively pulls the letters to the right of the given position (x,y) on the game board.
 func pullRight(game Game, x int, y int) string {
 	if y >= 14 || game.Board[x][y] == "" {
 		return ""
@@ -239,24 +215,20 @@ func pullRight(game Game, x int, y int) string {
 	return game.Board[x][y+1] + pullRight(game, x, y+1)
 }
 
+// pullUp recursively pulls the letters above the given position (x,y) on the game board.
 func pullUp(game Game, x int, y int) string {
-	// fmt.Println("pullLeft: ", x, y)
-
 	if x <= 0 || game.Board[x][y] == "" {
 		return ""
 	}
-
-	// fmt.Println(pullLeft(game, x-1, y) + game.Board[x][y])
 	return pullUp(game, x-1, y) + game.Board[x-1][y]
 }
 
+// pullDown recursively pulls the letters below the given position (x,y) on the game board.
 func pullDown(game Game, x int, y int) string {
-	// fmt.Println("pullRight: ", x, y)
 
 	if x >= 14 || game.Board[x][y] == "" {
 		return ""
 	}
-	// fmt.Println(game.Board[x][y] + pullRight(game, x+1, y))
 	return game.Board[x+1][y] + pullDown(game, x+1, y)
 }
 
