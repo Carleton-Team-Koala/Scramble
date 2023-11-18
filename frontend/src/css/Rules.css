@@ -1,11 +1,16 @@
 .open-btn {
     position: fixed;
-    top: 10px;
-    left: 10px;
+    top: 0px;
+    left: 0px;
     cursor: pointer;
+    width: 150px;
+    height: 100px;
+    text-align: center;
   }
 
 .close-btn {
+  top: 0;
+  left: 0;
   cursor: pointer;
 }
 

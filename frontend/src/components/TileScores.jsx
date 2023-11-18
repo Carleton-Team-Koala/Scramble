@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/Scores.css';
+import '../css/TileScores.css';
 
 export default function Scores () {
     /**
@@ -7,7 +7,7 @@ export default function Scores () {
      */
     return (
         <div className="scores">
-            <p>Scores</p>
+            <p className='scores-header'>Letter Values</p>
             <p> "A": 1,
                 "B": 3,
                 "C": 3,

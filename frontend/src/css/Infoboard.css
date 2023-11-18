@@ -1,6 +1,7 @@
 #infoboard {
     display: inline-block;
     border: 10px solid #000000;
+    border-radius: 8px;
     background-color: #f5f5f5;
     margin-top: 5%;
     width: 220px;
