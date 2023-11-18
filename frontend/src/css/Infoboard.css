@@ -1,3 +1,7 @@
+/**
+ * CSS styles for the infoboard component.
+ */
+
 #infoboard {
     display: inline-block;
     border: 10px solid #000000;
@@ -7,7 +11,7 @@
     width: 220px;
     height: 430px;
     color: #000000;
-  }
+}
 
 .scoreboard {
     display: block;

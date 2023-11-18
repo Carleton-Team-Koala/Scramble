@@ -1,44 +1,87 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
 import "../css/Welcome.css";
 import Popup from "./Popup";
 
-export let player1 = "";
-export let player2 = "";
-export let gameID = "";
-export const baseURL = "http://localhost:8080/"
-let frontendURL = "/play/";
+export const baseURL = "http://localhost:8080/";
 
-export const createGame = () => {
+/**
+ * Creates a new game by sending a POST request to the server.
+ * 
+ * @returns {Promise<string|null>} A promise that resolves with the game ID if the game is created successfully,
+ *                                or null if there is an error or the game cannot be started.
+ */
+function createGame() {
   const url = baseURL + "newgame/";
-  console.log(url);
-  player1 = document.getElementById("username").value;
-  console.log(player1);
+  const player = sessionStorage.getItem('playerName');
+
+  // Return the fetch promise
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ playerName: player })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.valid) {
+      sessionStorage.setItem('gameId', data.gameID); // Store game ID in sessionStorage
+      return data.gameID;  // Resolve with gameID
+    } else {
+      alert("The game could not be started at the moment!");
+      return null;  // Resolve with null
+    }
+  })
+  .catch(error => {
+    alert(error);
+    console.error("Error: ", error);
+    return null;  // Resolve with null in case of error
+  });
+};
+
+/**
+ * Joins a game by sending a POST request to the server with the player name and game ID.
+ * If the necessary data is missing, an alert is displayed and the function exits.
+ * If the response status code is 200, a success message is logged to the console.
+ * If the response status code is not 200, an error message is logged to the console and an error is thrown.
+ * Any caught errors are alerted and logged to the console.
+ */
+function joinGame() {
+  const player = sessionStorage.getItem('playerName'); // Get player name from sessionStorage
+  const gameID = sessionStorage.getItem('gameId'); // Get game ID from sessionStorage
+  const url = baseURL + "joingame/" + gameID + "/";
+
+  if (!player || !gameID) {
+    alert("Player name or game ID is missing.");
+    return; // Exit the function if the necessary data is missing
+  }
+
   fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ playerName: player1 })
+    body: JSON.stringify({ playerName: player })
   })
-    .then(response => response.json())
-    .then(data => {
-      if (data.valid) {
-        gameID = data.gameID;
-        frontendURL += gameID;
-      }
-      else {
-        alert("The game could not be started at the moment!");
-      }
-    })
-    .catch(error => {
-      alert(error);
-      console.error("Error: ", error);
-    })
-}
+  .then(response => {
+    if (response.ok) {
+      // If the response status code is 200
+      console.log("Joined game successfully!");
+    } else {
+      // If the response status code is not 200
+      console.error(`Failed to join game: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  })
+  .catch(error => {
+    alert(error);
+    console.error("Error: ", error);
+  })
+};
 
 export default function Welcome() {
-  const [popup, setPopup] = useState(false);
+  const [newGamePopup, setNewGamePopup] = useState(false);
+  const [joinGamePopup, setJoinGamePopup] = useState(false);
 
   const alertClick = () => {
     alert("This functionality is not supported yet!");
@@ -46,10 +89,11 @@ export default function Welcome() {
 
   return (
     <div className="welcome-container">
-      <button onClick={()=>setPopup(true)}>New Game</button>
+      <button onClick={() => setNewGamePopup(true)}>New Game</button>
       <button onClick={alertClick}>Load Game</button>
-      <button onClick={alertClick}>Join Game</button>
-      <Popup trigger={popup} setTrigger={setPopup} onSubmit={createGame}></Popup>
+      <button onClick={() => setJoinGamePopup(true)}>Join Game</button>
+      <Popup type='newGame' trigger={newGamePopup} setTrigger={setNewGamePopup} onSubmit={createGame}></Popup>
+      <Popup type='joinGame' trigger={joinGamePopup} setTrigger={setJoinGamePopup} onSubmit={joinGame}></Popup>
     </div>
   );
 };

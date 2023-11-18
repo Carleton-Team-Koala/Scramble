@@ -1,0 +1,42 @@
+/**
+ * CSS styles for the rules component.
+ */
+
+.open-btn {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+}
+
+.close-btn {
+  cursor: pointer;
+}
+
+.rules {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rules-container {
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 10px;
+  color: black;
+  font-size: 20px;
+  width: fit-content;
+  height: fit-content;
+  top: 50%;
+  left: 50%;
+  padding: 30px;
+  z-index: 10;
+}
+

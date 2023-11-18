@@ -1,4 +1,8 @@
 /* Thick and dark brown border for the entire board */
+/**
+ * CSS styles for the board element.
+ */
+
 #board {
   display: inline-block;
   border: 10px solid #000000;

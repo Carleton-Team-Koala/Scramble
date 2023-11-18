@@ -3,9 +3,10 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
 	"net/http"
 	"time"
+
+	_ "github.com/lib/pq"
 )
 
 type LanguageClient struct {
@@ -26,6 +27,9 @@ func NewLanguageClient(languagesURL string) *LanguageClient {
 	}
 }
 
+// NewDatabaseClient creates a new instance of DatabaseClient with the given connection parameters.
+// It establishes a connection to the PostgreSQL database using the provided host, port, user, password, and dbname.
+// Returns a pointer to the created DatabaseClient.
 func NewDatabaseClient(host string, port string, user string, password string, dbname string) *DatabaseClient {
 	psqlInfo := fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=disable",
 		user,
