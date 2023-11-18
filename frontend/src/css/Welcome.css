@@ -1,3 +1,7 @@
+/**
+ * CSS styles for the welcome container and button.
+ */
+
 .welcome-container {
     display: flex;
     flex-direction: column;

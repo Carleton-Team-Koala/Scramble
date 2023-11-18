@@ -3,6 +3,18 @@ import '../css/ActionPanel.css';
 import shuffleImage from '../assets/shuffle.jpg';
 import refreshImage from '../assets/refresh.jpg';
 
+/**
+ * ActionPanel component.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Array} props.tilesAp - The tiles to display in the hand container.
+ * @param {Function} props.shuffle - The function to shuffle the tiles.
+ * @param {Function} props.submit - The function to submit the tiles.
+ * @param {Function} props.reset - The function to reset the tiles.
+ * @param {Function} props.refresh - The function to refresh the tiles.
+ * @returns {JSX.Element} The ActionPanel component.
+ */
 const ActionPanel = ({ tilesAp, shuffle, submit, reset, refresh }) => {
 
     return (

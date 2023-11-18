@@ -9,6 +9,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// main is the entry point of the application.
+// It initializes the router, registers routes, imports data, and starts the server.
 func main() {
 	router := mux.NewRouter()
 	routes.RegisterRoutes(router)

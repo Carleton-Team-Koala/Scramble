@@ -1,5 +1,6 @@
 package models
 
+// AlphabetScores is a map of letters to their Scrabble scores.
 var alphabetScores = map[string]int{
 	"A": 1,
 	"B": 3,
@@ -29,6 +30,7 @@ var alphabetScores = map[string]int{
 	"Z": 10,
 }
 
+// AlphabetDistribution is a map of letters to their number of scrabble tiles.
 var AlphabetDistribution = map[string]int{
 	"A": 9,
 	"B": 2,

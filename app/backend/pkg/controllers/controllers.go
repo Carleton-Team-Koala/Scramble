@@ -206,8 +206,8 @@ func (a *AppController) AppReturnGameState(w http.ResponseWriter, r *http.Reques
 		errorResponse(w, "Not able to return game state: "+err.Error(), http.StatusOK)
 		return
 	}
-
 	json.NewEncoder(w).Encode(gameDetails)
+
 }
 
 // Error response

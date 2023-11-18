@@ -1,4 +1,10 @@
+/**
+ * 
+ * CSS styles for the popup component.
+ */
+
 .popup {
+    /* Position the popup at the top left corner of the viewport */
     position: fixed;
     top: 0;
     left: 0;
@@ -6,12 +12,14 @@
     height: 100vh;
     background-color: black;
 
+    /* Center the content vertically and horizontally */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .close-btn {
+    /* Position the close button at the top left corner of the popup */
     position: fixed;
     top: 50px;
     left: 50px;
@@ -20,13 +28,14 @@
 }
 
 .submit-btn {
+    /* Set the width and height of the submit button */
     width: 200px;
     height: 100px;
 }
 
 input {
+    /* Set the height, font size, and padding of the input field */
     height: 60px;
     font-size: 20px;
     padding: 10px;
 }
-

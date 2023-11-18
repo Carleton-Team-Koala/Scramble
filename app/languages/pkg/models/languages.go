@@ -13,6 +13,9 @@ func GetLetterScore(letter string) int {
 	return alphabetScores[letter]
 }
 
+// importDict is a function that imports a dictionary from a JSON file located at the given textPath.
+// It returns a pointer to a Dictionary struct containing the imported word list.
+// If the file cannot be opened, it returns nil.
 func importDict(textPath string) *Dictionary {
 	var wordList = new(Dictionary)
 
@@ -38,6 +41,10 @@ func importDict(textPath string) *Dictionary {
 	return wordList
 }
 
+// CheckLetter is a function that checks if a given word is valid based on the letters it contains.
+// It takes in a string as a parameter and returns a boolean value.
+// It imports a dictionary using the importDict function and then performs a binary search on the dictionary to check if the word is valid.
+// If the word is valid, it returns true. Otherwise, it returns false.
 func CheckLetter(searchWord string) bool {
 	wordList := importDict(dictionaryText)
 
