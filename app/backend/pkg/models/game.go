@@ -227,14 +227,13 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 // It returns a pointer to the updated loadedGame object.
 func (app *App) RefreshHand(gameID string, playerName string) (*[]string, error) {
 	loadedGame, err := app.GetGameById(gameID)
-	tempHand := loadedGame.Players[playerName].Hand
 	newTiles := []string{}
 	if err != nil {
 		return nil, err
 	}
 
 	if loadedGame.CurrentPlayer != playerName {
-		return &tempHand, errors.New("not able to refresh hand: wait! not your turn")
+		return nil, errors.New("not able to refresh hand: wait! not your turn")
 	}
 
 	for index, letter := range loadedGame.Players[playerName].Hand {
