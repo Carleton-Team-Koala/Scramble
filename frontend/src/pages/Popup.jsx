@@ -14,7 +14,7 @@ export default function Popup(props) {
             setGameID(document.getElementById('gameId').value);
             console.log(gameID);
             sessionStorage.setItem('gameId', gameID);
-            console.log(sessionStorage.getItem('gameId'));
+            console.log("storage ", sessionStorage.getItem('gameId'));
         }
 
         props.onSubmit();

@@ -30,7 +30,6 @@ function App() {
     }
   }, []);
 
-
   if (isGameStarted) {
     return (
       <div className="App" >
