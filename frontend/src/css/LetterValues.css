@@ -1,4 +1,7 @@
-.scores {
+/**
+ * CSS styles for the letter values display.
+ */
+.values {
     background-color: white;
     color: black;
     width: 10%;
@@ -10,7 +13,7 @@
     padding-inline: 20px;
 }
 
-.scores-header {
+.values-header {
     font-weight: 700;
     font-size: 25px;
 }

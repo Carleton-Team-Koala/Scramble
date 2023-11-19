@@ -1,0 +1,10 @@
+/**
+ * CSS styles for the waiting room page.
+ */
+
+button {
+    width: 350px;
+    height: 130px;
+    margin: 20px;
+    font-size: 24px;
+}

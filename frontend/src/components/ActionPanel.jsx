@@ -20,15 +20,15 @@ const ActionPanel = ({ tilesAp, shuffle, submit, reset, refresh, skip, resign })
     return (
         <div className="action-panel">
             <div className="hand-container">
-                <button className="button-hand" onClick={shuffle}
+                <button className="button-hand" onClick={shuffle} /** Shuffle button */
                     style={{
                         backgroundImage: `url(${shuffleImage})`,
                     }}>
                 </button>
-                <div className='tile-hand'>
-                    {tilesAp}
+                <div className='tile-hand' /** Tiles in the hand */> 
+                    {tilesAp} 
                 </div>
-                <button className="button-hand" onClick={reset}
+                <button className="button-hand" onClick={reset} /** Reset button */
                     style={{
                         backgroundImage: `url(${refreshImage})`,
                         backgroundSize: "30px",
