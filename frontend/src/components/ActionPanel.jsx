@@ -36,7 +36,7 @@ const ActionPanel = ({ tilesAp, shuffle, submit, reset, refresh, skip, resign })
                 </button>
             </div>
             <div className="button-container">
-                <button className="button-ap">Resign</button>
+                <button className="button-ap" onClick={resign}>Resign</button>
                 <button className="button-ap" onClick={skip}>Skip</button>
                 <button className="button-ap" onClick={refresh}>Refresh</button>
                 <button className="button-ap submit-button" onClick={submit}>Submit</button>
