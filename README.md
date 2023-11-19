@@ -1,7 +1,7 @@
 # Scramble
 
 ## Abstract
-This is Scramble, a word game based off of Scrabble. It was developed during Carleton College's Fall 2023 trimester for Matt Lepinski's class CS347: Advanced Software Design. The application is primarily wriiten using React for the frontend, and Golang for the backend. It has been containerized using Docker. We hope in the future to deploy it to some cloud service.
+This is Scramble, a word game based off of Scrabble. It was developed during Carleton College's Fall 2023 trimester for Matt Lepinski's class CS347: Advanced Software Design. The application is primarily wriiten using React for the frontend, and Golang for the backend. 
 
 ### Contributers
 |Name|Email|  
@@ -23,10 +23,9 @@ This is Scramble, a word game based off of Scrabble. It was developed during Car
 Scramble is based off of Hasbro's Scrabble, a game developed in 1938 by Alfred Mosher Butts. In the original Scrabble game, 2-4 players each recieve a "hand" of seven letter tiles, which they are required to play some number of each term to form a word on the board, with at least one tile being connected to a tile on the board in such a way that conenction too forms a word. Each letter tile is assigned a points value, and each word is scored off of the values of the tiles constituting the word. The game is complex and difficult to explain succinctly. We reccommend this material as a good primer on the game: https://users.cs.northwestern.edu/~robby/uc-courses/22001-2008-winter/scrabble.html
 
 We have made some modifications to our version:
-- Our version of the game currently only has support for exactly two players. 
+- Our version of the game has support for exactly two players. 
 - The tiles look slightly different. 
 - Hand scores are not removed from the final scores when the game ends
-- We have added support for other languages, but have not implemented a second language besides English. 
 
 ## Setup Instructions
 
@@ -53,7 +52,7 @@ The user-ready app can be accessed at http://localhost:3000 (Yes, you read that 
 
 NOTE: The game will not run if you try to access it using HTTPS. Any individual match will not work if you quit and re-open the browser running the game, but will work if a user reloads their respective game.  
 
-To play, open two browser tabs both running the app. The two tabs can be on teh same browser or separate browsers. 
+To play, open two browser tabs both running the app. The two tabs can be on the same browser or separate browsers. 
 
 ## Playing The Game
 
@@ -63,7 +62,7 @@ Clicking "New Game" will create a new game of Scramble. It prompts you to enter 
 
 #### Join Game
 
-Clicking "Join Game" will prompt you for a username and a game session ID. Input those, and you will also be presented with a screen saying "Start Game". Your username MUST be different than the other players. 
+Clicking "Join Game" will prompt you for a username and a game session ID. Input those, and you will also be presented with a screen saying "Start Game". Your username MUST be different than the other players. If it is not, the game will refuse to start and you will need to create a new game session. 
 
 #### Playing The Game
 
@@ -81,13 +80,21 @@ Frontend
 leaderboard.html: displays a static leaderboard with same background and styles
 as main project. 
 
+## How It Works
+### Frontend
+
+### Backend
+## Go
+The primary Go code runs a server that waits for queries from the frontent, and routes them to individual functions. This is handled through GET and POST requests, handled by the [`gorilla/mux`](https://github.com/gorilla/mux) package. 
+
 ## Known bugs/issues
 
 ## Credits
 
-### Work Distribution:
+## Work Distribution:
 - Frontend: Artem Yushko & John Win
 - Backend: Sunny Kim & Roo Case
+- Documentation: Roo Case, with contributions from the rest of the team
 
 ### Additional Support & Resources
 - Nat Case, for beta testing
