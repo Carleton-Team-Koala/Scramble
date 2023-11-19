@@ -49,7 +49,7 @@ const Board = ({ onTileDrop, letterUpdates, scoredLetters }) => {
     for (let i = 0; i < 15; i++) { // make a board
         const cells = []; // cells for each row
 
-        for (let j = 0; j < 15; j++) {
+        for (let j = 0; j < 15; j++) { //mark each tile with cellStyle and cellValue properties to handle different CSS
             let cellStyle = "";
             let cellValue = "";
 

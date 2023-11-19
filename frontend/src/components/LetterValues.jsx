@@ -1,13 +1,13 @@
 import React from 'react';
-import '../css/TileScores.css';
+import '../css/LetterValues.css';
 
-export default function Scores () {
+export default function Values () {
     /**
-     * Displays the score of each letter.
+     * Displays the value of each letter.
      */
     return (
-        <div className="scores">
-            <p className='scores-header'>Letter Values</p>
+        <div className="values">
+            <p className='values-header'>Letter Values</p>
             <p> "A": 1,
                 "B": 3,
                 "C": 3,

@@ -41,9 +41,7 @@ function createGame() {
 
 /**
  * Joins a game by sending a POST request to the server with the player name and game ID.
- * If the necessary data is missing, an alert is displayed and the function exits.
- * If the response status code is 200, a success message is logged to the console.
- * If the response status code is not 200, an error message is logged to the console and an error is thrown.
+ * If the necessary data is missing, wrong gameID, player name has already been used, or the game has already begun, an alert is displayed and the function exits.
  * Any caught errors are alerted and logged to the console.
  */
 function joinGame() {
@@ -81,9 +79,11 @@ function joinGame() {
 };
 
 export default function Welcome() {
+  //state variables to control which Popup will appear when
   const [newGamePopup, setNewGamePopup] = useState(false);
   const [joinGamePopup, setJoinGamePopup] = useState(false);
 
+  //render the HTML elements
   return (
     <div className="welcome-container">
       <button onClick={() => setNewGamePopup(true)}>New Game</button>

@@ -4,7 +4,7 @@ import Board from "../components/Board";
 import ActionPanel from "../components/ActionPanel";
 import Infoboard from "../components/Infoboard";
 import Tile from '../components/Tile';
-import Scores from '../components/TileScores';
+import Values from '../components/LetterValues';
 import '../css/Game.css';
 import "../css/App.css";
 
@@ -106,9 +106,7 @@ export default function Game() {
       const data = await response.json();
 
       if (data.CurrentPlayer === playerName && data.TotalMoves !== 0) {
-        console.log(data);
         if(data.GameOver) {
-          console.log(data.Winner);
           alert(`Game over! Winner is ${data.Winner}`);
         }
         setHand(data.Players[playerName].hand);
@@ -136,13 +134,11 @@ export default function Game() {
   // useEffect to fetch game state and set tiles on component mount
   useEffect(() => {
     initializeGame().then(() => {
-      console.log("getGame finished, now setting tiles");
     });
   }, []);
 
   // useEffect to update tiles whenever hand changes
   useEffect(() => {
-    console.log("Hand updated, now updating tiles");
     setTiles(initializeTiles(hand));
   }, [hand]);
 
@@ -179,6 +175,9 @@ export default function Game() {
     );
   };
 
+  /**
+   * Shuffle tiles in the hand.
+   */
   const shuffle = () => {
     let indices = [0, 1, 2, 3, 4, 5, 6]
     let tilesCopy = [...tiles];
@@ -197,13 +196,11 @@ export default function Game() {
     setTiles(prevTiles =>
       prevTiles.map(tile => ({ ...tile, position: 'ActionPanel' }))
     );
-    // console.log("before: ", letterUpdates);
     setLetterUpdates({});
-    console.log("after: ", letterUpdates);
   }
 
   /**
-   * Refreshes all the tiles in the hand with a random set of 7 tiles
+   * Refreshes all the tiles in the hand with a random set of 7 tiles and skip a turn.
    */
   const refresh = () => {
     let url = baseURL + "refreshhand/" + gameID + "/";
@@ -224,10 +221,8 @@ export default function Game() {
       .then(data => {
         if (data.message) {
           alert(data.message);
-          console.log(data.message);
         }
         else {
-          console.log(data);
           setHand(data.hand);
           setIsPolling(true); // Start polling again
         }
@@ -238,6 +233,10 @@ export default function Game() {
       })
   }
 
+  /**
+   * Skip a turn. 
+   * Return an error message when skipping two consecutive times
+   */
   const skip = () => {
     let url = baseURL + "skipturn/" + gameID + "/";
 
@@ -266,6 +265,9 @@ export default function Game() {
       })
   }
 
+  /**
+   * Resigns from the game and set the other player as the winner.
+   */
   const resign = () => {
     let url = baseURL + "resigngame/" + gameID + "/";
 
@@ -280,10 +282,8 @@ export default function Game() {
       .then(data => {
         if (data.message) {
           alert(data.message);
-          console.log(data.message);
         }
         else {
-          console.log(data);
           alert(data);
         }
       })
@@ -360,7 +360,6 @@ export default function Game() {
     };
     setLetterUpdates({});
     const url = baseURL + gameID + "/updategame/";
-    // const data = JSON.stringify({ playerName: player, updates: tilePositions })
     fetch(url, {
       method: "POST",
       headers: {
@@ -371,7 +370,6 @@ export default function Game() {
       .then(response => response.json())
       .then(data => {
         // processing the server response
-        console.log(data);
         parseOwnUpdates(data);
         setIsPolling(true); // Start polling again
       })
@@ -384,7 +382,7 @@ export default function Game() {
   return (
     <div className='App'>
       <div className="board-score">
-        <Scores></Scores>
+        <Values></Values>
         <Board
           letterUpdates={letterUpdates}
           onTileDrop={handleTileDrop}
