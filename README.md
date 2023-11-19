@@ -87,7 +87,7 @@ as main project.
 
 ### Backend
 -  Go
--- [`gorilla/mux`](https://github.com/gorilla/mux)
+-   [`gorilla/mux`](https://github.com/gorilla/mux)
 
 ### Server
 - Postgresql
