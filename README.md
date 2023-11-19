@@ -20,20 +20,25 @@ This is Scramble, a word game based off of Scrabble. It was developed during Car
 
 ## Description
 
-Scramble is based off of Hasbro's Scrabble, a game developed in 1938 by Alfred Mosher Butts. In the game, 2-4 players each recieve a "hand" of seven letter tiles, which they are required to play some number of each term to form a word on the board, with at least one tile being connected to a tile on the board in such a way that conenction too forms a word. Each letter tile is assigned a points value, and each word is scored off of the values of the tiles constituting the word. The game is complex and difficult to explain succinctly. We reccommend this material as a good primer on the game: https://users.cs.northwestern.edu/~robby/uc-courses/22001-2008-winter/scrabble.html
+Scramble is based off of Hasbro's Scrabble, a game developed in 1938 by Alfred Mosher Butts. In the original Scrabble game, 2-4 players each recieve a "hand" of seven letter tiles, which they are required to play some number of each term to form a word on the board, with at least one tile being connected to a tile on the board in such a way that conenction too forms a word. Each letter tile is assigned a points value, and each word is scored off of the values of the tiles constituting the word. The game is complex and difficult to explain succinctly. We reccommend this material as a good primer on the game: https://users.cs.northwestern.edu/~robby/uc-courses/22001-2008-winter/scrabble.html
+
+We have made some modifications to our version:
+- Our version of the game currently only has support for exactly two players. 
+- The tiles look slightly different. 
+- Hand scores are not removed from the final scores when the game ends
+- We have added support for other languages, but have not implemented a second language besides English. 
 
 ## Setup Instructions
 
 Clone this repository onto your local machine. You will also need an up-to-date version of Docker running on your computer, and a modern web browser (you do not need to be connected to the internet, but need a web browser in order to connect to the localhost and play the game)
 
-### App
 To run the whole program, go to the `Scramble` directory and use the following command on the terminal:
 
 ```terminal
 > docker compose build && docker compose up
 ```
 
-On first startup, Docker will download and install many dependencies required to run. This may take a while. After initial setup, to run Scramble you only need run:
+On first startup, Docker will download and install many dependencies required to run. This may take a while. To run Scramble any time after initial startup, you only need run:
 
 ```terminal
 > docker compose up
@@ -44,9 +49,11 @@ The core server will start up last. The game is ready to connect and play when y
 scramble-game-1       | Server is running on :8080
 ```
 
-The user-ready app can be accessed at http://localhost:3000
+The user-ready app can be accessed at http://localhost:3000 (Yes, you read that correctly. The core server runs at :8080, but the frontend is running at :3000)
 
-To test multiplayer, open two browsers, both running the app. 
+NOTE: The game will not run if you try to access it using HTTPS. Any individual match will not work if you quit and re-open the browser running the game, but will work if a user reloads their respective game.  
+
+To play, open two browser tabs both running the app. 
 
 ## Playing The Game
 
@@ -56,7 +63,7 @@ Clicking "New Game" will create a new game of Scramble. It prompts you to enter 
 
 #### Join Game
 
-Clicking "Join Game" will prompt you for a username and a game session ID. Input those, and you will also be presented with a screen saying "Start Game"
+Clicking "Join Game" will prompt you for a username and a game session ID. Input those, and you will also be presented with a screen saying "Start Game". Your username MUST be different than the other players. 
 
 #### Playing The Game
 
@@ -74,6 +81,8 @@ Frontend
 leaderboard.html: displays a static leaderboard with same background and styles
 as main project. 
 
+## Known bugs/issues
+
 ## Credits
 
 ### Work Distribution:
@@ -83,3 +92,4 @@ as main project.
 ### Additional Support & Resources
 - Nat Case, for beta testing
 - Matt Lepinski, for general support and resourcefulness throughout the process
+
