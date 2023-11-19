@@ -6,10 +6,10 @@ This is Scramble, a word game based off of *Scrabble*. It was developed during C
 ### Contributers
 |Name|Email|  
 |----|-----|  
-|Roo Case '25|caser@carleton.edu|
-|Sunny Kim '24|kims3@carleton.edu|
-|John Win '25|winj@carleton.edu|
-|Artem Yushko '25|yushkoa@carleton.edu|
+|Roo Case|caser@carleton.edu|
+|Sunny Kim|kims3@carleton.edu|
+|John Win|winj@carleton.edu|
+|Artem Yushko|yushkoa@carleton.edu|
 
 ## Contents
 - [Description](#description)
@@ -74,13 +74,13 @@ As opposed to traditional *Scrabble*, when the game ends, the player that still 
 
 
 ## Player Leaderboard (Written by Fast Ntense)
-Starter Code for player leaderboard
-Add columns for player1 score and player2 score
-Run through a game and get score for each player 
-Order by playerTotal Score
-Frontend
-leaderboard.html: displays a static leaderboard with same background and styles
-as main project. 
+- Starter Code for player leaderboard
+- Add columns for player1 score and player2 score
+- Run through a game and get score for each player 
+- Order by playerTotal Score
+- 
+### Frontend
+- leaderboard.html: displays a static leaderboard with same background and styles as main project. 
 
 ## Technologies Used
 ### Frontend
@@ -97,15 +97,11 @@ as main project.
 ### Languages 
 - Go
 
-## Known bugs/issues
-- None that we know of.
-
 ## Credits
 
 ### Work Distribution:
 - Frontend: Artem Yushko & John Win
 - Backend: Sunny Kim & Roo Case
-- Documentation: Roo Case, with contributions from the rest of the team
 
 ### Additional Support & Resources
 - Nat Case, for beta testing (long-term skilled *Scrabble* player)
