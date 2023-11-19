@@ -83,14 +83,9 @@ export default function Welcome() {
   const [newGamePopup, setNewGamePopup] = useState(false);
   const [joinGamePopup, setJoinGamePopup] = useState(false);
 
-  const alertClick = () => {
-    alert("This functionality is not supported yet!");
-  };
-
   return (
     <div className="welcome-container">
       <button onClick={() => setNewGamePopup(true)}>New Game</button>
-      <button onClick={alertClick}>Load Game</button>
       <button onClick={() => setJoinGamePopup(true)}>Join Game</button>
       <Popup type='newGame' trigger={newGamePopup} setTrigger={setNewGamePopup} onSubmit={createGame}></Popup>
       <Popup type='joinGame' trigger={joinGamePopup} setTrigger={setJoinGamePopup} onSubmit={joinGame}></Popup>
