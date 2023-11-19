@@ -58,7 +58,8 @@ func (app *App) CreateGame(playerName string) (string, error) {
 		PlayerList:       playerList,
 		TotalMoves:       0,
 		GameStarted:      false,
-		GameOver: false,
+		GameOver:         false,
+		Winner:           "",
 	}
 
 	// Add game to database
@@ -187,7 +188,6 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		} else {
 			return nil, errors.New("invalid move")
 		}
-
 	}
 
 	for row := 0; row < 15; row++ {
@@ -210,11 +210,12 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 
 	loadedGame.TotalMoves += 1
 
-	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves % 2]
+	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves%2]
 
 	// check if game is over
 	if !checkPlayerHand(loadedGame.Players) || !checkGameBag(loadedGame.AvailableLetters) {
 		loadedGame.GameOver = true
+		loadedGame.Winner = playerName
 	}
 
 	// update game on database
@@ -233,6 +234,10 @@ func (app *App) RefreshHand(gameID string, playerName string) (*[]string, error)
 		return nil, err
 	}
 
+	if loadedGame.CurrentPlayer != playerName {
+		return nil, errors.New("wait! not your turn")
+	}
+
 	for index, letter := range loadedGame.Players[playerName].Hand {
 		returnTilesToBag(*loadedGame, []Move{{Letter: letter}})
 		newTile := getRandomTile(loadedGame.AvailableLetters)
@@ -240,10 +245,68 @@ func (app *App) RefreshHand(gameID string, playerName string) (*[]string, error)
 		newTiles = append(newTiles, newTile)
 	}
 
+	loadedGame.TotalMoves += 1
+
+	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves%2]
+
 	// update game on database
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
 
 	return &newTiles, nil
+}
+
+func (app *App) SkipTurn(gameID string, playerName string) (*string, error) {
+	loadedGame, err := app.GetGameById(gameID)
+	returnMsg := "Your turn is skipped!"
+	if err != nil {
+		return nil, err
+	}
+
+	if loadedGame.CurrentPlayer != playerName {
+		return nil, errors.New("wait! not your turn")
+	}
+
+	loadedGame.TotalMoves += 1
+
+	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves%2]
+
+	// update game on database
+	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
+
+	return &returnMsg, nil
+}
+
+func (app *App) ResignGame(gameID string, playerName string) (*string, error) {
+	loadedGame, err := app.GetGameById(gameID)
+	winner := ""
+	if err != nil {
+		return nil, err
+	}
+
+	if loadedGame.CurrentPlayer != playerName {
+		return nil, errors.New("wait! not your turn")
+	}
+
+	loadedGame.TotalMoves += 1
+
+	loadedGame.GameOver = true
+
+	loadedGame.CurrentPlayer = ""
+
+	for _, player := range loadedGame.PlayerList {
+		if player != playerName {
+			winner = player
+		}
+	}
+
+	loadedGame.Winner = winner
+
+	returnMsg := fmt.Sprintf("Player %s resigned. Player %s is the winner!", playerName, winner)
+
+	// update game on database
+	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
+
+	return &returnMsg, nil
 }
 
 func generateNewGameID() string {
@@ -330,6 +393,6 @@ func checkGameBag(availableLetters map[string]int) bool {
 			keys = append(keys, k)
 		}
 	}
-	
+
 	return len(keys) > 0
 }
