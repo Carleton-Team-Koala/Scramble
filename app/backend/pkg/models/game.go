@@ -158,7 +158,7 @@ func (app *App) StartGame(gameID string) (*Game, error) {
 func (app *App) GetGameById(gameID string) (*Game, error) {
 	exists, _ := app.DatabaseClient.CheckGameExists(gameID)
 	if !(*exists) {
-		return nil, nil
+		return nil, errors.New("game id does not exist")
 	}
 	loadedGame, err := app.DatabaseClient.GetGameByGameID(gameID)
 	if err != nil {
