@@ -108,8 +108,9 @@ export default function Game() {
 
       if (data.CurrentPlayer === playerName && data.TotalMoves !== 0) {
         console.log(data);
-        if(parseInt(data.Players[playerName].score) >= 15) {
-          alert("Game over! Winner is ", playerName);
+        if(data.GameOver) {
+          console.log(data.Winner);
+          alert(`Game over! Winner is ${data.Winner}`);
           // Get all <link> and <style> elements
           // var styles = document.querySelectorAll('link[rel="stylesheet"], style');
 
@@ -278,7 +279,7 @@ export default function Game() {
   }
 
   const resign = () => {
-    let url = baseURL + "/" + gameID + "/";
+    let url = baseURL + "resigngame/" + gameID + "/";
 
     fetch(url, {
       method: "POST",
