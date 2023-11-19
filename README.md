@@ -13,7 +13,8 @@ This is Scramble, a word game based off of Scrabble. It was developed during Car
 
 ## Contents
 - [Description](#description)
-- [Instructions](#instructions)
+- [Instructions](#Setup-instructions)
+- [Playing The Game] (#Playing-The-Game)
 - [Tests](#tests)
 - [Credits](#credits)
 
@@ -21,7 +22,7 @@ This is Scramble, a word game based off of Scrabble. It was developed during Car
 
 Scramble is based off of Hasbro's Scrabble, a game developed in 1938 by Alfred Mosher Butts. In the game, 2-4 players each recieve a "hand" of seven letter tiles, which they are required to play some number of each term to form a word on the board, with at least one tile being connected to a tile on the board in such a way that conenction too forms a word. Each letter tile is assigned a points value, and each word is scored off of the values of the tiles constituting the word. The game is complex and difficult to explain succinctly. We reccommend this material as a good primer on the game: https://users.cs.northwestern.edu/~robby/uc-courses/22001-2008-winter/scrabble.html
 
-## Instructions
+## Setup Instructions
 
 Clone this repository onto your local machine. You will also need an up-to-date version of Docker running on your computer, and a modern web browser (you do not need to be connected to the internet, but need a web browser in order to connect to the localhost and play the game)
 
@@ -47,6 +48,7 @@ The user-ready app can be accessed at http://localhost:3000
 
 To test multiplayer, open two browsers, both running the app. 
 
+## Playing The Game
 
 #### New Game
 
