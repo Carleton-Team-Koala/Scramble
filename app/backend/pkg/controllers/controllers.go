@@ -98,11 +98,19 @@ func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = a.AppInterface.JoinGame(gameID, joinGameResp.PlayerName)
+	joinedGameID, err := a.AppInterface.JoinGame(gameID, joinGameResp.PlayerName)
 	if err != nil {
 		errorResponse(w, "Not able to join game: "+err.Error(), http.StatusOK)
 		return
 	}
+
+	resp := apiResponse{
+		GameID: joinedGameID,
+		Valid:  true,
+	}
+
+	json.NewEncoder(w).Encode(resp)
+
 }
 
 // API endpoint to start game
