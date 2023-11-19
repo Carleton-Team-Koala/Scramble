@@ -84,19 +84,28 @@ as main project.
 ### Frontend
 
 ### Backend
-## Go
-The primary Go code runs a server that waits for queries from the frontent, and routes them to individual functions. This is handled through GET and POST requests, handled by the [`gorilla/mux`](https://github.com/gorilla/mux) package. 
+#### Go
+The primary Go server runs a server that waits for queries from the frontent, and routes them to individual functions. This is handled through GET and POST requests, handled by the [`gorilla/mux`](https://github.com/gorilla/mux) package. 
+- `apiServer.go` handles connections to the other backend 
+
+### Server
+
+
+### Languages 
+
 
 ## Known bugs/issues
+- None that we know of.
 
 ## Credits
 
-## Work Distribution:
+### Work Distribution:
 - Frontend: Artem Yushko & John Win
 - Backend: Sunny Kim & Roo Case
 - Documentation: Roo Case, with contributions from the rest of the team
 
 ### Additional Support & Resources
-- Nat Case, for beta testing
+- Nat Case, for beta testing (long-term skilled scrabble player)
 - Matt Lepinski, for general support and resourcefulness throughout the process
+- Fast Ntense for small feature addition
 
