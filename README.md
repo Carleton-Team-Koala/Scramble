@@ -78,7 +78,7 @@ As opposed to traditional *Scrabble*, when the game ends, the player that still 
 - Add columns for player1 score and player2 score
 - Run through a game and get score for each player 
 - Order by playerTotal Score
-- 
+  
 ### Frontend
 - leaderboard.html: displays a static leaderboard with same background and styles as main project. 
 
