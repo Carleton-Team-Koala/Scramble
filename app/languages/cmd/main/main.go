@@ -15,8 +15,6 @@ func main() {
 	router := mux.NewRouter()
 	routes.RegisterRoutes(router)
 
-	// TODO: Import data and other setup code here
-
 	http.Handle("/", router)
 
 	fmt.Println("Server is running on :8000")

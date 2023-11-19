@@ -36,9 +36,6 @@ func (m MoveSlice) Swap(i, j int) {
 // and newTiles, which represents the tiles being placed in the move.
 // It returns the calculated score and an error if any invalid conditions are encountered.
 func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, error) {
-
-	fmt.Println("scoring: ", newTiles)
-
 	isFirstMove := isFirstMove(activeGame, newTiles)
 
 	if isFirstMove != nil {
@@ -114,7 +111,6 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		leftAndRightWord := pullLeft(activeGame, x, y) + activeGame.Board[x][y] + pullRight(activeGame, x, y)
 		upAndDownWord := pullUp(activeGame, x, y) + activeGame.Board[x][y] + pullDown(activeGame, x, y)
 
-		fmt.Println("leftAndRightWord: ", leftAndRightWord, " upAndDownWord: ", upAndDownWord)
 		if (!c.CheckValidWord(leftAndRightWord) && len(leftAndRightWord) > 1) || (!c.CheckValidWord(upAndDownWord) && len(upAndDownWord) > 1) {
 			return 0, errors.New("this is an invalid word: " + leftAndRightWord + " or " + upAndDownWord)
 		}
@@ -133,21 +129,15 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		}
 	}
 
-	fmt.Println("Valid words: ", setOfWords)
-	fmt.Println("original word: ", OriginalWord)
-
 	// OGWordCalculated := false
 	// calculate the score
 	for _, word := range setOfWords {
 		OGWordScore = 0
 		scoreAggregateModifier = 1
 		if c.CheckValidWord(word) {
-			fmt.Println("word: ", word)
-
 			//scoring piece by piece, adding allowances for score modifiers
 			i := 0
 			indexOfSM := 0
-			fmt.Println("scoreModifier: ", scoreModifier)
 			for i < len(word) {
 				// valueOfModifier is either "dl", "tl", "dw", "tw", or "na" for double letter, triple letter, double word, triple word, or no modifier, respectively.
 				valueOfModifier := checkForScoreModifier(scoreModifier[indexOfSM][0], scoreModifier[indexOfSM][1])
@@ -156,26 +146,20 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 				if activeGame.Board[scoreModifier[indexOfSM][0]][scoreModifier[indexOfSM][1]] == string(word[i]) {
 					tileIn = true
 				}
-				fmt.Println("letter: ", string(word[i]), "x/y pos: ", scoreModifier[indexOfSM][0], scoreModifier[indexOfSM][1], " valueOfModifier: ", valueOfModifier, " tileIn: ", tileIn)
 				if valueOfModifier == "dl" && tileIn {
-					fmt.Println("dl: ", c.GetLetterScore(string(word[i])))
 					OGWordScore += 2 * (c.GetLetterScore(string(word[i])))
 				} else if valueOfModifier == "tl" && tileIn {
-					fmt.Println("tl: ", c.GetLetterScore(string(word[i])))
 					OGWordScore += 3 * (c.GetLetterScore(string(word[i])))
 				} else if valueOfModifier == "dw" && tileIn {
-					fmt.Println("dw: ", c.GetLetterScore(string(word[i])))
 					scoreAggregateModifier *= 2
 					OGWordScore += (c.GetLetterScore(string(word[i])))
 				} else if valueOfModifier == "tw" && tileIn {
-					fmt.Println("tw: ", c.GetLetterScore(string(word[i])))
 					scoreAggregateModifier *= 3
 					OGWordScore += (c.GetLetterScore(string(word[i])))
 				} else {
 					if !tileIn {
 						indexOfSM--
 					}
-					fmt.Println("default: ", c.GetLetterScore(string(word[i])))
 					OGWordScore += (c.GetLetterScore(string(word[i])))
 				}
 				i++
@@ -185,10 +169,7 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 		} else {
 			return 0, errors.New("this is an invalid word: " + word)
 		}
-
-		fmt.Println("OGWordScore: ", OGWordScore, ", scoreAggregateModifier: ", scoreAggregateModifier)
 		score += OGWordScore * scoreAggregateModifier
-		fmt.Println("DONE: score: ", score)
 	}
 
 	// Add 50 points if all 7 tiles are used
@@ -296,7 +277,6 @@ func checkSequential(tiles MoveSlice, game Game) (bool, bool) {
 			break
 		}
 	}
-	fmt.Println("isSequentialInX: ", isSequentialInX)
 
 	// If not sequential in X, check if sequential in Y direction (same Col)
 	if !isSequentialInX {
@@ -309,7 +289,6 @@ func checkSequential(tiles MoveSlice, game Game) (bool, bool) {
 	} else {
 		isSequentialInX = false // If they are sequential in X, they cannot be in Y
 	}
-	fmt.Println("isSequentialInY: ", isSequentialInY)
 
 	// If sequential in either direction, the adjacent elements must have consecutive indexes
 	if isSequentialInX || isSequentialInY {
@@ -340,44 +319,32 @@ func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 	tempBoard := [15][15]string{}
 
 	if reflect.DeepEqual(activeGame.Board, tempBoard) {
-		fmt.Println("board is empty")
 		return true
 	}
 
 	// Check if at least one new tile is adjacent to an already placed tile.
-
-	fmt.Println("checking adjacency, board is not empty")
 	for _, tile := range newTiles {
 		row, col := tile.Col, tile.Row
 		if row-1 >= 0 {
-			fmt.Println("tile: ", tile, " row: ", row, " col: ", col, " activeGame.Board[row-1][col]: ", activeGame.Board[row-1][col], "containsTile: ", containsTile(newTiles, row-1, col))
 			if activeGame.Board[row-1][col] != "" && !containsTile(newTiles, row-1, col) {
-				fmt.Println("tile above is not empty")
 				return true
 			}
 		}
 
 		if row+1 <= 14 {
-			fmt.Println("tile: ", tile, " row: ", row, " col: ", col, " activeGame.Board[row+1][col]: ", activeGame.Board[row+1][col], "containsTile: ", containsTile(newTiles, row+1, col))
 			if activeGame.Board[row+1][col] != "" && !containsTile(newTiles, row+1, col) {
-				fmt.Println("tile below is not empty")
 				return true
 			}
 		}
 		if col-1 >= 0 {
-			fmt.Println("tile: ", tile, " row: ", row, " col: ", col, " activeGame.Board[row][col-1]: ", activeGame.Board[row][col-1], "containsTile: ", containsTile(newTiles, row, col-1))
 			if activeGame.Board[row][col-1] != "" && !containsTile(newTiles, row, col-1) {
-				fmt.Println("tile to the left is not empty")
 				return true
 			}
 		}
 		if col+1 <= 14 {
-			fmt.Println("tile: ", tile, " row: ", row, " col: ", col, " activeGame.Board[row][col+1]: ", activeGame.Board[row][col+1], "containsTile: ", containsTile(newTiles, row, col+1))
 			if activeGame.Board[row][col+1] != "" && !containsTile(newTiles, row, col+1) {
-				fmt.Println("tile to the right is not empty")
 				return true
 			}
-			fmt.Println("no adjacent tiles: ", tile)
 		}
 	}
 	return false
@@ -385,10 +352,7 @@ func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 
 // containsTile checks if a tile with the given row and column exists in the given MoveSlice.
 func containsTile(tiles MoveSlice, row, col int) bool {
-	fmt.Println("containsTile: ", row, col)
-	fmt.Println("tiles: ", tiles)
 	for _, tile := range tiles {
-		fmt.Println("tile: ", tile, " row: ", row, " col: ", col)
 		if tile.Row == row && tile.Col == col {
 			return true
 		}

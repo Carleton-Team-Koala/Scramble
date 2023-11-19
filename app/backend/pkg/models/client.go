@@ -40,14 +40,12 @@ func NewDatabaseClient(host string, port string, user string, password string, d
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		fmt.Println("db open error")
 		panic(err)
 	}
 	// defer db.Close()
 
 	err = db.Ping()
 	if err != nil {
-		fmt.Println("db ping error")
 		panic(err)
 	}
 

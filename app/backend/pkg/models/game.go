@@ -162,7 +162,6 @@ func (app *App) GetGameById(gameID string) (*Game, error) {
 	}
 	loadedGame, err := app.DatabaseClient.GetGameByGameID(gameID)
 	if err != nil {
-		fmt.Println(fmt.Errorf("%w", err))
 		return nil, err
 	}
 	

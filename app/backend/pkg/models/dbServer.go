@@ -16,7 +16,6 @@ func (c *DatabaseClient) AddNewGameToDB(newGame Game) error {
 	if err != nil {
 		return fmt.Errorf("addNewGameToDB: %v", err)
 	}
-	fmt.Println("Done adding game to database!")
 	return nil
 }
 
@@ -40,7 +39,6 @@ func (c *DatabaseClient) GetGameByGameID(gameID string) (*Game, error) {
 		return nil, fmt.Errorf("getGameByGameID: %v", err)
 	}
 
-	fmt.Println("Done selecting game by gameID!")
 	return &selectedGame, nil
 }
 
@@ -73,7 +71,6 @@ func (c *DatabaseClient) CheckGameExists(gameID string) (*bool, error) {
 		return nil, fmt.Errorf("checkGameExists: %v", err)
 	}
 
-	fmt.Println("Done checking game by gameID!")
 	return &exists, nil
 }
 
