@@ -215,7 +215,11 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 	// check if game is over
 	if !checkPlayerHand(loadedGame.Players) || !checkGameBag(loadedGame.AvailableLetters) {
 		loadedGame.GameOver = true
-		loadedGame.Winner = playerName
+		if loadedGame.Players[loadedGame.PlayerList[0]].Score > loadedGame.Players[loadedGame.PlayerList[1]].Score {
+			loadedGame.Winner = loadedGame.PlayerList[0]
+		} else {
+			loadedGame.Winner = loadedGame.PlayerList[1]
+		}
 	}
 
 	// update game on database
@@ -291,7 +295,7 @@ func (app *App) ResignGame(gameID string, playerName string) (*string, error) {
 
 	loadedGame.GameOver = true
 
-	loadedGame.CurrentPlayer = ""
+	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves%2]
 
 	for _, player := range loadedGame.PlayerList {
 		if player != playerName {
