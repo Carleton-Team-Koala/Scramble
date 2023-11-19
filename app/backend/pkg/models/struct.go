@@ -37,3 +37,13 @@ type Move struct {
 	Col    int    `json:"yLoc"`
 	Row    int    `json:"xLoc"`
 }
+
+type SkipTurnResp struct {
+	CurrentPlayer string `json:"CurrentPlayer"`
+	Message string `json:"message"`
+}
+
+type RefreshResp struct {
+	CurrentPlayer string `json:"CurrentPlayer"`
+	NewHand []string `json:"hand"`
+}
