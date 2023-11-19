@@ -111,13 +111,6 @@ export default function Game() {
         if(data.GameOver) {
           console.log(data.Winner);
           alert(`Game over! Winner is ${data.Winner}`);
-          // Get all <link> and <style> elements
-          // var styles = document.querySelectorAll('link[rel="stylesheet"], style');
-
-          // // Loop through each element and set its disabled attribute to true
-          // styles.forEach(function(style) {
-          //   style.disabled = true;
-          // });
         }
 
         setHand(data.Players[playerName].hand);
@@ -237,7 +230,8 @@ export default function Game() {
         }
         else {
           console.log(data);
-          setHand(data);
+          setHand(data.hand);
+          setCurrentPlayer(data.CurrentPlayer); // tell the current player that it's their turn
         }
       })
       .catch(error => {
@@ -270,6 +264,7 @@ export default function Game() {
         else {
           console.log(data);
           alert(data);
+          setCurrentPlayer(data.CurrentPlayer); // tell the current player that it's their turn
         }
       })
       .catch(error => {
@@ -290,8 +285,14 @@ export default function Game() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        alert(data);
+        if (data.message) {
+          alert(data.message);
+          console.log(data.message);
+        }
+        else {
+          console.log(data);
+          alert(data);
+        }
       })
       .catch(error => {
         alert(error);
