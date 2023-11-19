@@ -401,7 +401,7 @@ func containsTile(tiles MoveSlice, row, col int) bool {
 // It takes an activeGame of type Game and a newTiles of type MoveSlice as input.
 // It returns an error if the move is invalid.
 func isFirstMove(activeGame Game, newTiles MoveSlice) error {
-	if activeGame.Board[7][7] != "" {
+	if activeGame.Board[7][7] == "" {
 		return errors.New("first move must be on the center tile")
 	}
 	return nil
