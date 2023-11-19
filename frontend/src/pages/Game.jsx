@@ -259,7 +259,6 @@ export default function Game() {
       .then(data => {
         if (data.message) {
           alert(data.message);
-          console.log(data.message);
         }
         else {
           console.log(data);
