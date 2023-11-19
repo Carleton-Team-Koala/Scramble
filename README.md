@@ -54,6 +54,13 @@ Clicking "New Game" will create a new game of Scramble. It prompts you to enter 
 
 #### Join Game
 
+Clicking "Join Game" will prompt you for a username and a game session ID. Input those, and you will also be presented with a screen saying "Start Game"
+
+#### Playing The Game
+
+Playing the game uses normal scrabble rules. The person who initially created the game by clicking "New Game" will always go first. This means that the traditional method of picking a random letter (with the person with the letter closest to "A" winning) will not work, and instead you should decide the method of deciding who should go first. We reccommend flipping a coin or playing rock-paper-scissors. Players will take turns back and forth playing words until the tile bag is empty, and one of the two players runs out of tiles. 
+
+As opposed to traditional Scrabble, when the game ends, the player that still has tiles in their hands does NOT have the values of the tiles removed from the final scores. When the game ends, the website will announce that the game has finished and declare the winner. 
 
 
 ## Player Leaderboard (Written by Fast Ntense)
