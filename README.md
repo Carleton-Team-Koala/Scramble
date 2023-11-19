@@ -1,7 +1,7 @@
 # Scramble
 
 ## Abstract
-This is Scramble, a word game based off of Scrabble. It was developed during Carleton College's Fall 2023 trimester for Matt Lepinski's class CS347: Advanced Software Design. The application is primarily wriiten using React for the frontend, and Golang for the backend. 
+This is Scramble, a word game based off of Scrabble. It was developed during Carleton College's Fall 2023 trimester for Matt Lepinski's class CS347: Advanced Software Design. The application is primarily wriiten using React for the frontend, and Go for the backend, with a PostgreSQL-written database tracking game states. 
 
 ### Contributers
 |Name|Email|  
@@ -20,7 +20,7 @@ This is Scramble, a word game based off of Scrabble. It was developed during Car
 
 ## Description
 
-Scramble is based off of Hasbro's Scrabble, a game developed in 1938 by Alfred Mosher Butts. In the original Scrabble game, 2-4 players each recieve a "hand" of seven letter tiles, which they are required to play some number of each term to form a word on the board, with at least one tile being connected to a tile on the board in such a way that conenction too forms a word. Each letter tile is assigned a points value, and each word is scored off of the values of the tiles constituting the word. The game is complex and difficult to explain succinctly. We reccommend this material as a good primer on the game: https://users.cs.northwestern.edu/~robby/uc-courses/22001-2008-winter/scrabble.html
+Scramble is based off of Hasbro's Scrabble, a game developed in 1938 by Alfred Mosher Butts. In the original Scrabble game, 2-4 players each recieve a "hand" of seven letter tiles, which they are required to play some number of each term to form a word on the board, with at least one tile being connected to a tile on the board in such a way that conenction too forms a word. Each letter tile is assigned a points value, and each word is scored off of the values of the tiles constituting the word. The game is complex and difficult to explain succinctly. We reccommend [this material from Northwestern University](https://users.cs.northwestern.edu/~robby/uc-courses/22001-2008-winter/scrabble.html) as a good primer on the game. 
 
 We have made some modifications to our version:
 - Our version of the game has support for exactly two players. 
@@ -87,10 +87,10 @@ as main project.
 
 ### Backend
 -  Go
--   [`gorilla/mux`](https://github.com/gorilla/mux)
+-   [`gorilla/mux`](https://github.com/gorilla/mux) Library for Go
 
 ### Server
-- Postgresql
+- PostgreSQL
 - Go
 
 ### Languages 
