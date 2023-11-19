@@ -13,9 +13,10 @@ This is Scramble, a word game based off of Scrabble. It was developed during Car
 
 ## Contents
 - [Description](#description)
-- [Instructions](#Setup-instructions)
+- [Setup Instructions](#Setup-instructions)
 - [Playing The Game](#Playing-The-Game)
-- [Tests](#tests)
+- [Player Leaderboard (Written by Fast Ntense)](#player-leaderboard-written-by-fast-ntense)
+- [Technologies Used](#technologies-used)
 - [Credits](#credits)
 
 ## Description
@@ -49,7 +50,7 @@ The core server will start up last. The game is ready to connect and play when y
 scramble-game-1       | Server is running on :8080
 ```
 
-The user-ready app can be accessed at http://localhost:3000 (Yes, you read that correctly. The core server runs at :8080, but the frontend is running at :3000)
+The user-ready app can be accessed at http://localhost:3000 (Yes, you read that correctly. The core server runs at port 8080, but the frontend is running at port 3000)
 
 NOTE: The game will not run if you try to access it using HTTPS. Any individual match will not work if you quit and re-open the browser running the game, but will work if a user reloads their respective game.  
 
