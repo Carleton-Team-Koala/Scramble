@@ -26,6 +26,7 @@ We have made some modifications to our version:
 - Our version of the game has support for exactly two players. 
 - The tiles look slightly different. 
 - Hand scores are not removed from the final scores when the game ends
+- The game immediately begins - users do not have the ability to mulligan. 
 
 ## Setup Instructions
 
@@ -80,19 +81,20 @@ Frontend
 leaderboard.html: displays a static leaderboard with same background and styles
 as main project. 
 
-## How It Works
+## Technologies Used
 ### Frontend
+- React (JavaScript)
 
 ### Backend
-#### Go
-The primary Go server runs a server that waits for queries from the frontent, and routes them to individual functions. This is handled through GET and POST requests, handled by the [`gorilla/mux`](https://github.com/gorilla/mux) package. 
-- `apiServer.go` handles connections to the other backend 
+-  Go
+-- [`gorilla/mux`](https://github.com/gorilla/mux)
 
 ### Server
-
+- Postgresql
+- Go
 
 ### Languages 
-
+- Go
 
 ## Known bugs/issues
 - None that we know of.
