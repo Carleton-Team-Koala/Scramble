@@ -53,7 +53,7 @@ The user-ready app can be accessed at http://localhost:3000 (Yes, you read that 
 
 NOTE: The game will not run if you try to access it using HTTPS. Any individual match will not work if you quit and re-open the browser running the game, but will work if a user reloads their respective game.  
 
-To play, open two browser tabs both running the app. 
+To play, open two browser tabs both running the app. The two tabs can be on teh same browser or separate browsers. 
 
 ## Playing The Game
 
