@@ -59,6 +59,7 @@ func (app *App) CreateGame(playerName string) (string, error) {
 		TotalMoves:       0,
 		GameStarted:      false,
 		GameOver:         false,
+		Winner:           "",
 	}
 
 	// Add game to database
@@ -214,6 +215,7 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 	// check if game is over
 	if !checkPlayerHand(loadedGame.Players) || !checkGameBag(loadedGame.AvailableLetters) {
 		loadedGame.GameOver = true
+		loadedGame.Winner = playerName
 	}
 
 	// update game on database
@@ -296,6 +298,8 @@ func (app *App) ResignGame(gameID string, playerName string) (*string, error) {
 			winner = player
 		}
 	}
+
+	loadedGame.Winner = winner
 
 	returnMsg := fmt.Sprintf("Player %s resigned. Player %s is the winner!", playerName, winner)
 
