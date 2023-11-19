@@ -24,13 +24,15 @@ export default function Popup(props) {
         if (props.type === 'joinGame') {
             gameId = document.getElementById('gameId').value;
             sessionStorage.setItem('gameId', gameId);
-            props.onSubmit();
+            gameId = await props.onSubmit();
         } else {
             // Await the createGame function to complete and get the gameId
             gameId = await props.onSubmit();
         }
-    
-        navigate(`/room/${gameId}`);
+        
+        if (gameId != '' && gameId != null) {
+            navigate(`/room/${gameId}`);
+        }
     };
 
     return (props.trigger) ? (

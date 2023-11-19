@@ -53,30 +53,31 @@ function joinGame() {
 
   if (!player || !gameID) {
     alert("Player name or game ID is missing.");
-    return; // Exit the function if the necessary data is missing
+    return null; // Exit the function if the necessary data is missing
   }
 
-  fetch(url, {
+  // Return the fetch promise
+  return fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({ playerName: player })
   })
-  .then(response => {
-    if (response.ok) {
-      // If the response status code is 200
-      console.log("Joined game successfully!");
+  .then(response => response.json())
+  .then(data => {
+    if (data.valid) {
+      return data.gameID;  // Resolve with gameID
     } else {
-      // If the response status code is not 200
-      console.error(`Failed to join game: ${response.status}`);
-      throw new Error(`HTTP error! status: ${response.status}`);
+      alert(data.message);
+      return null;  // Resolve with null
     }
   })
   .catch(error => {
     alert(error);
     console.error("Error: ", error);
-  })
+    return null;  // Resolve with null in case of error
+  });
 };
 
 export default function Welcome() {
