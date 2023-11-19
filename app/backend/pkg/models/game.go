@@ -165,9 +165,7 @@ func (app *App) GetGameById(gameID string) (*Game, error) {
 		fmt.Println(fmt.Errorf("%w", err))
 		return nil, err
 	}
-
-	fmt.Println(loadedGame)
-
+	
 	return loadedGame, nil
 }
 
@@ -231,7 +229,7 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 // refreshHand refreshes the hand of a player in a game by returning their current tiles to the bag and drawing new tiles from the bag.
 // It takes in the loadedGame object and the name of the player whose hand needs to be refreshed.
 // It returns a pointer to the updated loadedGame object.
-func (app *App) RefreshHand(gameID string, playerName string) (*[]string, error) {
+func (app *App) RefreshHand(gameID string, playerName string) (*RefreshResp, error) {
 	loadedGame, err := app.GetGameById(gameID)
 	newTiles := []string{}
 	if err != nil {
@@ -253,13 +251,18 @@ func (app *App) RefreshHand(gameID string, playerName string) (*[]string, error)
 
 	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves%2]
 
+	resp := RefreshResp{
+		CurrentPlayer: loadedGame.CurrentPlayer,
+		NewHand: newTiles,
+	}
+
 	// update game on database
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
 
-	return &newTiles, nil
+	return &resp, nil
 }
 
-func (app *App) SkipTurn(gameID string, playerName string) (*string, error) {
+func (app *App) SkipTurn(gameID string, playerName string) (*SkipTurnResp, error) {
 	loadedGame, err := app.GetGameById(gameID)
 	returnMsg := "Your turn is skipped!"
 	if err != nil {
@@ -274,10 +277,15 @@ func (app *App) SkipTurn(gameID string, playerName string) (*string, error) {
 
 	loadedGame.CurrentPlayer = loadedGame.PlayerList[loadedGame.TotalMoves%2]
 
+	resp := SkipTurnResp{
+		CurrentPlayer: loadedGame.CurrentPlayer,
+		Message: returnMsg,
+	}
+
 	// update game on database
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadedGame)
 
-	return &returnMsg, nil
+	return &resp, nil
 }
 
 func (app *App) ResignGame(gameID string, playerName string) (*string, error) {
@@ -313,6 +321,7 @@ func (app *App) ResignGame(gameID string, playerName string) (*string, error) {
 	return &returnMsg, nil
 }
 
+// generate new game id 
 func generateNewGameID() string {
 	gameID := uniuri.NewLen(6)
 	return gameID
@@ -379,6 +388,7 @@ func updateScore(wordScore int, currPlayers map[string]PlayerInfo, currPlayer st
 	return currPlayers, nil
 }
 
+// check each players hand 
 func checkPlayerHand(currPlayers map[string]PlayerInfo) bool {
 	// check if any player hands are empty
 	for _, currPlayerInfo := range currPlayers {
@@ -389,6 +399,7 @@ func checkPlayerHand(currPlayers map[string]PlayerInfo) bool {
 	return true
 }
 
+// check tile bag of the game
 func checkGameBag(availableLetters map[string]int) bool {
 	keys := []string{}
 	// check if any tiles are left in the tile bag
