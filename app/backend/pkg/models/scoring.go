@@ -3,7 +3,6 @@ package models
 // scoring.go contains the scoring logic for the game of Scramble.
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"sort"
 )
