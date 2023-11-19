@@ -40,7 +40,6 @@ export default function Game() {
   const [playerScores, setPlayerScores] = useState({});
   const [playerNames, setPlayerNames] = useState([]);
   const [currentPlayer, setCurrentPlayer] = useState('Player 0');
-  const [isRulesOpen, setIsRulesOpen] = useState(false);
 
   async function initializeGame() {
     /*
@@ -112,7 +111,6 @@ export default function Game() {
           console.log(data.Winner);
           alert(`Game over! Winner is ${data.Winner}`);
         }
-
         setHand(data.Players[playerName].hand);
         setTilebag(data.LetterDistribution);
         parseBoard(data.Board);
@@ -231,7 +229,7 @@ export default function Game() {
         else {
           console.log(data);
           setHand(data.hand);
-          setCurrentPlayer(data.CurrentPlayer); // tell the current player that it's their turn
+          setIsPolling(true); // Start polling again
         }
       })
       .catch(error => {
@@ -259,11 +257,7 @@ export default function Game() {
       .then(data => {
         if (data.message) {
           alert(data.message);
-        }
-        else {
-          console.log(data);
-          alert(data);
-          setCurrentPlayer(data.CurrentPlayer); // tell the current player that it's their turn
+          setIsPolling(true); 
         }
       })
       .catch(error => {
