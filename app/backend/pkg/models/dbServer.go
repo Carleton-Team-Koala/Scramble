@@ -12,7 +12,7 @@ func (c *DatabaseClient) AddNewGameToDB(newGame Game) error {
 	if err != nil {
 		return fmt.Errorf("addNewGameToDB: %v", err)
 	}
-	_, err = c.database.Exec("INSERT INTO games (GameID, Board, LetterDistribution, Players, CurrentPlayer, PlayerList, TotalMoves, GameStarted, GameOver, Winner) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", newGame.GameID, newBoard, newLetters, newPlayers, newGame.CurrentPlayer, newPlayerList, newGame.TotalMoves, newGame.GameStarted, newGame.GameOver)
+	_, err = c.database.Exec("INSERT INTO games (GameID, Board, LetterDistribution, Players, CurrentPlayer, PlayerList, TotalMoves, GameStarted, GameOver, Winner) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", newGame.GameID, newBoard, newLetters, newPlayers, newGame.CurrentPlayer, newPlayerList, newGame.TotalMoves, newGame.GameStarted, newGame.GameOver, newGame.Winner)
 	if err != nil {
 		return fmt.Errorf("addNewGameToDB: %v", err)
 	}

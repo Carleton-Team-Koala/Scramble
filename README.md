@@ -45,6 +45,17 @@ scramble-game-1       | Server is running on :8080
 
 The user-ready app can be accessed at http://localhost:3000
 
+To test multiplayer, open two browsers, both running the app. 
+
+
+#### New Game
+
+Clicking "New Game" will create a new game of Scramble. It prompts you to enter your user name. Then you will move to the waiting room which has the "start game" button. The unique 6 digit game ID of the created new game will be available at the end the URL of the game. Send this game ID to another player.
+
+#### Join Game
+
+
+
 ## Player Leaderboard (Written by Fast Ntense)
 Starter Code for player leaderboard
 Add columns for player1 score and player2 score
@@ -53,8 +64,6 @@ Order by playerTotal Score
 Frontend
 leaderboard.html: displays a static leaderboard with same background and styles
 as main project. 
-
-## Tests
 
 ## Credits
 
@@ -65,5 +74,3 @@ as main project.
 ### Additional Support & Resources
 - Nat Case, for beta testing
 - Matt Lepinski, for general support and resourcefulness throughout the process
-- Carleton CS Labs for use of space and time
-- StackOverflow for all the debugging assistance
