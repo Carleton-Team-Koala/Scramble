@@ -72,27 +72,27 @@ func (app *App) CreateGame(playerName string) (string, error) {
 }
 
 // add player to already existing game
-func (app *App) JoinGame(gameID string, playerName string) error {
+func (app *App) JoinGame(gameID string, playerName string) (*string, error) {
 	// get game from GameList
 	loadGame, err := app.GetGameById(gameID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if playerName == loadGame.PlayerList[0] {
-		return errors.New("player already exists in game, try a different name")
+		return nil, errors.New("player already exists in game, try a different name")
 	}
 
 	if loadGame.GameStarted {
-		return errors.New("cannot join game: game already started")
+		return nil, errors.New("cannot join game: game already started")
 	}
 
 	if len(loadGame.PlayerList) >= 2 {
-		return errors.New("cannot join game: game already has two players")
+		return nil, errors.New("cannot join game: game already has two players")
 	}
 
 	if loadGame.GameOver {
-		return errors.New("cannot join game: this game is already over")
+		return nil, errors.New("cannot join game: this game is already over")
 	}
 
 	// create new player
@@ -108,7 +108,7 @@ func (app *App) JoinGame(gameID string, playerName string) error {
 
 	app.DatabaseClient.UpdateGameToDB(gameID, *loadGame)
 
-	return nil
+	return &loadGame.GameID, nil
 }
 
 // start game
