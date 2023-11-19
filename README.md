@@ -14,7 +14,7 @@ This is Scramble, a word game based off of Scrabble. It was developed during Car
 ## Contents
 - [Description](#description)
 - [Instructions](#Setup-instructions)
-- [Playing The Game] (#Playing-The-Game)
+- [Playing The Game](#Playing-The-Game)
 - [Tests](#tests)
 - [Credits](#credits)
 
