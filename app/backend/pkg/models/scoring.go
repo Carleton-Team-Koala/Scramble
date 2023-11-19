@@ -401,26 +401,8 @@ func containsTile(tiles MoveSlice, row, col int) bool {
 // It takes an activeGame of type Game and a newTiles of type MoveSlice as input.
 // It returns an error if the move is invalid.
 func isFirstMove(activeGame Game, newTiles MoveSlice) error {
-	if len(activeGame.Board) == 0 {
-		// If the board is completely blank, then this is the first move of the game.
-		// Check that one tile submitted is on the center tile.
-		fmt.Println("activeGame.Board is empty")
-		for _, tile := range newTiles {
-			if tile.Row == 7 && tile.Col == 7 {
-				return nil
-			}
-		}
-		return errors.New("the first move of the game must include a tile on the center tile")
-	} else if len(activeGame.Board) == newTiles.Len() {
-		// If the number of tiles in the active game is equal to the number of new tiles, then this is the first move of the game.
-		// Check that one tile submitted is on the center tile.
-		fmt.Println("activeGame.Board is not empty")
-		for _, tile := range newTiles {
-			if tile.Row == 7 && tile.Col == 7 {
-				return nil
-			}
-		}
-		return errors.New("the first move of the game must include a tile on the center tile")
+	if activeGame.Board[7][7] == "" {
+		return errors.New("first move must be on the center tile")
 	}
 	return nil
 }
