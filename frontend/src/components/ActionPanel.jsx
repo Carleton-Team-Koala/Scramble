@@ -15,7 +15,7 @@ import refreshImage from '../assets/refresh.jpg';
  * @param {Function} props.refresh - The function to refresh the tiles.
  * @returns {JSX.Element} The ActionPanel component.
  */
-const ActionPanel = ({ tilesAp, shuffle, submit, reset, refresh }) => {
+const ActionPanel = ({ tilesAp, shuffle, submit, reset, refresh, skip, resign }) => {
 
     return (
         <div className="action-panel">
@@ -37,7 +37,7 @@ const ActionPanel = ({ tilesAp, shuffle, submit, reset, refresh }) => {
             </div>
             <div className="button-container">
                 <button className="button-ap">Resign</button>
-                <button className="button-ap">Skip</button>
+                <button className="button-ap" onClick={skip}>Skip</button>
                 <button className="button-ap" onClick={refresh}>Refresh</button>
                 <button className="button-ap submit-button" onClick={submit}>Submit</button>
             </div>

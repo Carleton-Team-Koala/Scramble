@@ -107,6 +107,18 @@ export default function Game() {
       const data = await response.json();
 
       if (data.CurrentPlayer === playerName && data.TotalMoves !== 0) {
+        console.log(data);
+        if(parseInt(data.Players[playerName].score) >= 15) {
+          alert("Game over! Winner is ", playerName);
+          // Get all <link> and <style> elements
+          // var styles = document.querySelectorAll('link[rel="stylesheet"], style');
+
+          // // Loop through each element and set its disabled attribute to true
+          // styles.forEach(function(style) {
+          //   style.disabled = true;
+          // });
+        }
+
         setHand(data.Players[playerName].hand);
         setTilebag(data.LetterDistribution);
         parseBoard(data.Board);
@@ -218,9 +230,67 @@ export default function Game() {
     })
       .then(response => response.json())
       .then(data => {
-        // processing the server response
+        if (data.message) {
+          alert(data.message);
+          console.log(data.message);
+        }
+        else {
+          console.log(data);
+          setHand(data);
+        }
+      })
+      .catch(error => {
+        alert(error);
+        console.log("Error: ", error);
+      })
+  }
+
+  const skip = () => {
+    let url = baseURL + "skipturn/" + gameID + "/";
+
+    setTiles(prevTiles =>
+      prevTiles.map(tile => ({ ...tile, position: 'ActionPanel' }))
+    );
+    setLetterUpdates({});
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ playerName: playerName })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          alert(data.message);
+          console.log(data.message);
+        }
+        else {
+          console.log(data);
+          alert(data);
+        }
+      })
+      .catch(error => {
+        alert(error);
+        console.log("Error: ", error);
+      })
+  }
+
+  const resign = () => {
+    let url = baseURL + "/" + gameID + "/";
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ playerName: playerName })
+    })
+      .then(response => response.json())
+      .then(data => {
         console.log(data);
-        setHand(data);
+        alert(data);
       })
       .catch(error => {
         alert(error);
@@ -346,6 +416,8 @@ export default function Game() {
         submit={submit}
         reset={reset}
         refresh={refresh}
+        skip={skip}
+        resign={resign}
       />
       <a className='rules' href="https://users.cs.northwestern.edu/~robby/uc-courses/22001-2008-winter/scrabble.html" target="_blank">Rules</a>
     </div>
