@@ -76,7 +76,7 @@ export default function Room() {
   //render the HTML elements
   return (
     <div className="App">
-      <div className="room">
+      <div key="room" className="room">
         <button onClick={startGame}>
           Start Game
         </button>

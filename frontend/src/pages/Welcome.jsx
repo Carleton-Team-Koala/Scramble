@@ -86,8 +86,8 @@ export default function Welcome() {
   //render the HTML elements
   return (
     <div className="welcome-container">
-      <button onClick={() => setNewGamePopup(true)}>New Game</button>
-      <button onClick={() => setJoinGamePopup(true)}>Join Game</button>
+      <button key="new-btn" onClick={() => setNewGamePopup(true)}>New Game</button>
+      <button key="join-btn" onClick={() => setJoinGamePopup(true)}>Join Game</button>
       <Popup type='newGame' trigger={newGamePopup} setTrigger={setNewGamePopup} onSubmit={createGame}></Popup>
       <Popup type='joinGame' trigger={joinGamePopup} setTrigger={setJoinGamePopup} onSubmit={joinGame}></Popup>
     </div>
