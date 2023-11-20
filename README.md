@@ -70,8 +70,6 @@ Clicking "Join Game" will prompt you for a username and a game session ID. Input
 
 Playing the game uses normal *Scrabble* rules. The person who initially created the game by clicking "New Game" will always go first. This means that the traditional method of picking a random letter (with the person with the letter closest to "A" winning) will not work, and instead you should decide the method of deciding who should go first. We reccommend flipping a coin or playing rock-paper-scissors. Players will take turns back and forth playing words until the tile bag is empty, and one of the two players runs out of tiles. 
 
-One rule that is different from the normal *Scrabble* rules is that the words do not have to be placed adjacently. This is what makes Scramble more special!
-
 There are a few core features one can use during a game:
 - **Refresh**: remove all the tiles from your hand. Get a new set of tiles. 
 - **Skip**: Skip your turn
@@ -80,7 +78,6 @@ There are a few core features one can use during a game:
 - **Resign**: automatically ends the game, with the one who did not resign being the victor. 
 
 As opposed to traditional *Scrabble*, when the game ends, the player that still has tiles in their hands does NOT have the values of the tiles removed from the final scores. When the game ends, the website will announce that the game has finished and declare the winner. 
-
 
 ## Player Leaderboard (Written by Fast Ntense)
 - Starter Code for player leaderboard
