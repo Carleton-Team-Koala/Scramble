@@ -34,6 +34,8 @@ func (m MoveSlice) Swap(i, j int) {
 // and newTiles, which represents the tiles being placed in the move.
 // It returns the calculated score and an error if any invalid conditions are encountered.
 func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, error) {
+	//.Println("activeGame: ", activeGame, "newTiles: ", newTiles)
+
 	isFirstMove := isFirstMove(activeGame, newTiles)
 
 	if isFirstMove != nil {
@@ -321,29 +323,35 @@ func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 
 	// Check if at least one new tile is adjacent to an already placed tile.
 	for _, tile := range newTiles {
-		row, col := tile.Col, tile.Row
+		row, col := tile.Row, tile.Col
+		//fmt.Println("row: ", row, "col: ", col)
+		//fmt.Println("tile: ", tile)
 		if row-1 >= 0 {
 			if activeGame.Board[row-1][col] != "" && !containsTile(newTiles, row-1, col) {
-				//fmt.Println("up")
+				//fmt.Println("up, ", activeGame.Board[row-1][col])
+				//fmt.Println(tile, "up")
 				return true
 			}
 		}
 
 		if row+1 <= 14 {
 			if activeGame.Board[row+1][col] != "" && !containsTile(newTiles, row+1, col) {
-				//fmt.Println("down")
+				//fmt.Println("down, ", activeGame.Board[row+1][col])
+				//fmt.Println(tile, "down")
 				return true
 			}
 		}
 		if col-1 >= 0 {
 			if activeGame.Board[row][col-1] != "" && !containsTile(newTiles, row, col-1) {
-				//fmt.Println("left")
+				//fmt.Println("left, ", activeGame.Board[row][col-1])
+				//fmt.Println(tile, "left")
 				return true
 			}
 		}
 		if col+1 <= 14 {
 			if activeGame.Board[row][col+1] != "" && !containsTile(newTiles, row, col+1) {
-				//fmt.Println("right")
+				//fmt.Println("right, ", activeGame.Board[row][col+1])
+				//fmt.Println(tile, "right")
 				return true
 			}
 		}
@@ -354,7 +362,7 @@ func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 // containsTile checks if a tile with the given row and column exists in the given MoveSlice.
 func containsTile(tiles MoveSlice, row, col int) bool {
 	for _, tile := range tiles {
-		if tile.Row == col && tile.Col == row && tile.Row != 7 && tile.Col != 7 {
+		if tile.Row == row && tile.Col == col && tile.Row != 7 && tile.Col != 7 {
 			return true
 		}
 	}
