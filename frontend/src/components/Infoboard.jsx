@@ -16,7 +16,7 @@ function sumTiles(tile_dict) {
 const Infoboard = ({ tilebag, p1_name, p2_name, p1_score, p2_score, currentPlayer }) => {
 
     /**
-     * Displays the game information (scores, tiles left) to the user.
+     * Displays the game information (scores, current player, tiles left) to the user.
      */
 
     return (

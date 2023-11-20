@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../css/WaitingRoom.css";
+import "../css/Room.css";
 import "../css/App.css";
 import { baseURL } from "./Welcome";
 
@@ -10,10 +10,10 @@ import { baseURL } from "./Welcome";
  * @returns {JSX.Element} The rendered Room component.
  */
 export default function Room() {
-
-  const gameID = sessionStorage.getItem('gameId');
+  const gameID = sessionStorage.getItem('gameId'); //in case of refreshing the page, store the gameID in a sessionStorage
   const navigate = useNavigate();
 
+  //if game has started, send update to the server and navigate to the game page
   const checkGameStarted = () => {
     const url = baseURL + "/getgamestate/" + gameID + "/";
 
@@ -25,9 +25,7 @@ export default function Room() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         if (data.GameStarted) {
-          console.log("Game started!");
           navigate(`/play/${gameID}`);
         }
       })
@@ -36,6 +34,7 @@ export default function Room() {
       });
   };
 
+  //check if game has started
   useEffect(() => {
     const intervalId = setInterval(() => {
       checkGameStarted();
@@ -44,8 +43,11 @@ export default function Room() {
     return () => clearInterval(intervalId); // Clean up on unmount
   }, []);
 
+  /**
+   * Notify the server to start the game. 
+   * If there is only one player, then return an alert. 
+   */
   const startGame = () => {
-    console.log("Start game button clicked!");
     let url = baseURL + "startgame/" + gameID + "/"
     fetch(url, {
       method: "GET",
@@ -55,9 +57,7 @@ export default function Room() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         if (data.valid) {
-          console.log("Great success!");
           navigate(`/play/${gameID}`);
         }
         else {
@@ -70,6 +70,7 @@ export default function Room() {
       })
   };
 
+  //render the HTML elements
   return (
     <div className="App">
       <div className="room">
