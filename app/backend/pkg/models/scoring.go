@@ -3,7 +3,6 @@ package models
 // scoring.go contains the scoring logic for the game of Scramble.
 import (
 	"errors"
-	"reflect"
 	"sort"
 )
 
@@ -315,9 +314,8 @@ func checkSequential(tiles MoveSlice, game Game) (bool, bool) {
 // It takes an activeGame of type Game and a newTiles of type MoveSlice as input.
 // It returns a boolean value indicating whether at least one new tile is adjacent to an already placed tile.
 func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
-	tempBoard := [15][15]string{}
-
-	if reflect.DeepEqual(activeGame.Board, tempBoard) {
+	if isFirstMove(activeGame, newTiles) != nil {
+		//fmt.Println("first move")
 		return true
 	}
 
@@ -326,22 +324,26 @@ func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 		row, col := tile.Col, tile.Row
 		if row-1 >= 0 {
 			if activeGame.Board[row-1][col] != "" && !containsTile(newTiles, row-1, col) {
+				//fmt.Println("up")
 				return true
 			}
 		}
 
 		if row+1 <= 14 {
 			if activeGame.Board[row+1][col] != "" && !containsTile(newTiles, row+1, col) {
+				//fmt.Println("down")
 				return true
 			}
 		}
 		if col-1 >= 0 {
 			if activeGame.Board[row][col-1] != "" && !containsTile(newTiles, row, col-1) {
+				//fmt.Println("left")
 				return true
 			}
 		}
 		if col+1 <= 14 {
 			if activeGame.Board[row][col+1] != "" && !containsTile(newTiles, row, col+1) {
+				//fmt.Println("right")
 				return true
 			}
 		}
@@ -352,7 +354,7 @@ func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 // containsTile checks if a tile with the given row and column exists in the given MoveSlice.
 func containsTile(tiles MoveSlice, row, col int) bool {
 	for _, tile := range tiles {
-		if tile.Row == row && tile.Col == col {
+		if tile.Row == col && tile.Col == row && tile.Row != 7 && tile.Col != 7 {
 			return true
 		}
 	}
