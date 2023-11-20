@@ -112,19 +112,23 @@ func (app *App) JoinGame(gameID string, playerName string) (*string, error) {
 }
 
 // start game
-func (app *App) StartGame(gameID string) (*Game, error) {
+func (app *App) StartGame(gameID string, playerName string) (*Game, error) {
 	// get game from GameList
 	loadGame, err := app.GetGameById(gameID)
 	if err != nil {
 		return nil, err
 	}
 
+	if loadGame.PlayerList[0] != playerName {
+		return nil, errors.New("the person who created the game can start the game")
+	}
+
 	if len(loadGame.PlayerList) < 2 {
-		return nil, errors.New("cannot start game: two players are needed to start game")
+		return nil, errors.New("two players are needed to start game")
 	}
 
 	if loadGame.GameOver {
-		return nil, errors.New("cannot start game: this game is already over")
+		return nil, errors.New("this game is already over")
 	}
 
 	if loadGame.GameStarted {
