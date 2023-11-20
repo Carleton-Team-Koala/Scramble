@@ -171,7 +171,7 @@ func (app *App) GetGameById(gameID string) (*Game, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return loadedGame, nil
 }
 
@@ -260,7 +260,7 @@ func (app *App) RefreshHand(gameID string, playerName string) (*RefreshResp, err
 
 	resp := RefreshResp{
 		CurrentPlayer: loadedGame.CurrentPlayer,
-		NewHand: newTiles,
+		NewHand:       newTiles,
 	}
 
 	// update game on database
@@ -290,7 +290,7 @@ func (app *App) SkipTurn(gameID string, playerName string) (*SkipTurnResp, error
 
 	resp := SkipTurnResp{
 		CurrentPlayer: loadedGame.CurrentPlayer,
-		Message: returnMsg,
+		Message:       returnMsg,
 	}
 
 	// update game on database
@@ -336,7 +336,7 @@ func (app *App) ResignGame(gameID string, playerName string) (*string, error) {
 	return &returnMsg, nil
 }
 
-// generate new game id 
+// generate new game id
 func generateNewGameID() string {
 	gameID := uniuri.NewLen(6)
 	return gameID
@@ -401,7 +401,7 @@ func updateScore(wordScore int, currPlayers map[string]PlayerInfo, currPlayer st
 	return currPlayers, nil
 }
 
-// check each players hand 
+// check each players hand
 func checkPlayerHand(currPlayers map[string]PlayerInfo) bool {
 	// check if any player hands are empty
 	for _, currPlayerInfo := range currPlayers {

@@ -3,6 +3,7 @@ package models
 // scoring.go contains the scoring logic for the game of Scramble.
 import (
 	"errors"
+	"fmt"
 	"sort"
 )
 
@@ -323,35 +324,43 @@ func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 
 	// Check if at least one new tile is adjacent to an already placed tile.
 	for _, tile := range newTiles {
-		row, col := tile.Row, tile.Col
-		//fmt.Println("row: ", row, "col: ", col)
-		//fmt.Println("tile: ", tile)
+		row, col := tile.Col, tile.Row
+		fmt.Println("row: ", row, "col: ", col)
+		fmt.Println("tile: ", tile)
+
+		fmt.Println("up, ", activeGame.Board[row-1][col])
+		fmt.Println("down, ", activeGame.Board[row+1][col])
+		fmt.Println("left, ", activeGame.Board[row][col-1])
+		fmt.Println("right, ", activeGame.Board[row][col+1])
+
+		fmt.Println("CHECKING")
+
 		if row-1 >= 0 {
 			if activeGame.Board[row-1][col] != "" && !containsTile(newTiles, row-1, col) {
-				//fmt.Println("up, ", activeGame.Board[row-1][col])
-				//fmt.Println(tile, "up")
+				fmt.Println("up, ", activeGame.Board[row-1][col])
+				fmt.Println(tile, "up")
 				return true
 			}
 		}
 
 		if row+1 <= 14 {
 			if activeGame.Board[row+1][col] != "" && !containsTile(newTiles, row+1, col) {
-				//fmt.Println("down, ", activeGame.Board[row+1][col])
-				//fmt.Println(tile, "down")
+				fmt.Println("down, ", activeGame.Board[row+1][col])
+				fmt.Println(tile, "down")
 				return true
 			}
 		}
 		if col-1 >= 0 {
 			if activeGame.Board[row][col-1] != "" && !containsTile(newTiles, row, col-1) {
-				//fmt.Println("left, ", activeGame.Board[row][col-1])
-				//fmt.Println(tile, "left")
+				fmt.Println("left, ", activeGame.Board[row][col-1])
+				fmt.Println(tile, "left")
 				return true
 			}
 		}
 		if col+1 <= 14 {
 			if activeGame.Board[row][col+1] != "" && !containsTile(newTiles, row, col+1) {
-				//fmt.Println("right, ", activeGame.Board[row][col+1])
-				//fmt.Println(tile, "right")
+				fmt.Println("right, ", activeGame.Board[row][col+1])
+				fmt.Println(tile, "right")
 				return true
 			}
 		}
@@ -361,9 +370,14 @@ func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 
 // containsTile checks if a tile with the given row and column exists in the given MoveSlice.
 func containsTile(tiles MoveSlice, row, col int) bool {
+
 	for _, tile := range tiles {
-		if tile.Row == row && tile.Col == col && tile.Row != 7 && tile.Col != 7 {
-			return true
+		if tile.Row != 7 && tile.Col != 7 {
+			if tile.Row == row && tile.Col == row {
+				return true
+			}
+		} else {
+			return false
 		}
 	}
 	return false
