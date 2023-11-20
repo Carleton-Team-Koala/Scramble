@@ -64,7 +64,7 @@ Clicking "New Game" will create a new game of Scramble. It prompts you to enter 
 
 #### Join Game
 
-Clicking "Join Game" will prompt you for a username and a game session ID. Input those, and you will also be presented with a screen saying "Start Game". Your username MUST be different than the other players. If it is not, the game will refuse to start and you will need to create a new game session. 
+Clicking "Join Game" will prompt you for a username and a game session ID. Input those, and you will also be presented with a screen saying "Start Game". Your username MUST be different than the other players. If it is not, the game will refuse to start and you will need to create a new game session. Player 1 (who created the game) will need to actually start the game. 
 
 #### Playing The Game
 
