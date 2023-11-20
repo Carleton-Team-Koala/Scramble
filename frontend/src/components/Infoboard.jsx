@@ -37,7 +37,7 @@ const Infoboard = ({ tilebag, p1_name, p2_name, p1_score, p2_score, currentPlaye
             <div className="tilebag">
                 <p key="tiles-left">Tilebag: {sumTiles(tilebag)}</p>
                 <p key="tilebag">
-                    Ax{tilebag['A']} Bx{tilebag['B']} Cx{tilebag['C']} Dx{tilebag['D']}
+                    Ax{tilebag['A']} Bx{tilebag['B']} Cx{tilebag['C']} Dx{tilebag['D']} 
                     Ex{tilebag['E']} Fx{tilebag['F']} Gx{tilebag['G']} Hx{tilebag['H']} Ix{tilebag['I']} Jx{tilebag['J']} 
                     Kx{tilebag['K']} Lx{tilebag['L']} Mx{tilebag['M']} Nx{tilebag['N']} Ox{tilebag['O']} Px{tilebag['P']} 
                     Qx{tilebag['Q']} Rx{tilebag['R']} Sx{tilebag['S']} Tx{tilebag['T']} Ux{tilebag['U']} Vx{tilebag['V']} 
