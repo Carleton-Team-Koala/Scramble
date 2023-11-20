@@ -187,13 +187,6 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		}
 	}
 
-	for row := 0; row < 15; row++ {
-		for column := 0; column < 15; column++ {
-			fmt.Print(loadedGame.Board[row][column], " ")
-		}
-		fmt.Print("\n")
-	}
-
 	// Get score for entered word
 	wordScore, err := app.LanguageClient.scoring(*loadedGame, playerMove)
 	if err != nil {
@@ -350,11 +343,9 @@ func updateBoardAndHand(loadedGame Game, playerMove Move, playerName string) *Ga
 	loadedGame.Board[playerMove.Col][playerMove.Row] = playerMove.Letter
 	index := 0
 	for _, iterateLetter := range loadedGame.Players[playerName].Hand {
-		randomTile := getRandomTile(loadedGame.AvailableLetters)
 		if iterateLetter == playerMove.Letter {
-			if randomTile != " " {
-				loadedGame.Players[playerName].Hand[index] = randomTile
-			}
+			randomTile := getRandomTile(loadedGame.AvailableLetters)
+			loadedGame.Players[playerName].Hand[index] = randomTile
 			break
 		}
 		index++

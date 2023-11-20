@@ -42,7 +42,6 @@ func NewDatabaseClient(host string, port string, user string, password string, d
 	if err != nil {
 		panic(err)
 	}
-	// defer db.Close()
 
 	err = db.Ping()
 	if err != nil {
