@@ -11,6 +11,7 @@ import { baseURL } from "./Welcome";
  */
 export default function Room() {
   const gameID = sessionStorage.getItem('gameId'); //in case of refreshing the page, store the gameID in a sessionStorage
+  const playerName = sessionStorage.getItem('playerName');
   const navigate = useNavigate();
 
   //if game has started, send update to the server and navigate to the game page
@@ -50,10 +51,11 @@ export default function Room() {
   const startGame = () => {
     let url = baseURL + "startgame/" + gameID + "/"
     fetch(url, {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json"
-      }
+      },
+      body: JSON.stringify({ playerName: playerName })
     })
       .then(response => response.json())
       .then(data => {
@@ -61,7 +63,8 @@ export default function Room() {
           navigate(`/play/${gameID}`);
         }
         else {
-          alert("You need two players to start the game!");
+          console.log(data);
+          alert(data.message);
         }
       })
       .catch(error => {

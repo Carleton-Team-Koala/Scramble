@@ -117,7 +117,30 @@ func (a *AppController) AppJoinGame(w http.ResponseWriter, r *http.Request) {
 func (a *AppController) AppStartGame(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameID := vars["gameID"]
-	gameDetails, err := a.AppInterface.StartGame(gameID)
+
+	// unmarshal json response
+	headerContentType := r.Header.Get("Content-Type")
+	if headerContentType != "application/json" {
+		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
+		return
+	}
+
+	var startGameResp models.PlayerNameResp
+	var unmarshalErr *json.UnmarshalTypeError
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&startGameResp)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
+		} else {
+			errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+
+	gameDetails, err := a.AppInterface.StartGame(gameID, startGameResp.PlayerName)
 	if err != nil {
 		errorResponse(w, "Not able to start game: "+err.Error(), http.StatusOK)
 		return
