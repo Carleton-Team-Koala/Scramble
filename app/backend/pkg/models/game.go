@@ -352,9 +352,7 @@ func updateBoardAndHand(loadedGame Game, playerMove Move, playerName string) *Ga
 	for _, iterateLetter := range loadedGame.Players[playerName].Hand {
 		randomTile := getRandomTile(loadedGame.AvailableLetters)
 		if iterateLetter == playerMove.Letter {
-			if randomTile != " " {
-				loadedGame.Players[playerName].Hand[index] = randomTile
-			}
+			loadedGame.Players[playerName].Hand[index] = randomTile
 			break
 		}
 		index++
