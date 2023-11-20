@@ -15,10 +15,13 @@ type App struct {
 type AppInterface interface {
 	CreateGame(playerName string) (string, error)
 	JoinGame(gameID string, playerName string) error
-	StartGame(gameID string) (*Game, error)
+	StartGame(gameID string, playerName string) (*Game, error)
 	GetGameById(gameID string) (*Game, error)
 	UpdateGameState(gameID string, playerMove []Move, playerName string) (*Game, error)
 	ValidateMove(playerMove Move, playerName string, gameID string) bool
+	RefreshHand(gameID string, playerName string) (*RefreshResp, error)
+	SkipTurn(gameID string, playerName string) (*SkipTurnResp, error)
+	ResignGame(gameID string, playerName string) (*string, error)
 }
 
 // create new game struct
@@ -84,15 +87,15 @@ func (app *App) JoinGame(gameID string, playerName string) (*string, error) {
 	}
 
 	if loadGame.GameStarted {
-		return nil, errors.New("cannot join game: game already started")
+		return nil, errors.New("game already started")
 	}
 
 	if len(loadGame.PlayerList) >= 2 {
-		return nil, errors.New("cannot join game: game already has two players")
+		return nil, errors.New("game already has two players")
 	}
 
 	if loadGame.GameOver {
-		return nil, errors.New("cannot join game: this game is already over")
+		return nil, errors.New("this game is already over")
 	}
 
 	// create new player
@@ -178,6 +181,10 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		return nil, err
 	}
 
+	if loadedGame.GameOver {
+		return nil, errors.New("this game is already over")
+	}
+
 	if playerName != loadedGame.CurrentPlayer {
 		return nil, errors.New("wait! not your turn")
 	}
@@ -232,6 +239,10 @@ func (app *App) RefreshHand(gameID string, playerName string) (*RefreshResp, err
 		return nil, err
 	}
 
+	if loadedGame.GameOver {
+		return nil, errors.New("this game is already over")
+	}
+
 	if loadedGame.CurrentPlayer != playerName {
 		return nil, errors.New("wait! not your turn")
 	}
@@ -265,6 +276,10 @@ func (app *App) SkipTurn(gameID string, playerName string) (*SkipTurnResp, error
 		return nil, err
 	}
 
+	if loadedGame.GameOver {
+		return nil, errors.New("this game is already over")
+	}
+
 	if loadedGame.CurrentPlayer != playerName {
 		return nil, errors.New("wait! not your turn")
 	}
@@ -289,6 +304,10 @@ func (app *App) ResignGame(gameID string, playerName string) (*string, error) {
 	winner := ""
 	if err != nil {
 		return nil, err
+	}
+
+	if loadedGame.GameOver {
+		return nil, errors.New("this game is already over")
 	}
 
 	if loadedGame.CurrentPlayer != playerName {
