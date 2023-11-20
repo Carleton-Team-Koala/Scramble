@@ -25,7 +25,7 @@ const ActionPanel = ({ tilesAp, shuffle, submit, reset, refresh, skip, resign })
                         backgroundImage: `url(${shuffleImage})`,
                     }}>
                 </button>
-                <div className='tile-hand' /** Tiles in the hand */> 
+                <div key="tile-hand" className='tile-hand' /** Tiles in the hand */> 
                     {tilesAp} 
                 </div>
                 <button className="button-hand" onClick={reset} /** Reset button */

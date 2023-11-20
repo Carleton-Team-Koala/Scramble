@@ -384,11 +384,13 @@ export default function Game() {
       <div className="board-score">
         <Values></Values>
         <Board
+          key="board"
           letterUpdates={letterUpdates}
           onTileDrop={handleTileDrop}
           scoredLetters={scoredLetters}
         />
         <Infoboard
+          key="infoboard"
           tilebag={tilebag}
           p1_score={playerScores[playerNames[0]] || 0}
           p2_score={playerScores[playerNames[1]] || 0}
@@ -405,6 +407,7 @@ export default function Game() {
             return <div key={tile.id} className="tile-placeholder"></div>;
           }
         })}
+        key="action-panel"
         shuffle={shuffle}
         submit={submit}
         reset={reset}

@@ -22,21 +22,21 @@ const Infoboard = ({ tilebag, p1_name, p2_name, p1_score, p2_score, currentPlaye
     return (
         <div id="infoboard">
             <div className="scoreboard">
-                <div className="scoreboard-cell">
+                <div key="p1-score" className="scoreboard-cell">
                     {p1_name}: {p1_score}
                 </div>
-                <div className="scoreboard-cell">
+                <div key="p2-score" className="scoreboard-cell">
                     {p2_name}: {p2_score}
                 </div>
             </div>
             <div className="turnboard">
-                <div className="turnboard-cell">
+                <div key="cur-player" className="turnboard-cell">
                     {currentPlayer}'s turn
                 </div>
             </div>
             <div className="tilebag">
-                <p>Tilebag: {sumTiles(tilebag)}</p>
-                <p>
+                <p key="tiles-left">Tilebag: {sumTiles(tilebag)}</p>
+                <p key="tilebag">
                     Ax{tilebag['A']} Bx{tilebag['B']} Cx{tilebag['C']} Dx{tilebag['D']}
                     Ex{tilebag['E']} Fx{tilebag['F']} Gx{tilebag['G']} Hx{tilebag['H']} Ix{tilebag['I']} Jx{tilebag['J']} 
                     Kx{tilebag['K']} Lx{tilebag['L']} Mx{tilebag['M']} Nx{tilebag['N']} Ox{tilebag['O']} Px{tilebag['P']} 
