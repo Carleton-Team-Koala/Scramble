@@ -181,6 +181,8 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		return nil, err
 	}
 
+	tempGame := loadedGame 
+
 	if loadedGame.GameOver {
 		return nil, errors.New("this game is already over")
 	}
@@ -199,7 +201,7 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 	}
 
 	// Get score for entered word
-	wordScore, err := app.LanguageClient.scoring(*loadedGame, playerMove)
+	wordScore, err := app.LanguageClient.scoring(*tempGame, *loadedGame, playerMove)
 	if err != nil {
 		return nil, err
 	}

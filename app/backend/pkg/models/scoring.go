@@ -34,7 +34,7 @@ func (m MoveSlice) Swap(i, j int) {
 // It takes the activeGame, which represents the current state of the game,
 // and newTiles, which represents the tiles being placed in the move.
 // It returns the calculated score and an error if any invalid conditions are encountered.
-func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, error) {
+func (c *LanguageClient) scoring(tempGame Game, activeGame Game, newTiles MoveSlice) (int, error) {
 	//.Println("activeGame: ", activeGame, "newTiles: ", newTiles)
 
 	isFirstMove := isFirstMove(activeGame, newTiles)
@@ -52,7 +52,7 @@ func (c *LanguageClient) scoring(activeGame Game, newTiles MoveSlice) (int, erro
 
 	sort.Sort(newTiles)
 
-	adjacentToPlacedTile := TestAdjacentToPlacedTile(activeGame, newTiles)
+	adjacentToPlacedTile := TestAdjacentToPlacedTile(tempGame, newTiles)
 	if !adjacentToPlacedTile {
 		return 0, errors.New("at least one new tile must be adjacent to an already placed tile")
 	}
