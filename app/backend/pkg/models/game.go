@@ -181,7 +181,7 @@ func (app *App) UpdateGameState(gameID string, playerMove []Move, playerName str
 		return nil, err
 	}
 
-	tempGame := loadedGame 
+	tempGame := loadedGame
 
 	if loadedGame.GameOver {
 		return nil, errors.New("this game is already over")
