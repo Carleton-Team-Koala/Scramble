@@ -40,10 +40,10 @@ type Move struct {
 
 type SkipTurnResp struct {
 	CurrentPlayer string `json:"CurrentPlayer"`
-	Message string `json:"message"`
+	Message       string `json:"message"`
 }
 
 type RefreshResp struct {
-	CurrentPlayer string `json:"CurrentPlayer"`
-	NewHand []string `json:"hand"`
+	CurrentPlayer string   `json:"CurrentPlayer"`
+	NewHand       []string `json:"hand"`
 }
