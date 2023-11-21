@@ -325,15 +325,6 @@ func TestAdjacentToPlacedTile(activeGame Game, newTiles MoveSlice) bool {
 	// Check if at least one new tile is adjacent to an already placed tile.
 	for _, tile := range newTiles {
 		row, col := tile.Col, tile.Row
-		fmt.Println("row: ", row, "col: ", col)
-		fmt.Println("tile: ", tile)
-
-		fmt.Println("up, ", activeGame.Board[row-1][col])
-		fmt.Println("down, ", activeGame.Board[row+1][col])
-		fmt.Println("left, ", activeGame.Board[row][col-1])
-		fmt.Println("right, ", activeGame.Board[row][col+1])
-
-		fmt.Println("CHECKING")
 
 		if row-1 >= 0 {
 			if activeGame.Board[row-1][col] != "" && !containsTile(newTiles, row-1, col) {
