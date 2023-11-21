@@ -14,6 +14,11 @@ function createGame() {
   const url = baseURL + "newgame/";
   const player = sessionStorage.getItem('playerName');
 
+  if (!player) {
+    alert("Player name is missing.");
+    return null; // Exit the function if the necessary data is missing
+  }
+
   // Return the fetch promise
   return fetch(url, {
     method: "POST",
